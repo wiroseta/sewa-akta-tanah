@@ -13,3 +13,7 @@ Frontend dapat disimpan di repository GitHub public. Login memakai Supabase Auth
 - Jangan pernah masukkan Supabase secret/service-role key atau OpenAI API key ke repository/frontend.
 - Versi ini menambahkan login sungguhan, tetapi data kontrak masih tersimpan di localStorage browser per user ID. Jangan gunakan sebagai penyimpanan final dokumen hukum.
 - Tahap berikutnya: pindahkan data ke tabel Supabase dengan Row Level Security (RLS), private storage untuk dokumen, dan Edge Function untuk OpenAI.
+
+
+## v1.8.3
+Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, selisih, dan persentase terjadwal.

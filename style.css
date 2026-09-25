@@ -13,3 +13,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
 /* v1.8.2 Indonesian Rupiah display */
 .money-input{font-variant-numeric:tabular-nums}.money-input:not(:focus){font-weight:650}
+
+
+/* v1.8.3 payment schedule validation */
+.payment-check{border:1px solid #d2d2d7;border-radius:14px;padding:13px 14px;background:#f9f9fb;color:#1d1d1f}.payment-check:empty{display:none}.payment-check.ok{background:#f0faf3;border-color:#a9dfb8;color:#145c2e}.payment-check.warn-text{background:#fff8ed;border-color:#f1c27d;color:#7a4300}.payment-check-title{font-weight:750;margin-bottom:10px}.payment-check-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.payment-check-grid span{display:flex;flex-direction:column;gap:3px}.payment-check-grid small{color:inherit;opacity:.72;letter-spacing:0;font-weight:600}.payment-check-grid b{font-variant-numeric:tabular-nums;font-size:14px}.payrow{grid-template-columns:1fr 1fr 1fr auto}.payrow>span:empty{display:none}@media(max-width:720px){.payment-check-grid{grid-template-columns:1fr 1fr}.payrow{grid-template-columns:1fr 1fr}.payrow .label{grid-column:1/-1}.payrow button{grid-column:2}}
+
+/* v1.8.4 payment status */
+.payrow{grid-template-columns:1fr 1fr 1.2fr 1fr 1fr auto}.payrow .status{border:1px solid #c7c7cc;border-radius:10px;padding:10px;background:white;font:inherit}.payrow .paidDate:disabled{opacity:.45;background:#f2f2f7}.warning.overdue{color:#b42318;background:#fff1f0;border-radius:10px;padding:10px 12px;margin:4px 0}.warning.overdue b{color:#b42318}@media(max-width:720px){.payrow{grid-template-columns:1fr 1fr}.payrow .label{grid-column:1/-1}.payrow .status,.payrow .paidDate{grid-column:auto}.payrow button{grid-column:2}}
