@@ -41,8 +41,38 @@ function applyExtracted(x){
 }
 async function extractDocument(){const file=$('#aiFile').files?.[0],btn=$('#extractBtn'),st=$('#extractStatus');if(!file)return alert('Pilih file PDF atau foto scan terlebih dahulu.');if(file.size>18*1024*1024)return alert('File terlalu besar. Maksimum 18 MB untuk pembacaan langsung.');btn.disabled=true;st.textContent='Membaca dokumen dengan AI… jangan tutup halaman ini.';try{const base64=await fileToBase64(file);const {data:out,error}=await sb.functions.invoke('extract-lease',{body:{filename:file.name,mimeType:file.type||'application/pdf',base64}});if(error)throw error;if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');applyExtracted(out.data);st.textContent='✓ Dokumen selesai dibaca. Periksa semua hasil, terutama angka, tanggal, nomor akta, dan klausul sebelum menyimpan.'}catch(e){console.error(e);st.textContent='Gagal membaca dokumen: '+(e.message||e);alert('Ekstraksi AI gagal. Pastikan Supabase Edge Function extract-lease sudah dipasang dan OPENAI_API_KEY sudah diset.')}finally{btn.disabled=false}}
 
+
+let googleDriveToken='';
+function driveFileId(url){
+  const s=String(url||'').trim();
+  const m=s.match(/\/d\/([a-zA-Z0-9_-]+)/)||s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  return m?m[1]:'';
+}
+function googleClientReady(){return window.google?.accounts?.oauth2 && window.SEWA_CONFIG?.googleClientId && !window.SEWA_CONFIG.googleClientId.startsWith('ISI_')}
+function requestDriveToken(){return new Promise((resolve,reject)=>{
+  if(!googleClientReady())return reject(new Error('Google OAuth Client ID belum dikonfigurasi di config.js'));
+  const client=google.accounts.oauth2.initTokenClient({client_id:SEWA_CONFIG.googleClientId,scope:'https://www.googleapis.com/auth/drive.readonly',callback:r=>{if(r.error)return reject(new Error(r.error));googleDriveToken=r.access_token;resolve(googleDriveToken)}});
+  client.requestAccessToken({prompt:googleDriveToken?'':'consent'});
+})}
+async function connectDrive(){const st=$('#driveStatus'),b=$('#driveConnectBtn');try{b.disabled=true;st.textContent='Membuka izin Google Drive…';await requestDriveToken();st.textContent='✓ Google Drive terhubung untuk sesi ini.';b.textContent='Hubungkan Ulang Google Drive'}catch(e){st.textContent='Gagal menghubungkan Google Drive: '+(e.message||e)}finally{b.disabled=false}}
+async function blobToBase64(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=()=>reject(r.error);r.readAsDataURL(blob)})}
+async function fetchDriveFile(fileId){
+  if(!googleDriveToken)await requestDriveToken();
+  const metaUrl=`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=id,name,mimeType,size,webViewLink&supportsAllDrives=true`;
+  let r=await fetch(metaUrl,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
+  if(r.status===401){googleDriveToken='';await requestDriveToken();r=await fetch(metaUrl,{headers:{Authorization:`Bearer ${googleDriveToken}`}})}
+  if(!r.ok)throw new Error('Tidak dapat membaca metadata file Google Drive ('+r.status+').');
+  const meta=await r.json();
+  if(String(meta.mimeType).startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
+  r=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
+  if(!r.ok)throw new Error('Tidak dapat mengunduh file Google Drive ('+r.status+'). Pastikan akun Anda punya akses.');
+  const blob=await r.blob(); if(blob.size>18*1024*1024)throw new Error('File lebih dari 18 MB.');
+  return {name:meta.name||'drive-file.pdf',mimeType:meta.mimeType||blob.type||'application/pdf',blob,webViewLink:meta.webViewLink};
+}
+async function extractFromDrive(){const url=$('#driveUrl').value.trim(),id=driveFileId(url),btn=$('#driveExtractBtn'),st=$('#driveStatus');if(!id)return alert('Masukkan link Google Drive file yang valid.');btn.disabled=true;st.textContent='Mengambil file private dari Google Drive…';try{const f=await fetchDriveFile(id);st.textContent='File diterima. Membaca dengan AI…';const base64=await blobToBase64(f.blob);const {data:out,error}=await sb.functions.invoke('extract-lease',{body:{filename:f.name,mimeType:f.mimeType,base64}});if(error)throw error;if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');applyExtracted(out.data);setField('docUrl',url);st.textContent='✓ File Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.'}catch(e){console.error(e);st.textContent='Gagal: '+(e.message||e)}finally{btn.disabled=false}}
+
 function openEdit(i=-1){edit=i;let x=i>=0?data[i]:{};$('#form').reset();['contacts','banks','lands','payments','clauses'].forEach(id=>$('#'+id).innerHTML='');[...$('#form').elements].forEach(e=>{if(e.name&&x[e.name]!=null)e.value=(e.classList.contains('money-input')?moneyDisplay(x[e.name]):x[e.name])});(x.contacts||[]).forEach(v=>addRepeat('contacts',v,'contact'));(x.bankAccounts||[]).forEach(v=>addRepeat('banks',v,'bank'));(x.landRights||[]).forEach(v=>addRepeat('lands',v,'land'));(x.payments||[]).forEach(pay);(x.clauses||[]).forEach(v=>addRepeat('clauses',v,'clause'));$('#verifyBadge').textContent=x.verificationStatus==='sudah_diverifikasi'?'SUDAH DIVERIFIKASI':'PERLU VERIFIKASI';$('#dlg').showModal();updatePaymentCheck()}window.openEdit=openEdit;
 function collect(sel,fields){return [...document.querySelectorAll(sel)].map(r=>Object.fromEntries(fields.map(f=>[f,r.querySelector('.'+f)?.value||'']))).filter(o=>Object.values(o).some(Boolean))}
-$('#addBtn').onclick=()=>openEdit();$('#extractBtn').onclick=extractDocument;$('#cancel').onclick=()=>$('#dlg').close();$('#addPayment').onclick=()=>pay();$('#addContact').onclick=()=>addRepeat('contacts',{},'contact');$('#addBank').onclick=()=>addRepeat('banks',{},'bank');$('#addLand').onclick=()=>addRepeat('lands',{},'land');$('#addClause').onclick=()=>addRepeat('clauses',{},'clause');$('#search').oninput=render;bindMoneyInput(document.querySelector('[name="rent"]'),updatePaymentCheck);bindMoneyInput(document.querySelector('[name="deposit"]'));
+$('#addBtn').onclick=()=>openEdit();$('#extractBtn').onclick=extractDocument;$('#driveConnectBtn').onclick=connectDrive;$('#driveExtractBtn').onclick=extractFromDrive;$('#cancel').onclick=()=>$('#dlg').close();$('#addPayment').onclick=()=>pay();$('#addContact').onclick=()=>addRepeat('contacts',{},'contact');$('#addBank').onclick=()=>addRepeat('banks',{},'bank');$('#addLand').onclick=()=>addRepeat('lands',{},'land');$('#addClause').onclick=()=>addRepeat('clauses',{},'clause');$('#search').oninput=render;bindMoneyInput(document.querySelector('[name="rent"]'),updatePaymentCheck);bindMoneyInput(document.querySelector('[name="deposit"]'));
 $('#form').onsubmit=async e=>{e.preventDefault();let x=Object.fromEntries(new FormData(e.target));x.rent=parseMoney(x.rent);x.deposit=parseMoney(x.deposit);x.contacts=collect('#contacts .contact',['role','name','phone','email']);x.bankAccounts=collect('#banks .bank',['purpose','bank','account','holder']);x.landRights=collect('#lands .land',['type','number','area','end']);x.clauses=collect('#clauses .clause',['title','detail','page','importance']);x.payments=collect('#payments .payrow',['due','amount','label','status','paidDate']).map(p=>({...p,amount:parseMoney(p.amount)}));if(edit>=0&&data[edit]?.id)x.id=data[edit].id;let b=e.submitter;try{b.disabled=true;await saveContract(x);$('#dlg').close()}catch(err){alert('Gagal menyimpan: '+err.message)}finally{b.disabled=false}};
 if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});initAuth();
