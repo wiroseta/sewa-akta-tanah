@@ -17,3 +17,16 @@ Frontend dapat disimpan di repository GitHub public. Login memakai Supabase Auth
 
 ## v1.8.3
 Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, selisih, dan persentase terjadwal.
+
+
+## Riwayat Versi / Changelog
+
+### v1.15.5
+- AI scan/upload PDF/foto dan Google Drive private untuk Sertifikat Tanah.
+- AI scan/upload PDF/foto dan Google Drive private untuk SPPT PBB.
+- Luas Sertifikat Tanah, Akta Sewa, dan PBB disimpan independen sesuai dokumen sumber dan tidak dipaksa sama.
+- Akta Sewa memiliki luas tanah dan luas bangunan menurut Akta Sewa sendiri.
+- Sertifikat menyimpan pemegang hak, nomor/tanggal surat ukur, dan masa berlaku opsional.
+- PBB menyimpan nama wajib pajak dan alamat objek pajak.
+- Tanggal berakhir sertifikat tidak diisi otomatis bila tidak tersedia.
+- Mulai versi ini hanya satu README.md digunakan untuk dokumentasi dan changelog.
