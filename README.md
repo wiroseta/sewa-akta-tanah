@@ -38,3 +38,11 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - PBB menyimpan nama wajib pajak dan alamat objek pajak.
 - Tanggal berakhir sertifikat tidak diisi otomatis bila tidak tersedia.
 - Mulai versi ini hanya satu README.md digunakan untuk dokumentasi dan changelog.
+
+## v1.15.7
+- Menambahkan tombol **+ PBB untuk Properti Ini** langsung di halaman Properti/Lokasi.
+- Form PBB yang dibuka dari properti hanya menampilkan Sertifikat Tanah dan Bangunan milik properti tersebut untuk dipilih sebagai relasi.
+- Memperketat AI Sertifikat agar secara khusus mencari bagian **SURAT UKUR** dan mengisi nomor serta tanggal Surat Ukur bila terbaca.
+- Menyamakan tinggi field **Jenis Hak** dengan field Sertifikat lainnya.
+- Field tanggal Sertifikat/Surat Ukur kosong secara visual dengan format YYYY-MM-DD sampai ada data.
+- Memastikan Nama Pemegang Hak, Nomor Surat Ukur, dan Tanggal Surat Ukur ikut tersimpan ke database.
