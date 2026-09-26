@@ -29,3 +29,6 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
 /* v1.13 — renewal details and direct document access */
 textarea[name="renewalTerm"]{min-height:96px;resize:vertical;line-height:1.4}.doc-link-row{display:flex;gap:8px;align-items:stretch}.doc-link-row input{min-width:0;flex:1}.open-doc-btn{white-space:nowrap}.open-doc-btn:disabled{opacity:.45;cursor:not-allowed}@media(max-width:720px){.doc-link-row{flex-direction:column}.open-doc-btn{width:100%}}
+
+/* v1.15 — linked land documents, PBB and facilities */
+.repeat-row.land,.repeat-row.landdoc,.repeat-row.pbb,.repeat-row.facility{grid-template-columns:repeat(4,minmax(130px,1fr));padding:12px;border:1px solid #e1e1e6;border-radius:14px;background:#fafafd;align-items:center}.repeat-row.facility{grid-template-columns:repeat(4,minmax(145px,1fr))}.mini-open{padding:10px 11px;white-space:nowrap}.repeat-row.land>button:last-child,.repeat-row.landdoc>button:last-child,.repeat-row.pbb>button:last-child,.repeat-row.facility>button:last-child{background:#fde7e9;color:#8a1c1c}@media(max-width:720px){.repeat-row.land,.repeat-row.landdoc,.repeat-row.pbb,.repeat-row.facility{grid-template-columns:1fr}.repeat-row.land button,.repeat-row.landdoc button,.repeat-row.pbb button,.repeat-row.facility button{grid-column:auto;width:100%}}
