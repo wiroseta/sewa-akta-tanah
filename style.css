@@ -41,3 +41,7 @@ textarea[name="renewalTerm"]{min-height:96px;resize:vertical;line-height:1.4}.do
 .master-section h3{margin-top:0}.info-box{background:#f5f8fc}
 .property-label{font-size:11px;font-weight:800;letter-spacing:.12em;color:#6b7280;margin-bottom:5px}
 .property-counts{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.property-counts span{background:#f1f3f6;border-radius:999px;padding:6px 10px;font-size:13px;font-weight:700}
+
+.title-version{display:flex;align-items:center;gap:10px}.title-version h1{margin-bottom:0}.version-badge{font-size:12px;font-weight:800;padding:5px 9px;border-radius:999px;background:#e8f1ff;color:#075fc7;border:1px solid #c9defa}
+.lease-relations{margin:22px 0;padding:18px;border:1px solid #dfe5ed;border-radius:16px;background:#f8fafc}.relation-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.check-list{display:grid;gap:7px;margin:8px 0 16px}.check-item{display:flex!important;align-items:flex-start;gap:8px;padding:9px 11px;border:1px solid #e2e5ea;border-radius:10px;background:white}.check-item input{width:auto!important;margin-top:3px}
+@media(max-width:700px){.relation-grid{grid-template-columns:1fr}.title-version{flex-wrap:wrap}}

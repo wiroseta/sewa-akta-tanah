@@ -1,1 +1,9 @@
-{"name":"Sewa & Akta Tanah Manager","short_name":"Sewa Akta","start_url":"./","display":"standalone","background_color":"#f5f5f7","theme_color":"#f5f5f7"}
+{
+  "name": "Sewa & Akta Tanah Manager",
+  "short_name": "Sewa Akta",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#f5f5f7",
+  "description": "Sewa & Akta Tanah v1.15.4"
+}
