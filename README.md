@@ -46,3 +46,15 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Menyamakan tinggi field **Jenis Hak** dengan field Sertifikat lainnya.
 - Field tanggal Sertifikat/Surat Ukur kosong secara visual dengan format YYYY-MM-DD sampai ada data.
 - Memastikan Nama Pemegang Hak, Nomor Surat Ukur, dan Tanggal Surat Ukur ikut tersimpan ke database.
+
+
+## v1.15.8
+- Memperbaiki mapping field PBB ke nama kolom Supabase yang benar (`njop_land_per_m2`, `njop_land_total`, `njop_building_per_m2`, `njop_building_total`, `njop_total`, `pbb_due`, `drive_sppt_url`, `drive_payment_url`).
+- Memisahkan **PBB terutang** dan **PBB yang harus dibayar**.
+- Setiap record PBB tetap per NOP + tahun dan memiliki link SPPT serta link bukti bayar sendiri.
+- Menambahkan **Abaikan warning dashboard** dan alasan opsional tanpa mengubah status pembayaran.
+- Dashboard menampilkan warning PBB belum dibayar yang mendekati/melewati jatuh tempo, kecuali sudah dibayar atau warning sengaja diabaikan.
+- Tanggal PBB ditampilkan/input sebagai DD-MM-YYYY; database tetap menyimpan tipe date standar.
+- Nilai Rupiah PBB ditampilkan sebagai `Rp 4.155.000,00`; luasan sebagai `10.500,00 m²`.
+- Tanggal pembayaran PBB kosong dan nonaktif ketika status masih Belum Bayar.
+- Form Akta Sewa dibuat lebih fluid/responsive agar kolom kanan tidak terpotong dan horizontal scroll hilang.

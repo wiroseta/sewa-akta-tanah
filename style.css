@@ -50,3 +50,6 @@ textarea[name="renewalTerm"]{min-height:96px;resize:vertical;line-height:1.4}.do
 
 /* v1.15.7: consistent certificate controls */
 .repeat-row.landtitle select,.repeat-row.landtitle input{height:46px;box-sizing:border-box}
+
+/* v1.15.8 responsive + Indonesian display */
+dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;overflow-x:hidden}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid>*{min-width:0}.grid input,.grid select,.grid textarea{min-width:0;max-width:100%}.warning-ignore{grid-column:1/-1;padding:12px;border:1px solid #e1e1e6;border-radius:12px;background:#fafafd}.warning-ignore span{display:flex;align-items:center;gap:8px}.warning-ignore input[type=checkbox]{width:auto}.pbb-grid .money-input,.pbb-grid .area-input{font-variant-numeric:tabular-nums}@media(max-width:900px){#dlg{width:min(760px,96vw)}#dlg .grid{grid-template-columns:1fr}#dlg .grid label{grid-column:1!important}.doc-link-row{grid-template-columns:minmax(0,1fr) auto}.relation-grid{grid-template-columns:1fr}}@media(max-width:620px){dialog{width:calc(100vw - 12px);max-width:calc(100vw - 12px);margin:6px}form{padding:16px}.grid,.pbb-grid{grid-template-columns:1fr}.doc-link-row{grid-template-columns:1fr}.doc-link-row button{width:100%}}
