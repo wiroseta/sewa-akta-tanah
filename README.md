@@ -21,6 +21,14 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 
 ## Riwayat Versi / Changelog
 
+### v1.15.6
+- Form Sertifikat Tanah memakai label permanen agar arti setiap field tetap terlihat setelah AI mengisi data.
+- Field dikelompokkan menjadi Data Sertifikat, Surat Ukur, Dokumen & Lokasi, dan Baca Otomatis dengan AI.
+- Tombol AI diperjelas menjadi Baca PDF/Foto Sertifikat dan Baca Sertifikat dari Google Drive.
+- Tanggal masa berlaku dan tanggal Surat Ukur tetap opsional dan tidak dipaksa sama dengan tanggal lain.
+- Perbaikan penyimpanan nama pemegang hak, nomor Surat Ukur, dan tanggal Surat Ukur ke database.
+- PBB tetap menggunakan label permanen untuk setiap field dan luas PBB tetap independen dari Sertifikat/Akta Sewa.
+
 ### v1.15.5
 - AI scan/upload PDF/foto dan Google Drive private untuk Sertifikat Tanah.
 - AI scan/upload PDF/foto dan Google Drive private untuk SPPT PBB.
