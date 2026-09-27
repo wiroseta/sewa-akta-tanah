@@ -64,3 +64,10 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Cache-busting untuk `config.js` dan `app.js` agar GitHub Pages/iPhone tidak menjalankan JavaScript versi lama.
 - Mapping PBB tetap menggunakan kolom Supabase standar `njop_building_per_m2` dan `njop_building_total`.
 - Tidak memerlukan scan AI PBB ulang.
+
+
+## v1.15.11
+- Dashboard Hak Tanah sekarang hanya memakai master Sertifikat Tanah (`land_titles`) sebagai sumber masa berlaku.
+- Peringatan lama dari `contracts.land_rights` tidak lagi dipakai agar tanggal historis tidak menghasilkan warning palsu.
+- Perhitungan tanggal mendukung format UI DD-MM-YYYY dan penyimpanan ISO YYYY-MM-DD.
+- Tanggal pada Agenda & Peringatan ditampilkan dalam format Indonesia DD-MM-YYYY.
