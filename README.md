@@ -73,7 +73,7 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Tanggal pada Agenda & Peringatan ditampilkan dalam format Indonesia DD-MM-YYYY.
 
 
-## v1.15.12
+## v1.15.13
 - Menambahkan indikator proses yang jelas saat AI membaca Akta Sewa, Sertifikat Tanah, dan SPPT PBB.
 - Status membedakan tahap mengambil file Google Drive, menyiapkan dokumen, mengirim ke AI, AI membaca/mengekstrak, memproses hasil, selesai, dan gagal.
 - Sertifikat Tanah tidak lagi hanya mengandalkan alert saat proses AI berlangsung.
