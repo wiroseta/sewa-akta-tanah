@@ -71,3 +71,10 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Peringatan lama dari `contracts.land_rights` tidak lagi dipakai agar tanggal historis tidak menghasilkan warning palsu.
 - Perhitungan tanggal mendukung format UI DD-MM-YYYY dan penyimpanan ISO YYYY-MM-DD.
 - Tanggal pada Agenda & Peringatan ditampilkan dalam format Indonesia DD-MM-YYYY.
+
+
+## v1.15.12
+- Menambahkan indikator proses yang jelas saat AI membaca Akta Sewa, Sertifikat Tanah, dan SPPT PBB.
+- Status membedakan tahap mengambil file Google Drive, menyiapkan dokumen, mengirim ke AI, AI membaca/mengekstrak, memproses hasil, selesai, dan gagal.
+- Sertifikat Tanah tidak lagi hanya mengandalkan alert saat proses AI berlangsung.
+- Tidak menggunakan persentase progres semu; indikator menampilkan tahap proses aktual.
