@@ -58,3 +58,9 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Nilai Rupiah PBB ditampilkan sebagai `Rp 4.155.000,00`; luasan sebagai `10.500,00 m²`.
 - Tanggal pembayaran PBB kosong dan nonaktif ketika status masih Belum Bayar.
 - Form Akta Sewa dibuat lebih fluid/responsive agar kolom kanan tidak terpotong dan horizontal scroll hilang.
+
+
+## v1.15.9
+- Cache-busting untuk `config.js` dan `app.js` agar GitHub Pages/iPhone tidak menjalankan JavaScript versi lama.
+- Mapping PBB tetap menggunakan kolom Supabase standar `njop_building_per_m2` dan `njop_building_total`.
+- Tidak memerlukan scan AI PBB ulang.
