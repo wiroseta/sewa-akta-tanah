@@ -78,3 +78,8 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Status membedakan tahap mengambil file Google Drive, menyiapkan dokumen, mengirim ke AI, AI membaca/mengekstrak, memproses hasil, selesai, dan gagal.
 - Sertifikat Tanah tidak lagi hanya mengandalkan alert saat proses AI berlangsung.
 - Tidak menggunakan persentase progres semu; indikator menampilkan tahap proses aktual.
+
+
+## v1.15.14
+- Cache-buster index.html diperbarui ke v1.15.14 untuk config.js dan app.js agar browser/GitHub Pages mengambil JavaScript terbaru.
+- Mempertahankan Google Drive token fix dan AI progress dari versi sebelumnya.
