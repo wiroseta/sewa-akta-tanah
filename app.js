@@ -1,4 +1,4 @@
-const APP_BUILD="1.19.13-RC";
+const APP_BUILD="1.19.14-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='';const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -569,7 +569,7 @@ $('#historicalLeaseBtn').onclick=openHistoricalLease;$('#historicalLeaseRefresh'
 
 if($('#supplementalReadFile'))$('#supplementalReadFile').onclick=readSupplementalFile;if($('#supplementalReadDrive'))$('#supplementalReadDrive').onclick=readSupplementalDrive;
 
-// v1.19.13 RC — summary-first collapsible sections for long forms/dialogs.
+// v1.19.14 RC — summary-first collapsible sections for long forms/dialogs.
 (function(){
   const STORAGE_KEY='sewaAktaCollapsedSectionsV11913';
   function prefs(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return {}}}
@@ -596,4 +596,27 @@ if($('#supplementalReadFile'))$('#supplementalReadFile').onclick=readSupplementa
   function run(){groupLeaseForm();groupAssetForm();groupPbbForm()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
   document.addEventListener('click',e=>{if(e.target.closest('#addBtn,#assetsBtn,#pbbBtn,.edit-btn,.asset-edit,.pbb-edit'))setTimeout(run,0)})
+})();
+
+
+// v1.19.14 RC — robust collapsible Akta Sewa. Runs every time the lease dialog opens.
+(function(){
+ const KEY='sewaAktaCollapseV11914';
+ const get=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}};
+ const put=x=>{try{localStorage.setItem(KEY,JSON.stringify(x))}catch{}};
+ function att(root){return /kurang bayar|terlambat|jatuh tempo|belum lunas|perlu perhatian/i.test((root.textContent||''))||!!root.querySelector('.warn,.warning,.overdue,.danger,[data-warning="true"]')}
+ function count(root,sel){return root.querySelectorAll(sel).length}
+ function summary(root,title){if(att(root))return '⚠ Perlu perhatian';if(/Jadwal/.test(title))return count(root,'.payrow')+' termin';if(/Pembayaran Aktual/.test(title))return count(root,'.ledger-row')+' pembayaran';if(/Klausul/.test(title))return count(root,'#clauses > *')+' klausul';if(/Rekening/.test(title))return count(root,'#banks > *')+' rekening';if(/Kontak/.test(title))return count(root,'#contacts > *')+' kontak';if(/Bawah Tangan/.test(title))return count(root,'#supplementalAgreements > *')+' dokumen';return 'Klik untuk melihat'}
+ function wrap(nodes,title,key,open=false){if(!nodes.length||nodes[0].closest('.v11914-collapse'))return;const parent=nodes[0].parentNode,sec=document.createElement('section');sec.className='collapsible-section v11914-collapse';sec.dataset.collapseKey=key;parent.insertBefore(sec,nodes[0]);const head=document.createElement('button');head.type='button';head.className='collapsible-header';const t=document.createElement('span');t.className='collapsible-title';t.textContent=title;const sm=document.createElement('span');sm.className='collapsible-summary';const ch=document.createElement('span');ch.className='collapsible-chevron';head.append(t,sm,ch);const body=document.createElement('div');body.className='collapsible-content';nodes.forEach(n=>body.appendChild(n));sec.append(head,body);let pref=get(),isOpen=(key in pref)?!!pref[key]:open;if(att(body))isOpen=true;sec.classList.toggle('is-collapsed',!isOpen);sec.classList.toggle('has-attention',att(body));const refresh=()=>{sm.textContent=summary(body,title);ch.textContent=sec.classList.contains('is-collapsed')?'▶':'▼';sec.classList.toggle('has-attention',att(body))};head.onclick=()=>{sec.classList.toggle('is-collapsed');pref=get();pref[key]=!sec.classList.contains('is-collapsed');put(pref);refresh()};body.addEventListener('input',refresh);body.addEventListener('change',refresh);new MutationObserver(refresh).observe(body,{subtree:true,childList:true,characterData:true});refresh();return sec}
+ function install(){const f=document.querySelector('#dlg #form');if(!f||f.querySelector('.v11914-collapse'))return;
+   const ai=f.querySelector(':scope > .ai-extract');if(ai)wrap([ai],'Pembacaan AI / Dokumen','ai',false);
+   // Each direct H3 becomes its own section until the next structural boundary.
+   [...f.children].filter(x=>x.tagName==='H3').forEach((h,i)=>{if(h.closest('.v11914-collapse'))return;let nodes=[h],n=h.nextElementSibling;while(n&&!['H3','SECTION'].includes(n.tagName)&&!n.classList.contains('actions')&&!(n.tagName==='LABEL'&&/Catatan tambahan/i.test(n.textContent||''))){let nx=n.nextElementSibling;nodes.push(n);n=nx}let title=(h.textContent||'Bagian').replace(/^\s*[📜🏭🧾⚡]\s*/,'').trim();let key='h3-'+title.toLowerCase().replace(/[^a-z0-9]+/g,'-');wrap(nodes,title,key,/Identitas|Jadwal Pembayaran|Riwayat Pembayaran/.test(title))});
+   [...f.querySelectorAll(':scope > section.lease-relations')].forEach((sec,i)=>{if(sec.closest('.v11914-collapse'))return;let title=sec.querySelector('h3')?.textContent?.trim()||'Dokumen & Relasi';wrap([sec],title,'relation-'+i,false)});
+   const notes=[...f.children].find(x=>x.tagName==='LABEL'&&/Catatan tambahan/i.test(x.textContent||''));if(notes)wrap([notes],'Catatan Tambahan','notes',false);
+   const sections=[...f.querySelectorAll(':scope > .v11914-collapse')];if(sections.length>1&&!f.querySelector(':scope > .collapse-page-controls.v11914-controls')){let bar=document.createElement('div');bar.className='collapse-page-controls v11914-controls';bar.innerHTML='<button type="button" class="secondary">Buka Semua</button><button type="button" class="secondary">Tutup Semua</button>';f.insertBefore(bar,sections[0]);bar.children[0].onclick=()=>sections.forEach(x=>x.classList.remove('is-collapsed'));bar.children[1].onclick=()=>sections.forEach(x=>{if(!x.classList.contains('has-attention'))x.classList.add('is-collapsed')})}
+ }
+ const oldOpen=window.openEdit;window.openEdit=async function(...a){let r=await oldOpen(...a);setTimeout(install,0);return r};
+ document.addEventListener('click',e=>{if(e.target.closest('#addBtn'))setTimeout(install,0)});
+ if(document.querySelector('#dlg[open]'))install();
 })();
