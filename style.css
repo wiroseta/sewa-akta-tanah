@@ -173,3 +173,6 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
   .stat b{font-size:22px!important}
   .stat span{font-size:10.5px!important}
 }
+
+/* v1.17.7 role security: hidden utility actions must stay hidden despite menu button display rules */
+.utility-menu-panel button[hidden]{display:none !important;}

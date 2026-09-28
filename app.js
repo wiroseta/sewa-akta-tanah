@@ -284,9 +284,10 @@ async function collectBackup(){
  return {app:'Sewa & Akta Tanah',version:'1.17.0',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
 }
 function downloadJson(obj,name){let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-async function downloadBackup(){let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
+async function downloadBackup(){if(currentRole!=='administrator')return alert('Backup hanya tersedia untuk Administrator.');let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
 function validateBackup(x){if(!x||x.app!=='Sewa & Akta Tanah'||!x.tables||typeof x.tables!=='object')throw new Error('File bukan backup Sewa & Akta Tanah yang valid.');for(const t of BACKUP_TABLES)if(!Array.isArray(x.tables[t]))throw new Error(`Data ${t} tidak ditemukan di backup.`);return x}
 async function restoreBackup(){
+ if(currentRole!=='administrator')return alert('Restore hanya tersedia untuk Administrator.');
  let f=$('#restoreFile').files?.[0];if(!f)return alert('Pilih file backup JSON terlebih dahulu.');let b=$('#restoreBackupBtn');b.disabled=true;
  try{backupMessage('Membaca file backup…');let x=validateBackup(JSON.parse(await f.text()));let total=Object.values(x.tables).reduce((n,a)=>n+a.length,0);if(!confirm(`Restore akan MENGGANTI data akun ini dengan backup ${new Date(x.createdAt).toLocaleString('id-ID')} (${total} baris data).\n\nLanjutkan?`))return;
   // Hanya data milik user aktif yang dihapus. RLS Supabase tetap menjadi lapisan pengaman tambahan.
@@ -296,7 +297,7 @@ async function restoreBackup(){
   await loadData();backupMessage('✓ Restore selesai. Data sudah dimuat ulang.','ok');alert('Restore selesai. Periksa dashboard, properti, PBB, dan akta sewa.')
  }catch(e){backupMessage('Restore berhenti: '+e.message,'error');alert('Restore gagal/berhenti: '+e.message+'\n\nJangan hapus file backup. Jika sebagian data sudah berubah, jalankan restore kembali dengan file backup yang sama.')}finally{b.disabled=false}
 }
-$('#backupBtn').onclick=()=>{backupMessage('');$('#restoreFile').value='';$('#backupDlg').showModal()};$('#backupCloseBtn').onclick=()=>$('#backupDlg').close();$('#downloadBackupBtn').onclick=downloadBackup;$('#restoreBackupBtn').onclick=restoreBackup;
+$('#backupBtn').onclick=()=>{if(currentRole!=='administrator')return;backupMessage('');$('#restoreFile').value='';$('#backupDlg').showModal()};$('#backupCloseBtn').onclick=()=>$('#backupDlg').close();$('#downloadBackupBtn').onclick=downloadBackup;$('#restoreBackupBtn').onclick=restoreBackup;
 
 
 // v1.17.0 — role-based shared workspace user management.
