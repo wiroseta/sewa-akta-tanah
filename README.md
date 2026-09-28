@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.9 RC
+# Sewa & Akta Tanah — v1.19.10 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -90,3 +90,9 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - Warning kekurangan menggunakan saldo kewajiban setelah alokasi otomatis.
 - Data lama v1.19.8 dimigrasikan di browser ke ledger saat Akta dibuka; tidak memerlukan scan AI ulang.
 - Tidak memerlukan SQL baru; struktur JSON `contracts.payments` tetap kompatibel.
+
+
+## v1.19.10 RC — Payment Ledger Indonesian Date Fix
+- Tanggal Riwayat Pembayaran Aktual mengikuti format Indonesia DD-MM-YYYY.
+- Input cepat DDMMYY, contoh 060225, otomatis menjadi 06-02-2025 saat blur dan sebelum penyimpanan.
+- Data ledger lama berformat 6 digit dinormalisasi saat dibuka tanpa mengubah mekanisme FIFO.
