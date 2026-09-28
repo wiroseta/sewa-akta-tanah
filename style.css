@@ -71,3 +71,47 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 .repeat-row.clause textarea.detail{min-height:82px;resize:vertical;line-height:1.45;white-space:pre-wrap}
 .repeat-row.clause>button{grid-column:3;grid-row:1/4;align-self:stretch;min-width:46px;background:#fde7e9;color:#8a1c1c;font-size:18px}
 @media(max-width:720px){.repeat-row.clause{grid-template-columns:1fr}.repeat-row.clause .clause-title-label,.repeat-row.clause .clause-importance-label,.repeat-row.clause .clause-detail-label,.repeat-row.clause .clause-page-label,.repeat-row.clause>button{grid-column:1;grid-row:auto}.repeat-row.clause>button{width:100%;min-height:44px}.repeat-row.clause textarea.detail{min-height:110px}}
+
+/* v1.17.3 RC — iPhone/mobile-first dashboard relayout */
+@media(max-width:760px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  header,main{width:100%;max-width:none;margin:0}
+  header{padding:18px 16px 12px;display:block}
+  header>div:first-child{min-width:0}
+  header small{display:block;font-size:10px;line-height:1.35;letter-spacing:.14em}
+  .title-version{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .title-version h1{font-size:29px;line-height:1.05;margin:7px 0 4px;max-width:none}
+  .version-badge{font-size:10px;padding:4px 7px}
+  #userEmail{font-size:12px;margin-top:4px;white-space:normal;overflow-wrap:anywhere}
+  .head-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;margin-top:14px}
+  .head-actions button{width:100%;min-width:0;min-height:44px;padding:8px 6px;border-radius:12px;font-size:12px;line-height:1.15;white-space:normal}
+  #addBtn{grid-column:span 2}
+  main{padding:4px 16px 44px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stat,.alert,.card{border-radius:16px;padding:15px}
+  .stat{min-width:0;min-height:108px}
+  .stat b{font-size:27px;line-height:1.05}
+  .stat span{font-size:14px;line-height:1.25;display:block;margin-top:6px;overflow-wrap:anywhere}
+  .openai-status{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}
+  .openai-status .stat{min-height:116px}
+  .alert{width:100%;margin:12px 0 22px;padding:16px}
+  .alert h2{margin:0 0 10px;font-size:20px}
+  .warning{font-size:14px;line-height:1.4;padding:10px 0;overflow-wrap:anywhere}
+  .toolbar{display:block;margin-top:4px}
+  .toolbar h2{font-size:21px;margin:0 0 10px}
+  .toolbar input{width:100%;max-width:none;min-height:44px;font-size:16px}
+  #cards{width:100%}
+  .card{display:block;width:100%;margin:10px 0;padding:16px;min-width:0}
+  .card>*{min-width:0;max-width:100%}
+  .card h3{font-size:19px;line-height:1.2;margin:0 0 7px;overflow-wrap:anywhere}
+  .card .muted{font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+  .card p,.card div{overflow-wrap:anywhere}
+  .card button{min-height:44px;margin-top:12px;padding:10px 14px}
+  .pill{margin-top:10px}
+}
+@media(max-width:390px){
+  header,main{padding-left:12px;padding-right:12px}
+  .head-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #addBtn{grid-column:auto}
+  .stats,.openai-status{grid-template-columns:1fr 1fr}
+}
