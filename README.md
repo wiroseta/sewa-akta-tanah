@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.15 RC
+# Sewa & Akta Tanah — v1.19.16 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -124,3 +124,11 @@ Menambahkan `contracts.payments_meta` melalui `supabase_latest.sql` dan memperba
 - Scan dokumen historis juga dapat menemukan referensi Akta yang lebih lama dan memperpanjang rantai histori.
 - Tombol **Verifikasi Ulang AI** membaca ulang file/Google Drive, menggunakan OpenAI credit, membandingkan hasil baru dengan data tersimpan, dan tidak menimpa data secara otomatis.
 - **Terapkan Hasil ke Form** hanya memperbarui form; database baru berubah setelah pengguna menekan **Simpan**.
+
+
+## v1.19.16 RC — Persistent Google Drive Source & Drive Re-Verification
+- Link Google Drive yang digunakan untuk membaca Akta Sewa disimpan pada `contracts.doc_url` saat Akta disimpan.
+- Saat Akta dibuka kembali, sumber Google Drive tersimpan otomatis ditampilkan kembali pada area pembacaan AI.
+- **Verifikasi Ulang AI** otomatis memakai Google Drive tersimpan bila tidak ada file/link baru yang dipilih; pengguna tidak perlu mencari file Drive yang sama lagi.
+- Jika pengguna memilih file lokal atau memasukkan link Drive baru, sumber tersebut tetap dapat dipakai untuk verifikasi; data lama tidak ditimpa sampai hasil verifikasi diterapkan dan Akta disimpan.
+- Tidak memerlukan perubahan schema baru di atas `supabase_latest.sql` v1.19.15/v1.19.14; file SQL terbaru tetap disertakan sebagai satu-satunya migration utama.
