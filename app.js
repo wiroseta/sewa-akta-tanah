@@ -8,6 +8,35 @@ function idToISO(s){if(!s)return '';let v=normalizeIDDate(s),m=v.match(/^(\d{2})
 function bindDateInput(el){if(!el||el.dataset.dateBound)return;el.dataset.dateBound='1';el.type='text';el.inputMode='numeric';if(!el.placeholder)el.placeholder='DDMMYY atau DD-MM-YYYY';el.addEventListener('blur',()=>{if(!el.value)return;let n=normalizeIDDate(el.value);if(idToISO(n))el.value=n;else{el.setCustomValidity('Tanggal tidak valid. Ketik DDMMYY, contoh 280926.');el.reportValidity()}});el.addEventListener('input',()=>el.setCustomValidity(''))}
 function bindAllDateInputs(root=document){root.querySelectorAll('input[type=date],input[name=deedDate],input[name=start],input[name=end],input[name=renewalNotice],input[name=dueDate],input[name=paidDate],input.validUntil,input.surveyDate,input.due,input.paidDate').forEach(bindDateInput)}
 function moneyRaw(v){const n=parseMoney(v);return n?String(n):''}
+function rupiahText(v){const n=parseMoney(v);return n?`Rp${new Intl.NumberFormat('id-ID',{maximumFractionDigits:0}).format(n)}`:String(v??'')}
+function normalizeAIText(value){
+ if(value===undefined||value===null)return value;
+ let s=String(value);
+ // Tanggal ISO / slash dari AI -> format Indonesia DD-MM-YYYY.
+ s=s.replace(/\b(20\d{2}|19\d{2})[-\/.](0[1-9]|1[0-2])[-\/.](0[1-9]|[12]\d|3[01])\b/g,(_,y,m,d)=>`${d}-${m}-${y}`);
+ // Rupiah yang sudah memiliki penanda mata uang.
+ s=s.replace(/\bRp\.?\s*([0-9][0-9.,]*)/gi,(_,n)=>rupiahText(n));
+ // Angka uang mentah setelah istilah finansial yang umum pada hasil ekstraksi akta.
+ s=s.replace(/\b(harga\s+sewa(?:\s+seluruhnya)?|nilai\s+sewa|jumlah\s+sewa|uang\s+jaminan|deposit|denda|pembayaran|biaya)\s+(?:sebesar\s+)?([0-9]{5,})(?![0-9])/gi,(all,label,n)=>`${label} ${rupiahText(n)}`);
+ // Luas: gunakan pemisah ribuan Indonesia dan simbol m².
+ s=s.replace(/\b([0-9]{4,}(?:[.,][0-9]+)?)\s*(?:m2|m²|meter\s+persegi)\b/gi,(_,n)=>`${new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(parseMoney(n))} m²`);
+ return s;
+}
+function normalizeAIObject(x){
+ if(Array.isArray(x))return x.map(normalizeAIObject);
+ if(!x||typeof x!=='object')return x;
+ const out={};for(const [k,v] of Object.entries(x)){
+   if(typeof v==='string')out[k]=normalizeAIText(v);else out[k]=normalizeAIObject(v);
+ }
+ return out;
+}
+function normalizeExtractedLease(raw){
+ const x=normalizeAIObject(raw||{});
+ ['deedDate','start','end','renewalNotice'].forEach(k=>{if(x[k])x[k]=isoToID(x[k])});
+ if(Array.isArray(x.payments))x.payments=x.payments.map(p=>({...p,due:isoToID(p.due||''),paidDate:isoToID(p.paidDate||''),amount:parseMoney(p.amount)}));
+ if(Array.isArray(x.landRights))x.landRights=x.landRights.map(r=>({...r,end:isoToID(r.end||'')}));
+ return x;
+}
 function bindMoneyInput(el,onchange){if(!el||el.dataset.moneyBound)return;el.dataset.moneyBound='1';el.addEventListener('focus',()=>{el.value=moneyRaw(el.value);setTimeout(()=>el.select(),0)});el.addEventListener('blur',()=>{el.value=moneyDisplay(el.value);if(onchange)onchange()});el.addEventListener('input',()=>{if(onchange)onchange()});}
 const date=s=>{if(!s)return null;const v=idToISO(s)||s;return new Date(v+'T00:00:00')};const days=s=>s?Math.ceil((date(s)-new Date())/86400000):999999;const cfg=window.SEWA_CONFIG||{};const configured=cfg.supabaseUrl&&!cfg.supabaseUrl.includes('PASTE_')&&cfg.supabaseKey&&!cfg.supabaseKey.includes('PASTE_');const sb=configured&&window.supabase?window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
 
@@ -67,6 +96,7 @@ function syncOpenMapsButton(){const b=$('#openMapsBtn'),u=safeMapsUrl(document.q
 function openCurrentMaps(){const u=safeMapsUrl(document.querySelector('[name="googleMapsUrl"]')?.value);if(!u)return alert('Link Google Maps belum tersedia atau tidak valid.');window.open(u,'_blank','noopener,noreferrer')}
 function openCurrentDocument(){const u=safeDocumentUrl(document.querySelector('[name="docUrl"]')?.value);if(!u)return alert('Link dokumen / Google Drive belum tersedia.');window.open(u,'_blank','noopener,noreferrer')}
 function applyExtracted(x){
+  x=normalizeExtractedLease(x);
   ['tenant','lessor','asset','propertyAddress','propertyArea','leaseLandArea','leaseBuildingArea','deedNo','deedDate','start','end','rent','deposit','renewalNotice','renewalTerm','googleMapsUrl','sourcePages','notes'].forEach(k=>setField(k,x[k]));
   if(Array.isArray(x.contacts)&&x.contacts.length){$('#contacts').innerHTML='';x.contacts.forEach(v=>addRepeat('contacts',v,'contact'))}
   if(Array.isArray(x.bankAccounts)&&x.bankAccounts.length){$('#banks').innerHTML='';x.bankAccounts.forEach(v=>addRepeat('banks',v,'bank'))}
@@ -230,10 +260,10 @@ async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
  onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const {data:out,error}=await sb.functions.invoke('extract-lease',{body:{filename:file.name,mimeType:file.type||'application/pdf',base64,documentType}});if(error)throw error;if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
 }
 async function invokeDriveAI(url,documentType,onProgress=()=>{}){const id=driveFileId(url);if(!id)throw new Error('Link Google Drive tidak valid.');onProgress('Mengambil file private dari Google Drive…');const f=await fetchDriveFile(id);onProgress('File diterima. Menyiapkan dokumen…');const base64=await blobToBase64(f.blob);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const {data:out,error}=await sb.functions.invoke('extract-lease',{body:{filename:f.name,mimeType:f.mimeType,base64,documentType}});if(error)throw error;if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return {data:out.data,webViewLink:f.webViewLink||url}}
-function applyLandTitleAI(row,x){let m={rightType:'rightType',certificateNo:'certificateNo',landArea:'landArea',validUntil:'validUntil',address:'address',holderName:'holderName',surveyNo:'surveyNo',surveyDate:'surveyDate',notes:'notes'};Object.entries(m).forEach(([k,c])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=row.querySelector('.'+c);if(e)e.value=(k==='validUntil'||k==='surveyDate')?isoToID(x[k]):x[k]}})}
+function applyLandTitleAI(row,x){x=normalizeAIObject(x||{});let m={rightType:'rightType',certificateNo:'certificateNo',landArea:'landArea',validUntil:'validUntil',address:'address',holderName:'holderName',surveyNo:'surveyNo',surveyDate:'surveyDate',notes:'notes'};Object.entries(m).forEach(([k,c])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=row.querySelector('.'+c);if(e)e.value=(k==='validUntil'||k==='surveyDate')?isoToID(x[k]):x[k]}})}
 async function extractLandTitleRow(btn){let row=btn.closest('.landtitle'),file=row.querySelector('.landAiFile').files?.[0],st=row.querySelector('.land-ai-status');btn.disabled=true;try{applyLandTitleAI(row,await invokeDocumentAI(file,'land_title',m=>aiProgress(st,m)));recordAIScan();aiProgressDone(st,'Sertifikat selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal membaca sertifikat: '+(e.message||e))}finally{btn.disabled=false}}window.extractLandTitleRow=extractLandTitleRow;
 async function extractLandTitleDriveRow(btn){let row=btn.closest('.landtitle'),url=row.querySelector('.driveUrl').value.trim(),st=row.querySelector('.land-ai-status');btn.disabled=true;try{let r=await invokeDriveAI(url,'land_title',m=>aiProgress(st,m));applyLandTitleAI(row,r.data);recordAIScan();row.querySelector('.driveUrl').value=r.webViewLink;aiProgressDone(st,'Sertifikat Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal membaca sertifikat dari Drive: '+(e.message||e))}finally{btn.disabled=false}}window.extractLandTitleDriveRow=extractLandTitleDriveRow;
-function applyPbbAI(x){let m={nop:'nop',taxpayerName:'taxpayerName',objectAddress:'objectAddress',taxYear:'taxYear',landArea:'landArea',buildingArea:'buildingArea',landNjopM2:'landNjopM2',landNjopTotal:'landNjopTotal',buildingNjopM2:'buildingNjopM2',buildingNjopTotal:'buildingNjopTotal',totalNjop:'totalNjop',taxDue:'taxDue',payableAmount:'payableAmount',dueDate:'dueDate',notes:'notes'};Object.entries(m).forEach(([k,n])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=$('#pbbForm').elements.namedItem(n);if(e){if(e.classList.contains('money-input'))e.value=moneyDisplay(x[k]);else if(e.classList.contains('area-input'))e.value=numberID(x[k]);else if(n==='dueDate')e.value=isoToID(x[k]);else e.value=x[k]}}})}
+function applyPbbAI(x){x=normalizeAIObject(x||{});let m={nop:'nop',taxpayerName:'taxpayerName',objectAddress:'objectAddress',taxYear:'taxYear',landArea:'landArea',buildingArea:'buildingArea',landNjopM2:'landNjopM2',landNjopTotal:'landNjopTotal',buildingNjopM2:'buildingNjopM2',buildingNjopTotal:'buildingNjopTotal',totalNjop:'totalNjop',taxDue:'taxDue',payableAmount:'payableAmount',dueDate:'dueDate',notes:'notes'};Object.entries(m).forEach(([k,n])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=$('#pbbForm').elements.namedItem(n);if(e){if(e.classList.contains('money-input'))e.value=moneyDisplay(x[k]);else if(e.classList.contains('area-input'))e.value=numberID(x[k]);else if(n==='dueDate')e.value=isoToID(x[k]);else e.value=x[k]}}})}
 $('#pbbExtractBtn').onclick=async()=>{let b=$('#pbbExtractBtn'),s=$('#pbbExtractStatus');b.disabled=true;try{let x=await invokeDocumentAI($('#pbbAiFile').files?.[0],'pbb',m=>aiProgress(s,m));applyPbbAI(x);aiProgressDone(s,'SPPT selesai dibaca. Periksa semua angka dan data sebelum menyimpan.')}catch(e){aiProgressError(s,'Gagal: '+(e.message||e))}finally{b.disabled=false}};
 $('#pbbDriveExtractBtn').onclick=async()=>{let b=$('#pbbDriveExtractBtn'),s=$('#pbbExtractStatus');b.disabled=true;try{let r=await invokeDriveAI($('#pbbAiDriveUrl').value.trim(),'pbb',m=>aiProgress(s,m));applyPbbAI(r.data);$('#pbbForm').elements.namedItem('spptUrl').value=r.webViewLink;aiProgressDone(s,'SPPT Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(s,'Gagal: '+(e.message||e))}finally{b.disabled=false}};
 

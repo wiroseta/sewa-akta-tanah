@@ -1,3 +1,18 @@
+# Sewa & Akta Tanah — v1.17.6 RC
+
+## Indonesian AI Normalization
+- Hasil pembacaan AI dinormalisasi sebelum dimasukkan ke form.
+- Tanggal hasil AI menggunakan format Indonesia **DD-MM-YYYY**.
+- Nilai uang pada field finansial dan teks klausul menggunakan **Rp** dengan pemisah ribuan titik.
+- Luas dalam teks dinormalisasi ke format Indonesia dan simbol **m²**.
+- Berlaku untuk Akta Sewa, Klausul Penting, pembayaran, Sertifikat/Hak Tanah, dan PBB.
+- Normalisasi dilakukan di sisi aplikasi; pengguna tetap harus memeriksa hasil AI terhadap dokumen sumber sebelum menyimpan.
+
+## Supabase update
+**TIDAK DIPERLUKAN untuk v1.17.6.** Tidak ada perubahan schema/database.
+
+`supabase_schema_history.sql` hanya arsip/referensi dan **jangan dijalankan untuk update normal**.
+
 # Sewa & Akta Tanah — v1.17.5 RC
 
 ## Compact Dashboard & Unified Menu
