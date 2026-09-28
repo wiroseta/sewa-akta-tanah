@@ -59,3 +59,6 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 
 /* v1.15.15 OpenAI dashboard */
 .openai-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}.openai-status .stat a{display:block;margin-top:5px;font-size:13px}.openai-status small{font-size:10px;letter-spacing:0}@media(max-width:760px){.openai-status{grid-template-columns:1fr 1fr}}
+
+/* v1.17.0 — professional user roles */
+#usersDlg{width:min(760px,calc(100vw - 24px))}.user-form{display:grid;grid-template-columns:2fr 1.3fr 1.3fr auto;gap:10px;align-items:end;padding:0}.user-form label{display:grid;gap:6px;font-weight:700;font-size:13px}.user-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #e5e7eb}body[data-role="viewer"] .ai-extract,body[data-role="viewer"] #addPayment,body[data-role="viewer"] #addContact,body[data-role="viewer"] #addBank,body[data-role="viewer"] #addClause,body[data-role="viewer"] #addLeaseFacility,body[data-role="viewer"] #assetAddPbb{display:none!important}@media(max-width:760px){.user-form{grid-template-columns:1fr}.user-form button{width:100%}.user-row{align-items:flex-start}}
