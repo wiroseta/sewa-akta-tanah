@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.6 RC
+# Sewa & Akta Tanah — v1.19.7 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -63,8 +63,13 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - Reader universal file besar hingga 500 MB dari v1.19.4 tetap dipertahankan.
 
 
-## v1.19.6 — Historical Save Verification Fix
+## v1.19.7 — Historical Save Verification Fix
 - Penyimpanan dokumen historis sekarang diverifikasi kembali dari `lease_documents` sebelum aplikasi menyatakan sukses.
-- Error database ditampilkan lebih rinci dan mengingatkan migrasi v1.19.6 bila schema belum siap.
+- Error database ditampilkan lebih rinci dan mengingatkan migrasi v1.19.7 bila schema belum siap.
 - Kegagalan snapshot `document_history` tidak lagi membatalkan/menyamarkan dokumen historis yang sebenarnya sudah tersimpan.
 - Jalankan `supabase_v1196_historical_save_fix.sql` sekali sebelum pengujian.
+
+## v1.19.7 RC
+- Riwayat Dokumen Tersimpan memiliki tombol **Hapus** untuk Administrator, dengan konfirmasi rinci.
+- Pencegahan duplikat berdasarkan Akta aktif + jenis dokumen + nomor akta + tanggal dokumen.
+- Paket distribusi dirapikan: gunakan hanya `supabase_latest.sql` untuk update database terbaru. File migration versi lama tidak lagi disertakan di root ZIP.

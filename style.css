@@ -185,3 +185,5 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 
 /* v1.19.5 saved historical document list */
 .historical-saved-section{margin-top:16px;padding-top:14px;border-top:1px solid #dedee5}.historical-saved-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.historical-saved-head h3{margin:0}.historical-saved-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.historical-row-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.history-empty{padding:14px;border:1px dashed #c9c9d2;border-radius:12px;background:#fafaff}.history-empty b{display:block;margin-bottom:5px}@media(max-width:760px){.historical-saved-row{align-items:stretch;flex-direction:column}.historical-row-actions{justify-content:stretch}.historical-row-actions button{flex:1}}
+/* v1.19.7 — destructive action for saved historical documents */
+.danger-historical{color:#b42318;border-color:#f1b4ae;background:#fff7f6}.danger-historical:hover{background:#feeceb}
