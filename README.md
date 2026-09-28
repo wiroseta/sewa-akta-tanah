@@ -1,11 +1,12 @@
-# Sewa & Akta Tanah — v1.17.7 RC Role Security Fix
+# Sewa & Akta Tanah — v1.17.8 RC Indonesian Text Normalization Fix
 
 ## Perubahan
-- Viewer: menu ••• hanya menampilkan Keluar. Users dan Backup/Restore disembunyikan.
-- Document Manager: Backup/Restore dan Users tidak tersedia.
-- Administrator: Users, Backup/Restore, dan Keluar tetap tersedia.
-- Backup/Restore kini juga memiliki pemeriksaan role di JavaScript, bukan hanya disembunyikan dari UI.
-- Memperbaiki konflik CSS yang sebelumnya membuat tombol beratribut `hidden` tetap tampil di dropdown.
+- Memperbaiki tanggal ISO yang masih muncul di dalam teks hasil AI/Klausul Penting.
+- Semua pola tanggal YYYY-MM-DD di Ringkasan Klausul dan Catatan dinormalisasi menjadi DD-MM-YYYY.
+- Normalisasi Rupiah/luas yang sudah ada tetap diterapkan secara recursive pada hasil AI.
+- Data klausul lama dinormalisasi saat dibuka, sehingga tidak perlu scan AI ulang hanya untuk memperbaiki format tampilan.
+- Saat data disimpan kembali, teks klausul/catatan yang sudah dinormalisasi ikut tersimpan.
+- Seluruh Role Security Fix v1.17.7 tetap dipertahankan.
 
 ## Supabase
 **Supabase update: TIDAK DIPERLUKAN.**
