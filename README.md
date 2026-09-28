@@ -30,3 +30,10 @@ Catatan: batas 500 MB adalah ukuran file input. PDF besar diproses per halaman a
 - Jalankan `supabase_v1191_document_history_ai_comparison.sql` sekali, lalu deploy ulang Edge Function `extract-lease`.
 
 Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otomatis masih berlaku; aplikasi menandainya untuk verifikasi.
+
+## v1.19.2 — Akta Lama / Dokumen Historis
+- Akta aktif tetap disimpan di `contracts` dan tidak ditimpa dokumen lama.
+- Tombol `+ Akta Lama / Dokumen Historis` menyimpan Akta Lama, Addendum, Perpanjangan, atau Akta Pengganti ke tabel `lease_documents`.
+- Pembacaan AI memakai reader universal hingga 500 MB yang sama dengan Akta aktif.
+- Dokumen historis muncul pada `Riwayat & Bandingkan Akta` sebagai rangkaian dokumen hukum.
+- Jalankan `supabase_v1192_historical_lease_documents.sql` setelah SQL v1.19.1.
