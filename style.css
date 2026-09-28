@@ -147,3 +147,29 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
   .primary-actions{grid-template-columns:1fr .65fr 1fr}
 }
+
+
+/* v1.17.5 RC — unified utility menu + compact dashboard on all screens */
+.primary-actions{order:1}
+.utility-menu{order:2;position:relative}
+.menu-trigger{display:block!important;min-width:74px;white-space:nowrap}
+.utility-menu-panel{display:none;position:absolute;right:0;top:48px;z-index:80;width:200px;padding:7px;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);border:1px solid #dedee5;border-radius:14px;box-shadow:0 14px 38px #0002}
+.utility-menu.open .utility-menu-panel{display:grid;gap:5px}
+.utility-menu-panel button{display:block;width:100%;min-height:40px;text-align:left;padding:9px 11px;font-size:13px;border-radius:9px;background:#f2f2f7}
+.utility-menu-panel .danger-menu{color:#b42318;background:#fff1f0}
+.stats{grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.stat{padding:11px 14px;border-radius:14px;min-height:72px;display:flex;flex-direction:column;justify-content:center}
+.stat b{font-size:24px;line-height:1}
+.stat span{font-size:13px;line-height:1.18;margin-top:5px}
+.openai-status{gap:9px;margin:9px 0}
+.openai-status .stat{min-height:70px;padding:10px 14px}
+.openai-status .stat b{font-size:21px}
+.alert{margin-top:10px}
+@media(max-width:900px) and (min-width:761px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+  .menu-trigger{min-width:54px}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .stat{min-height:68px!important;padding:9px!important}
+  .stat b{font-size:22px!important}
+  .stat span{font-size:10.5px!important}
+}
