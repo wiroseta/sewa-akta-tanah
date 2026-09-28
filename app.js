@@ -1,4 +1,4 @@
-const APP_BUILD="1.18.2-RC";
+const APP_BUILD="1.18.8-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='';const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -319,13 +319,41 @@ async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
  if(file.size>18*1024*1024){if(!isPdf)throw new Error('File foto lebih dari 18 MB. Kompres foto terlebih dahulu.');return invokeLargePdfAI(file,documentType,onProgress)}
  onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
 }
+async function invokeLargeDrivePdfAI(id,meta,documentType,onProgress=()=>{}){
+ if(!window.pdfjsLib)throw new Error('Modul PDF besar belum termuat. Muat ulang halaman lalu coba lagi.');
+ const size=Number(meta.size||0),totalMB=size/1024/1024;
+ const mediaUrl=`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`;
+ onProgress(`Membuka PDF ${totalMB.toFixed(1)} MB langsung dari Google Drive tanpa mengunduh seluruh file…`);
+ let pdf,task;
+ try{
+   task=pdfjsLib.getDocument({url:mediaUrl,httpHeaders:{Authorization:`Bearer ${googleDriveToken}`},withCredentials:false,disableRange:false,disableStream:false,disableAutoFetch:true,rangeChunkSize:1024*1024});
+   task.onProgress=p=>{
+     const loaded=Number(p?.loaded||0),total=Number(p?.total||size||0);
+     if(total>0){const pct=Math.min(100,Math.round(loaded/total*100));onProgress(`Mengambil bagian PDF yang diperlukan dari Google Drive: ${(loaded/1024/1024).toFixed(1)} / ${(total/1024/1024).toFixed(1)} MB (${pct}%)…`)}
+   };
+   pdf=await task.promise;const totalPages=pdf.numPages;let merged={};
+   for(let n=1;n<=totalPages;n++){
+     onProgress(`Menyiapkan halaman ${n} dari ${totalPages} langsung dari Google Drive…`);
+     const page=await pdf.getPage(n);const base64=await renderPdfPageForAI(page);page.cleanup();
+     onProgress(`AI membaca halaman ${n} dari ${totalPages}…`);
+     const out=await invokeExtractLease({filename:meta.name||'drive-file.pdf',documentType,images:[{base64,mimeType:'image/jpeg',page:n}],pageStart:n,pageEnd:n,totalPages});
+     if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);merged=mergeAIResults(merged,out.data);
+     await new Promise(r=>setTimeout(r,60));
+   }
+   onProgress('Semua halaman selesai dibaca. Menggabungkan hasil…');return merged
+ }catch(e){
+   const msg=String(e?.message||e);
+   if(/401|unauthorized|missing pdf|unexpected server response/i.test(msg))throw new Error(`Streaming Google Drive gagal: ${msg}. Coba hubungkan ulang Google Drive.`);
+   throw e
+ }finally{try{pdf?.destroy()}catch(_){}try{task?.destroy()}catch(_){}}
+}
 async function invokeDriveAI(url,documentType,onProgress=()=>{}){
  const id=driveFileId(url);if(!id)throw new Error('Link Google Drive tidak valid.');
  onProgress('Menghubungkan ke Google Drive…');if(!googleDriveToken)await requestDriveToken();
- const headers={Authorization:`Bearer ${googleDriveToken}`};
+ let headers={Authorization:`Bearer ${googleDriveToken}`};
  onProgress('Membaca informasi file Google Drive…');
- const mr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers});
- if(mr.status===401){googleDriveToken='';await requestDriveToken();return invokeDriveAI(url,documentType,onProgress)}
+ let mr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers});
+ if(mr.status===401){googleDriveToken='';await requestDriveToken();headers={Authorization:`Bearer ${googleDriveToken}`};mr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers})}
  if(!mr.ok)throw new Error(`Tidak dapat membaca metadata Google Drive (${mr.status}).`);
  const meta=await mr.json(),size=Number(meta.size||0),mime=String(meta.mimeType||'');
  if(mime.startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
@@ -333,12 +361,7 @@ async function invokeDriveAI(url,documentType,onProgress=()=>{}){
  const isPdf=mime==='application/pdf'||/\.pdf$/i.test(meta.name||'');
  if(size>18*1024*1024){
    if(!isPdf)throw new Error('File besar dari Google Drive harus berupa PDF.');
-   onProgress(`Mengunduh PDF besar dari Google Drive (${(size/1024/1024).toFixed(1)} MB)…`);
-   const fr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`,{headers});
-   if(!fr.ok)throw new Error(`Tidak dapat mengunduh file Google Drive (${fr.status}).`);
-   const blob=await fr.blob();const file=new File([blob],meta.name||'drive-file.pdf',{type:mime||'application/pdf'});
-   onProgress('PDF Google Drive selesai diunduh. Menyiapkan pembacaan per halaman…');
-   const data=await invokeLargePdfAI(file,documentType,onProgress);return {data,webViewLink:url};
+   const data=await invokeLargeDrivePdfAI(id,meta,documentType,onProgress);return {data,webViewLink:url};
  }
  onProgress('Mengirim referensi file ke server. AI sedang membaca dan mengekstrak data…');
  const out=await invokeExtractLease({driveFileId:id,driveAccessToken:googleDriveToken,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');

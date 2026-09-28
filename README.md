@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.18.7 RC
+# Sewa & Akta Tanah — v1.18.8 RC
 
 ## Large PDF Browser-Side Low-Memory Fix
 - PDF besar tetap dibuka dan dirender di browser/perangkat pengguna, bukan diproses sebagai PDF utuh di Supabase.
@@ -13,7 +13,7 @@
 1. Replace file website di GitHub dengan isi ZIP ini.
 2. Deploy ulang `supabase/functions/extract-lease/index.ts`.
 3. Tidak ada SQL baru.
-4. Pastikan badge menunjukkan **v1.18.7 RC** sebelum pengujian.
+4. Pastikan badge menunjukkan **v1.18.8 RC** sebelum pengujian.
 
 
 ## v1.18.7 RC — AI Property Autofill
@@ -23,3 +23,13 @@
 - Keterangan luas dibuat dari luas tanah sertifikat.
 - Google Maps hanya diisi bila hasil AI/dokumen mengandung URL Google Maps yang valid; aplikasi tidak mengarang link.
 - Nilai yang sudah diisi manual tidak ditimpa oleh AI.
+
+
+## v1.18.8 RC — Google Drive Progressive PDF Streaming
+- PDF besar Google Drive tidak lagi diunduh penuh menjadi Blob sebelum diproses.
+- PDF.js membaca file langsung dari endpoint Google Drive dengan HTTP Range dan chunk 1 MB.
+- `disableAutoFetch` aktif agar bagian yang belum diperlukan tidak otomatis diambil.
+- Progress menampilkan MB yang telah diminta/dimuat bila informasi progress tersedia.
+- Setiap halaman dirender dan dikompresi satu per satu, lalu dikirim ke AI; canvas dibersihkan setelah digunakan.
+- Jalur file lokal low-memory dan AI Property Autofill v1.18.7 tetap dipertahankan.
+- Tidak ada SQL baru. Edge Function tetap kompatibel; deploy ulang disarankan hanya agar frontend/backend paket tetap sinkron.
