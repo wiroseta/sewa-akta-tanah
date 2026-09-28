@@ -87,3 +87,17 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 ## v1.15.14
 - Cache-buster index.html diperbarui ke v1.15.14 untuk config.js dan app.js agar browser/GitHub Pages mengambil JavaScript terbaru.
 - Mempertahankan Google Drive token fix dan AI progress dari versi sebelumnya.
+
+
+## v1.16.0 Release Candidate
+- Backup seluruh data akun ke satu file JSON.
+- Restore backup dengan konfirmasi eksplisit; data akun aktif diganti dari backup.
+- Dokumen asli di Google Drive tidak dihapus/diubah oleh backup atau restore.
+- Input tanggal cepat DDMMYY dan indikator progress AI tetap dipertahankan.
+- Uji backup terlebih dahulu sebelum memakai restore pada data produksi.
+
+
+## v1.16.1 RC
+- Menambahkan app icon/PWA icon baru yang disetujui untuk iPhone Home Screen.
+- Menambahkan Apple Touch Icon 180x180 serta PWA icons 192x192 dan 512x512.
+- Memperbarui manifest/cache-buster tanpa mengubah fungsi aplikasi v1.16.0 RC.

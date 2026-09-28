@@ -228,7 +228,39 @@ async function extractLandTitleDriveRow(btn){let row=btn.closest('.landtitle'),u
 function applyPbbAI(x){let m={nop:'nop',taxpayerName:'taxpayerName',objectAddress:'objectAddress',taxYear:'taxYear',landArea:'landArea',buildingArea:'buildingArea',landNjopM2:'landNjopM2',landNjopTotal:'landNjopTotal',buildingNjopM2:'buildingNjopM2',buildingNjopTotal:'buildingNjopTotal',totalNjop:'totalNjop',taxDue:'taxDue',payableAmount:'payableAmount',dueDate:'dueDate',notes:'notes'};Object.entries(m).forEach(([k,n])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=$('#pbbForm').elements.namedItem(n);if(e){if(e.classList.contains('money-input'))e.value=moneyDisplay(x[k]);else if(e.classList.contains('area-input'))e.value=numberID(x[k]);else if(n==='dueDate')e.value=isoToID(x[k]);else e.value=x[k]}}})}
 $('#pbbExtractBtn').onclick=async()=>{let b=$('#pbbExtractBtn'),s=$('#pbbExtractStatus');b.disabled=true;try{let x=await invokeDocumentAI($('#pbbAiFile').files?.[0],'pbb',m=>aiProgress(s,m));applyPbbAI(x);aiProgressDone(s,'SPPT selesai dibaca. Periksa semua angka dan data sebelum menyimpan.')}catch(e){aiProgressError(s,'Gagal: '+(e.message||e))}finally{b.disabled=false}};
 $('#pbbDriveExtractBtn').onclick=async()=>{let b=$('#pbbDriveExtractBtn'),s=$('#pbbExtractStatus');b.disabled=true;try{let r=await invokeDriveAI($('#pbbAiDriveUrl').value.trim(),'pbb',m=>aiProgress(s,m));applyPbbAI(r.data);$('#pbbForm').elements.namedItem('spptUrl').value=r.webViewLink;aiProgressDone(s,'SPPT Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(s,'Gagal: '+(e.message||e))}finally{b.disabled=false}};
+
+
+// v1.16.0 RC: backup & restore seluruh data aplikasi untuk akun aktif.
+const BACKUP_TABLES=['assets','land_titles','buildings','contracts','pbb_records','lease_land_titles','lease_buildings','lease_pbb','lease_facilities','pbb_land_titles','pbb_buildings'];
+const RESTORE_DELETE_ORDER=['lease_facilities','lease_pbb','lease_buildings','lease_land_titles','pbb_buildings','pbb_land_titles','pbb_records','contracts','buildings','land_titles','assets'];
+const RESTORE_INSERT_ORDER=['assets','land_titles','buildings','contracts','pbb_records','lease_land_titles','lease_buildings','lease_pbb','lease_facilities','pbb_land_titles','pbb_buildings'];
+function backupMessage(m,k=''){let e=$('#backupStatus');if(e){e.textContent=m;e.dataset.kind=k}}
+async function collectBackup(){
+ if(!currentUser)throw new Error('Silakan login terlebih dahulu.');
+ const tables={};
+ for(let i=0;i<BACKUP_TABLES.length;i++){
+  const t=BACKUP_TABLES[i];backupMessage(`Membaca ${t} (${i+1}/${BACKUP_TABLES.length})…`);
+  const r=await sb.from(t).select('*');if(r.error)throw new Error(`${t}: ${r.error.message}`);tables[t]=r.data||[];
+ }
+ let aiScans={};try{for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('sewa_ai_scans_'))aiScans[k]=localStorage.getItem(k)}}catch(_){}
+ return {app:'Sewa & Akta Tanah',version:'1.16.0',format:1,createdAt:new Date().toISOString(),userId:currentUser.id,userEmail:currentUser.email||'',tables,local:{aiScans}};
+}
+function downloadJson(obj,name){let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+async function downloadBackup(){let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
+function validateBackup(x){if(!x||x.app!=='Sewa & Akta Tanah'||!x.tables||typeof x.tables!=='object')throw new Error('File bukan backup Sewa & Akta Tanah yang valid.');for(const t of BACKUP_TABLES)if(!Array.isArray(x.tables[t]))throw new Error(`Data ${t} tidak ditemukan di backup.`);return x}
+async function restoreBackup(){
+ let f=$('#restoreFile').files?.[0];if(!f)return alert('Pilih file backup JSON terlebih dahulu.');let b=$('#restoreBackupBtn');b.disabled=true;
+ try{backupMessage('Membaca file backup…');let x=validateBackup(JSON.parse(await f.text()));let total=Object.values(x.tables).reduce((n,a)=>n+a.length,0);if(!confirm(`Restore akan MENGGANTI data akun ini dengan backup ${new Date(x.createdAt).toLocaleString('id-ID')} (${total} baris data).\n\nLanjutkan?`))return;
+  // Hanya data milik user aktif yang dihapus. RLS Supabase tetap menjadi lapisan pengaman tambahan.
+  for(let i=0;i<RESTORE_DELETE_ORDER.length;i++){let t=RESTORE_DELETE_ORDER[i];backupMessage(`Mengosongkan data lama: ${t}…`);let r=await sb.from(t).delete().eq('user_id',currentUser.id);if(r.error)throw new Error(`${t}: ${r.error.message}`)}
+  for(let i=0;i<RESTORE_INSERT_ORDER.length;i++){let t=RESTORE_INSERT_ORDER[i],rows=x.tables[t]||[];if(!rows.length)continue;backupMessage(`Memulihkan ${t} (${i+1}/${RESTORE_INSERT_ORDER.length})…`);rows=rows.map(r=>({...r,user_id:currentUser.id}));let r=await sb.from(t).insert(rows);if(r.error)throw new Error(`${t}: ${r.error.message}`)}
+  try{Object.entries(x.local?.aiScans||{}).forEach(([k,v])=>localStorage.setItem(k,v))}catch(_){}
+  await loadData();backupMessage('✓ Restore selesai. Data sudah dimuat ulang.','ok');alert('Restore selesai. Periksa dashboard, properti, PBB, dan akta sewa.')
+ }catch(e){backupMessage('Restore berhenti: '+e.message,'error');alert('Restore gagal/berhenti: '+e.message+'\n\nJangan hapus file backup. Jika sebagian data sudah berubah, jalankan restore kembali dengan file backup yang sama.')}finally{b.disabled=false}
+}
+$('#backupBtn').onclick=()=>{backupMessage('');$('#restoreFile').value='';$('#backupDlg').showModal()};$('#backupCloseBtn').onclick=()=>$('#backupDlg').close();$('#downloadBackupBtn').onclick=downloadBackup;$('#restoreBackupBtn').onclick=restoreBackup;
+
 if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});initAuth();
 
-// v1.15.15: input tanggal cepat DDMMYY
+// v1.16.0 RC: input tanggal cepat DDMMYY
 bindAllDateInputs();
