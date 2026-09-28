@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.8 RC
+# Sewa & Akta Tanah — v1.19.9 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -75,10 +75,18 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - Paket distribusi dirapikan: gunakan hanya `supabase_latest.sql` untuk update database terbaru. File migration versi lama tidak lagi disertakan di root ZIP.
 
 
-## v1.19.8 RC — Flexible Payment & Installment Ledger
+## v1.19.9 RC — Flexible Payment & Installment Ledger
 - Setiap termin menyimpan target kewajiban dan dapat menerima beberapa pembayaran/cicilan.
 - Sistem menghitung total terbayar, sisa/kurang bayar, lunas, dan lebih bayar otomatis.
 - Dashboard memberi warning atas sisa tagihan yang belum lunas pada/menjelang jatuh tempo.
 - Pembayaran aktual menyimpan tanggal, jumlah, metode, referensi/bukti, dan catatan.
 - Data tetap tersimpan di JSONB `contracts.payments`; tidak diperlukan tabel SQL baru untuk fitur ini.
 - `supabase_latest.sql` tetap menjadi satu-satunya file update database yang perlu diperhatikan.
+
+## v1.19.9 RC — FIFO Payment Ledger
+- Jadwal kewajiban menurut Akta dipisahkan dari Riwayat Pembayaran Aktual.
+- Pembayaran aktual otomatis dialokasikan FIFO ke termin tertua yang belum lunas.
+- Satu pembayaran dapat menutup sisa termin lama dan sebagian termin berikutnya.
+- Warning kekurangan menggunakan saldo kewajiban setelah alokasi otomatis.
+- Data lama v1.19.8 dimigrasikan di browser ke ledger saat Akta dibuka; tidak memerlukan scan AI ulang.
+- Tidak memerlukan SQL baru; struktur JSON `contracts.payments` tetap kompatibel.
