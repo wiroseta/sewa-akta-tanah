@@ -1,19 +1,20 @@
-# Sewa & Akta Tanah — v1.18.3 RC Large Local File Fix
+# Sewa & Akta Tanah — v1.18.4 RC Large PDF Batch Reader
 
-Baseline: v1.18.2 RC Rebuild Drive Fix. Semua fitur/perbaikan sebelumnya dipertahankan.
+Baseline: v1.18.2 RC Rebuild Drive Fix.
 
-## Perbaikan v1.18.3
-- Upload PDF/foto langsung dari komputer sekarang mendukung sampai 45 MB.
-- File <=18 MB tetap memakai jalur langsung seperti sebelumnya.
-- File >18 MB sampai 45 MB otomatis diunggah sementara ke bucket private `ai-temp`, diproses AI, lalu dihapus.
-- Status proses memberi tahu saat file besar sedang diunggah, disiapkan, dibaca AI, dan diproses.
-- Google Drive tetap mendukung sampai 45 MB melalui jalur server-side.
+## Perbaikan v1.18.4
+- PDF lokal besar sekarang dapat dibaca sampai 500 MB, termasuk file 294,1 MB.
+- PDF >18 MB tidak dikirim utuh ke AI. Browser membuka PDF dan merender 3 halaman per batch menjadi JPEG teroptimasi.
+- Setiap batch dikirim ke Edge Function dan hasil ekstraksi digabungkan kembali di browser.
+- Status proses menampilkan halaman yang sedang disiapkan/dibaca AI.
+- PDF <=18 MB tetap memakai alur lama agar cepat.
+- Foto tunggal tetap maksimum 18 MB.
+- Google Drive server-side masih memakai guard 45 MB pada v1.18.4; untuk file 294,1 MB gunakan Choose File dari perangkat pada versi ini.
+- Tidak ada SQL migration baru.
 
-## Deployment WAJIB
-1. Jalankan `supabase_v1183_ai_temp_storage.sql` sekali di Supabase SQL Editor.
+## Deployment
+1. Replace seluruh file web di GitHub Pages.
 2. Deploy ulang `supabase/functions/extract-lease/index.ts` sebagai Edge Function `extract-lease`.
-3. Replace seluruh file web di GitHub Pages dengan isi paket ini.
-4. Buka aplikasi dan pastikan badge menunjukkan `v1.18.3 RC`.
-5. Uji kembali `HGB 120.pdf`. Untuk file >18 MB, status harus berubah menjadi `Mengunggah sementara dengan aman…`.
-
-Bucket `ai-temp` bersifat private, dibatasi per user, maksimum 45 MB, dan file dihapus oleh aplikasi setelah proses selesai/gagal.
+3. Tidak perlu menjalankan SQL baru.
+4. Hard refresh dan pastikan badge menunjukkan `v1.18.4 RC`.
+5. Uji `HGB 120.pdf` melalui Choose File lalu `Baca PDF/Foto Sertifikat`.

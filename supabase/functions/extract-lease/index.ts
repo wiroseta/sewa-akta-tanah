@@ -14,19 +14,9 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.18.3] request received");
+ console.log("[extract-lease v1.18.4] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
- let {filename,mimeType,base64,documentType='lease',driveFileId,driveAccessToken,tempFileUrl}=await req.json();
- if(!base64&&tempFileUrl){
-   stage="temp-download"; console.log("[extract-lease] downloading temporary upload", {filename,documentType});
-   const u=new URL(String(tempFileUrl));
-   if(!u.hostname.endsWith('.supabase.co'))throw new Error('URL file sementara tidak valid');
-   const fileRes=await fetch(tempFileUrl);if(!fileRes.ok)throw new Error(`Tidak dapat membaca file sementara (${fileRes.status})`);
-   const bytes=new Uint8Array(await fileRes.arrayBuffer());const maxBytes=45*1024*1024;
-   if(bytes.byteLength>maxBytes)throw new Error('File lebih dari 45 MB. Kompres PDF terlebih dahulu.');
-   let binary=""; const chunk=0x8000;for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
-   base64=btoa(binary);console.log("[extract-lease] temporary upload OK",{bytes:bytes.byteLength});
- }
+ let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages}=await req.json();
  if(!base64&&driveFileId){
    stage="drive-auth"; console.log("[extract-lease] Drive request", {driveFileId, documentType, hasToken:!!driveAccessToken});
    if(!driveAccessToken)throw new Error("Token Google Drive tidak tersedia");
@@ -46,7 +36,7 @@ serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:c
    for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
    base64=btoa(binary); console.log("[extract-lease] Drive download OK", {bytes:bytes.byteLength}); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
  }
- if(!base64)throw new Error("File kosong");
+ if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
  lease:`Baca akta/perjanjian sewa atau dokumen tanah Indonesia ini dengan sangat teliti. Kembalikan HANYA JSON valid, tanpa markdown. Jangan menebak data yang tidak terlihat; gunakan string kosong, 0, atau array kosong. Semua tanggal harus YYYY-MM-DD. Semua nilai uang harus angka tanpa Rp/pemisah ribuan.
 
@@ -57,8 +47,10 @@ KHUSUS LUAS AKTA SEWA: leaseLandArea dan leaseBuildingArea hanya boleh diisi dar
  pbb:`Baca SPPT PBB Indonesia ini dengan sangat teliti. Kembalikan HANYA JSON valid tanpa markdown. Jangan menebak. Semua angka luas dan NJOP harus hanya berasal dari SPPT PBB ini; jangan mengambil dari Sertifikat Tanah atau Akta Sewa. Semua tanggal YYYY-MM-DD dan uang berupa angka tanpa Rp/pemisah ribuan. Struktur persis: {"nop":"","taxpayerName":"","objectAddress":"","taxYear":0,"landArea":0,"buildingArea":0,"landNjopM2":0,"landNjopTotal":0,"buildingNjopM2":0,"buildingNjopTotal":0,"totalNjop":0,"taxDue":0,"dueDate":"","notes":""}. Jika SPPT hanya menampilkan NJOP per m2 dan luas, boleh hitung total NJOP tanah/bangunan secara aritmetika; jangan mengarang data lain.`
  }; const prompt=prompts[documentType]||prompts.lease
  const isImage=String(mimeType||'').startsWith('image/');
- const content:any[]=[{type:"input_text",text:prompt}];
- if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:"high"});
+ const batchNote=Array.isArray(images)&&images.length?`\n\nDokumen besar sedang dibaca per batch. Ini halaman ${pageStart||'?'} sampai ${pageEnd||'?'} dari total ${totalPages||'?'}. Ekstrak HANYA data yang benar-benar terlihat pada halaman batch ini. Field yang tidak terlihat harus kosong/0/array kosong. Jangan menebak dari batch lain.`:'';
+ const content:any[]=[{type:"input_text",text:prompt+batchNote}];
+ if(Array.isArray(images)&&images.length){for(const im of images)content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:"high"})}
+ else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:"high"});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
  stage="openai"; console.log("[extract-lease] sending document to OpenAI", {filename,mimeType,documentType,base64Chars:base64.length});
  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]})});
