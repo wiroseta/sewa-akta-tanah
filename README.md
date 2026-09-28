@@ -106,3 +106,12 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 Sebelum memakai menu Users, jalankan `supabase_v117_user_roles_migration.sql` sekali di Supabase SQL Editor.
 Roles: Administrator (full access), Document Manager (create/edit/upload/AI), Viewer (read-only).
 Existing accounts are preserved as Administrator of their own existing workspace/data.
+
+
+## Supabase
+
+**Supabase update: TIDAK DIPERLUKAN untuk v1.17.3.**
+
+- `supabase_schema_history.sql` adalah arsip gabungan migration lama dan **tidak perlu dijalankan** saat update normal.
+- `supabase_seed_langkee.sql` dipertahankan sebagai data seed khusus dan bukan migration versi.
+- Mulai versi berikutnya, hanya `supabase_update_latest.sql` yang perlu dijalankan jika README menyatakan ada perubahan database.
