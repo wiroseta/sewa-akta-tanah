@@ -1,4 +1,4 @@
-const APP_BUILD="1.19.5-RC";
+const APP_BUILD="1.19.6-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='';const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -490,7 +490,26 @@ async function openHistoricalLease(){let x=activeLeaseForHistory();if(!x?.id)ret
 // v1.19.4 — Historical documents are locked to the same Universal 500 MB reader used by active leases/PBB/land documents.
 async function readHistoricalFile(){let f=$('#historicalLeaseFile').files?.[0],st=$('#historicalLeaseStatus'),b=$('#historicalLeaseReadFile');if(!f)return alert('Pilih file Akta lama / Addendum terlebih dahulu.');if(f.size>500*1024*1024)return aiProgressError(st,'File lebih dari 500 MB. Batas maksimum pembacaan AI adalah 500 MB.');b.disabled=true;$('#historicalLeaseSave').disabled=true;historicalLeaseExtracted=null;try{aiProgress(st,`Menyiapkan dokumen historis ${(f.size/1024/1024).toFixed(1)} MB dengan Universal Document Reader…`);historicalLeaseExtracted=await invokeDocumentAI(f,'lease',m=>aiProgress(st,m));$('#historicalLeasePreview').innerHTML=historicalLeasePreviewHtml(historicalLeaseExtracted);$('#historicalLeaseSave').disabled=false;aiProgressDone(st,'Dokumen historis selesai dibaca dengan reader yang sama seperti Akta Sewa/PBB/Akta Tanah. Periksa preview lalu simpan.')}catch(e){aiProgressError(st,'Gagal membaca dokumen historis: '+e.message)}finally{b.disabled=false}}
 async function readHistoricalDrive(){let u=$('#historicalLeaseDriveUrl').value.trim(),st=$('#historicalLeaseStatus'),b=$('#historicalLeaseReadDrive');if(!driveFileId(u))return alert('Masukkan link Google Drive yang valid.');b.disabled=true;$('#historicalLeaseSave').disabled=true;historicalLeaseExtracted=null;try{aiProgress(st,'Menyiapkan dokumen historis Google Drive dengan Universal Document Reader hingga 500 MB…');let r=await invokeDriveAI(u,'lease',m=>aiProgress(st,m));historicalLeaseExtracted=r.data;$('#historicalLeasePreview').innerHTML=historicalLeasePreviewHtml(historicalLeaseExtracted);$('#historicalLeaseSave').disabled=false;aiProgressDone(st,'Dokumen historis Google Drive selesai dibaca dengan reader yang sama seperti Akta Sewa/PBB/Akta Tanah. Periksa preview lalu simpan.')}catch(e){aiProgressError(st,'Gagal membaca dokumen historis: '+e.message)}finally{b.disabled=false}}
-async function saveHistoricalLease(){let active=activeLeaseForHistory();if(!active?.id||!historicalLeaseExtracted)return;let x=normalizeExtractedLease(historicalLeaseExtracted),row={user_id:historyOwner(),contract_id:active.id,asset_id:active.assetId||null,document_type:$('#historicalLeaseType').value,label:$('#historicalLeaseLabel').value.trim()||`${$('#historicalLeaseType').selectedOptions[0].text} · Akta ${x.deedNo||'-'}`,document_date:idToISO(x.deedDate)||null,deed_no:x.deedNo||null,drive_url:$('#historicalLeaseDriveUrl').value.trim(),extracted_data:x,ai_status:'sudah_dibaca',ai_read_at:new Date().toISOString()};let r=await sb.from('lease_documents').insert(row).select().single();if(r.error)throw r.error;await saveHistorySnapshot('lease',active.id,active.assetId||null,x,'historical_document',row.label);await renderHistoricalLeaseSavedList();alert('Dokumen historis tersimpan. Akta aktif tidak diubah.');}
+async function saveHistoricalLease(){
+ let active=activeLeaseForHistory();
+ if(!active?.id)throw new Error('Akta Sewa aktif tidak ditemukan. Tutup dialog, buka kembali Akta Sewa, lalu coba lagi.');
+ if(!historicalLeaseExtracted)throw new Error('Hasil pembacaan AI belum tersedia. Baca dokumen terlebih dahulu.');
+ let x=normalizeExtractedLease(historicalLeaseExtracted),owner=historyOwner();
+ if(!owner)throw new Error('Workspace/user pemilik data tidak ditemukan. Silakan login ulang.');
+ let row={user_id:owner,contract_id:active.id,asset_id:active.assetId||null,document_type:$('#historicalLeaseType').value,label:$('#historicalLeaseLabel').value.trim()||`${$('#historicalLeaseType').selectedOptions[0].text} · Akta ${x.deedNo||'-'}`,document_date:idToISO(x.deedDate)||null,deed_no:x.deedNo||null,drive_url:$('#historicalLeaseDriveUrl').value.trim(),extracted_data:x,ai_status:'sudah_dibaca',ai_read_at:new Date().toISOString()};
+ let r=await sb.from('lease_documents').insert(row).select('*').single();
+ if(r.error)throw new Error(`Database lease_documents: ${r.error.message}${r.error.code?' ['+r.error.code+']':''}. Pastikan SQL v1.19.6 sudah dijalankan.`);
+ if(!r.data?.id)throw new Error('Database tidak mengembalikan ID dokumen setelah penyimpanan.');
+ // Verify the row really exists before telling the user that saving succeeded.
+ let verify=await sb.from('lease_documents').select('id,contract_id,label,ai_status,ai_read_at,extracted_data').eq('id',r.data.id).maybeSingle();
+ if(verify.error)throw new Error(`Dokumen dikirim tetapi verifikasi database gagal: ${verify.error.message}`);
+ if(!verify.data)throw new Error('Dokumen belum ditemukan kembali setelah penyimpanan. Penyimpanan belum dianggap berhasil.');
+ // document_history is secondary. A failure here must not hide a successfully saved historical document.
+ try{await saveHistorySnapshot('lease',active.id,active.assetId||null,x,'historical_document',row.label)}catch(e){console.warn('Historical snapshot warning',e)}
+ await renderHistoricalLeaseSavedList();
+ $('#historicalLeaseStatus').textContent=`✓ Tersimpan: ${row.label}`;
+ alert('Dokumen historis sudah tersimpan dan diverifikasi di database. Akta aktif tidak diubah.');
+}
 
 // v1.19.5 — show saved historical documents inside the add-history dialog.
 function historicalDocRead(d){return d?.ai_status==='sudah_dibaca'||!!(d?.extracted_data&&Object.keys(d.extracted_data).length)}
