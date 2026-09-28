@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.17 RC
+# Sewa & Akta Tanah — v1.19.18 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -134,7 +134,7 @@ Menambahkan `contracts.payments_meta` melalui `supabase_latest.sql` dan memperba
 - Tidak memerlukan perubahan schema baru di atas `supabase_latest.sql` v1.19.15/v1.19.14; file SQL terbaru tetap disertakan sebagai satu-satunya migration utama.
 
 
-## v1.19.17 RC — AI PPh Final 4(2) Gross/Net Extraction
+## v1.19.18 RC — AI PPh Final 4(2) Gross/Net Extraction
 - AI memisahkan nilai sewa menurut Akta, bruto dasar PPh, PPh Final, dan netto yang diterima.
 - Default PPh Final sewa tanah/bangunan 10% dari jumlah bruto; jika Akta tidak jelas, hasil ditandai perlu verifikasi.
 - Jika nilai Akta sudah termasuk PPh: PPh dipotong dari bruto.
@@ -142,3 +142,12 @@ Menambahkan `contracts.payments_meta` melalui `supabase_latest.sql` dan memperba
 - Klausul sumber pajak dan interpretasi AI ditampilkan untuk pemeriksaan pengguna.
 - FIFO menggunakan nilai netto yang benar, sedangkan laporan tetap menunjukkan bruto dan PPh.
 - Fitur Google Drive permanen dan Verifikasi Ulang AI v1.19.16 tetap dipertahankan.
+
+## v1.19.18 RC — Whole-Document AI Consolidation & Validation
+- Semua PDF Akta kini dibaca sampai halaman terakhir sebelum hasil final ditetapkan, termasuk PDF di Google Drive.
+- Pembacaan halaman/chunk hanya tahap pengumpulan fakta; hasil tiap halaman tidak langsung menjadi hasil Akta.
+- Setelah semua halaman selesai, Edge Function menjalankan Whole-Document Consolidation untuk menghubungkan fakta lintas halaman.
+- Akta multi-tahun wajib menghasilkan rentPeriods, total nilai kontrak, seluruh termin pembayaran, PPh bruto/netto, klausul, dan referensi Akta sebelumnya.
+- Validasi mendeteksi jangka kontrak yang tidak cocok dengan periode harga yang ditemukan dan memberi validationWarnings, bukan diam-diam memakai harga tahun pertama.
+- `rent` pada hasil akhir Akta multi-periode diisi total bruto seluruh masa kontrak setelah konsolidasi.
+- Deploy ulang `supabase/functions/extract-lease/index.ts` agar pipeline v1.19.18 aktif.

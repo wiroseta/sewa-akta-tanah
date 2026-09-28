@@ -14,9 +14,9 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.19.17] request received");
+ console.log("[extract-lease v1.19.18] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
- let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData}=await req.json();
+ let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
  if(!base64&&driveFileId){
    stage="drive-auth"; console.log("[extract-lease] Drive request", {driveFileId, documentType, hasToken:!!driveAccessToken});
    if(!driveAccessToken)throw new Error("Token Google Drive tidak tersedia");
@@ -35,6 +35,40 @@ serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:c
    let binary=""; const chunk=0x8000;
    for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
    base64=btoa(binary); console.log("[extract-lease] Drive download OK", {bytes:bytes.byteLength}); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
+ }
+ if(documentType==='whole_document_consolidate'){
+   stage="whole-document-consolidation";
+   if(!Array.isArray(pageResults)||!pageResults.length)throw new Error("Hasil pembacaan halaman belum tersedia untuk konsolidasi dokumen");
+   const consolidationPrompt=`Anda adalah pemeriksa akhir dokumen hukum Indonesia. Anda menerima hasil ekstraksi SEMUA halaman dari SATU dokumen. Jangan memperlakukan hasil halaman pertama sebagai hasil final. Rekonstruksi dokumen secara keseluruhan, hubungkan fakta lintas halaman, hilangkan duplikasi, dan lakukan validasi aritmetika serta kronologi.
+
+ATURAN WAJIB UNTUK AKTA SEWA:
+1. Tentukan jangka waktu kontrak dari seluruh dokumen (start sampai end).
+2. Cari SEMUA periode harga sewa yang berada di dalam jangka waktu tersebut. Harga dapat sama atau berubah tiap tahun/periode.
+3. rentPeriods harus memuat setiap periode secara terpisah: start, end, gross, tax, net, sourcePage. Jangan mengasumsikan harga tahun pertama berlaku untuk tahun lain kecuali dokumen memang menyatakannya.
+4. totalContractRent/rent/rentGross adalah JUMLAH BRUTO seluruh periode sewa dalam kontrak, bukan harga satu tahun/termin. rentTaxAmount adalah total PPh seluruh periode dan rentNet adalah total netto seluruh periode.
+5. payments harus berisi SEMUA termin pembayaran dari seluruh periode, tanpa duplikasi. Jumlah termin bruto harus direkonsiliasi dengan totalContractRent bila dokumen memungkinkan.
+6. Jika kontrak 5 tahun tetapi hanya satu periode harga ditemukan, atau ada celah periode yang tidak terjelaskan, extractionComplete=false dan validationWarnings harus menjelaskan kekurangannya. Jangan menyatakan hasil lengkap.
+7. Untuk PPh Final sewa tanah/bangunan gunakan tarif yang dinyatakan dokumen; bila dokumen menyebut harga sudah termasuk PPh dan tidak menyebut tarif lain, gunakan default 10% dari bruto. Jangan mengubah fakta kontraktual yang tertulis.
+8. priorDeeds harus menggabungkan SEMUA Akta/Addendum/perjanjian sebelumnya yang disebut di halaman mana pun, dengan nomor, tanggal, jenis, notaris/keterangan, dan halaman sumber bila tersedia.
+9. Klausul, rekening, hak tanah, pihak, objek, perpanjangan, denda, PBB, dan informasi penting lain harus dikonsolidasikan lintas halaman. Jangan hilangkan fakta hanya karena muncul di halaman yang berbeda.
+10. Jangan mengarang. Bila dua halaman bertentangan, tandai validationWarnings.
+
+Kembalikan HANYA JSON valid dengan struktur:
+{"tenant":"","lessor":"","asset":"","propertyAddress":"","propertyArea":"","leaseLandArea":0,"leaseBuildingArea":0,"deedNo":"","deedDate":"","start":"","end":"","rent":0,"totalContractRent":0,"rentTaxMode":"gross_includes_tax|net_excludes_tax|no_withholding","rentTaxRate":10,"rentTaxAmount":0,"rentGross":0,"rentNet":0,"taxClause":"","taxTreatment":"","taxNeedsVerification":false,"deposit":0,"renewalNotice":"","renewalNoticeValue":0,"renewalNoticeUnit":"","renewalNoticeText":"","renewalNoticePage":"","renewalTerm":"","sourcePages":"","notes":"","extractionComplete":true,"validationWarnings":[],"rentPeriods":[{"start":"","end":"","gross":0,"tax":0,"net":0,"sourcePage":""}],"contacts":[{"role":"","name":"","phone":"","email":""}],"bankAccounts":[{"purpose":"","bank":"","account":"","holder":""}],"landRights":[{"type":"","number":"","area":"","end":""}],"payments":[{"due":"","amount":0,"label":""}],"clauses":[{"title":"","detail":"","page":"","importance":"Penting|Normal"}],"priorDeeds":[{"documentType":"","deedNo":"","deedDate":"","notary":"","label":"","sourcePage":""}]}.
+Semua tanggal YYYY-MM-DD dan semua uang angka tanpa Rp/pemisah.
+
+HASIL SEMUA HALAMAN (${pageResults.length} halaman/batch):\n${JSON.stringify(pageResults)}`;
+   const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:consolidationPrompt})});
+   const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
+   const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
+   let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan konsolidasi dokumen yang bukan JSON valid")}
+   if(Array.isArray(data.rentPeriods)&&data.rentPeriods.length){
+     const gross=data.rentPeriods.reduce((n:any,x:any)=>n+Number(x?.gross||0),0),tax=data.rentPeriods.reduce((n:any,x:any)=>n+Number(x?.tax||0),0),net=data.rentPeriods.reduce((n:any,x:any)=>n+Number(x?.net||0),0);
+     if(gross>0){data.totalContractRent=gross;data.rent=gross;data.rentGross=gross;data.rentTaxAmount=tax;data.rentNet=net||Math.max(0,gross-tax)}
+   }
+   const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
+   if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
+   return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(documentType==='history_compare'){
    stage="openai-compare";

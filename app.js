@@ -1,4 +1,4 @@
-const APP_BUILD="1.19.17-RC";
+const APP_BUILD="1.19.18-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null;const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -139,6 +139,7 @@ function applyExtracted(x){
   if(Array.isArray(x.landRights)&&x.landRights.length&&$('#lands')){$('#lands').innerHTML='';x.landRights.forEach(v=>addRepeat('lands',v,'land'))}
   if(Array.isArray(x.payments)&&x.payments.length){$('#payments').innerHTML='';x.payments.forEach(v=>pay({...v,status:'unpaid'}));paymentLedger=[];renderPaymentLedger();allocateLedger()}
   if(Array.isArray(x.clauses)&&x.clauses.length){$('#clauses').innerHTML='';x.clauses.forEach(v=>addRepeat('clauses',v,'clause'))}
+  if(Array.isArray(x.validationWarnings)&&x.validationWarnings.length){let n=document.querySelector('[name="notes"]');if(n)n.value=(n.value?n.value+'\n':'')+'PERINGATAN VALIDASI AI: '+x.validationWarnings.join(' | ')}
   renderTaxAIAnalysis(x);setField('verificationStatus','perlu_verifikasi');$('#verifyBadge').textContent='PERLU VERIFIKASI';updatePaymentCheck();syncOpenDocButton();syncOpenMapsButton();
 }
 
@@ -341,6 +342,16 @@ function mergeAIResults(a,b){
    else if(v!==''&&v!==0&&v!=null){if(out[k]===''||out[k]===0||out[k]==null)out[k]=v;else if(['surveyNo','surveyDate','validUntil'].includes(k))out[k]=v}
  }return out
 }
+async function consolidateWholeDocument(pageResults,documentType,filename,totalPages,onProgress=()=>{}){
+ if(!Array.isArray(pageResults)||!pageResults.length)throw new Error('Tidak ada hasil halaman untuk dikonsolidasikan.');
+ if(documentType!=='lease'){onProgress(`Semua ${totalPages||pageResults.length} halaman selesai dibaca. Menggabungkan hasil dokumen…`);return pageResults.reduce((a,x)=>mergeAIResults(a,x.data||{}),{})}
+ onProgress(`Semua ${totalPages||pageResults.length} halaman selesai dibaca. AI sedang memahami dokumen sebagai SATU kesatuan dan memvalidasi periode, nilai sewa, pajak, termin, klausul, dan referensi Akta…`);
+ const out=await invokeExtractLease({documentType:'whole_document_consolidate',filename,sourceDocumentType:documentType,pageResults,totalPages:totalPages||pageResults.length});
+ if(!out?.data)throw new Error(out?.error||'Konsolidasi dokumen kosong');
+ if(out.data.extractionComplete===false){const w=Array.isArray(out.data.validationWarnings)?out.data.validationWarnings.join(' · '):'';onProgress('Konsolidasi selesai tetapi ada data yang perlu diverifikasi'+(w?': '+w:''));}
+ else onProgress('Konsolidasi seluruh dokumen selesai. Memvalidasi hasil akhir…');
+ return out.data;
+}
 async function canvasJpegBase64(canvas,quality=.58){return new Promise((resolve,reject)=>canvas.toBlob(async b=>{if(!b)return reject(new Error('Gagal membuat gambar halaman PDF.'));try{resolve(await blobToBase64(b))}catch(e){reject(e)}},'image/jpeg',quality))}
 async function renderPdfPageForAI(page){
  const base=page.getViewport({scale:1});
@@ -359,17 +370,17 @@ async function invokeLargePdfAI(file,documentType,onProgress=()=>{}){
  onProgress('Membuka PDF di perangkat Anda…');const objectUrl=URL.createObjectURL(file);let pdf;
  try{
    pdf=await pdfjsLib.getDocument({url:objectUrl,disableAutoFetch:true,disableStream:false,disableRange:false}).promise;
-   const total=pdf.numPages;let merged={};
+   const total=pdf.numPages;let pageResults=[];
    for(let n=1;n<=total;n++){
      onProgress(`Menyiapkan halaman ${n} dari ${total} di perangkat Anda…`);
      const page=await pdf.getPage(n);const base64=await renderPdfPageForAI(page);page.cleanup();
      onProgress(`AI membaca halaman ${n} dari ${total}…`);
      const out=await invokeExtractLease({filename:file.name,documentType,images:[{base64,mimeType:'image/jpeg',page:n}],pageStart:n,pageEnd:n,totalPages:total});
-     if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);merged=mergeAIResults(merged,out.data);
+     if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);pageResults.push({page:n,data:out.data});
      // Yield to Safari/Chrome so memory from the previous canvas/request can be reclaimed.
      await new Promise(r=>setTimeout(r,40));
    }
-   onProgress('Semua halaman selesai dibaca. Menggabungkan hasil…');return merged
+   return await consolidateWholeDocument(pageResults,documentType,file.name,total,onProgress)
  }finally{try{pdf?.destroy()}catch(_){}URL.revokeObjectURL(objectUrl)}
 }
 async function invokeLargeImageAI(file,documentType,onProgress=()=>{}){
@@ -384,7 +395,8 @@ async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
  if(!file)throw new Error('Pilih file terlebih dahulu.');
  if(file.size>500*1024*1024)throw new Error('File lebih dari 500 MB.');
  const isPdf=(file.type==='application/pdf'||/\.pdf$/i.test(file.name));
- if(file.size>18*1024*1024){if(!isPdf)return invokeLargeImageAI(file,documentType,onProgress);return invokeLargePdfAI(file,documentType,onProgress)}
+ if(isPdf)return invokeLargePdfAI(file,documentType,onProgress);
+ if(file.size>18*1024*1024)return invokeLargeImageAI(file,documentType,onProgress);
  onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
 }
 async function invokeLargeDrivePdfAI(id,meta,documentType,onProgress=()=>{}){
@@ -399,16 +411,16 @@ async function invokeLargeDrivePdfAI(id,meta,documentType,onProgress=()=>{}){
      const loaded=Number(p?.loaded||0),total=Number(p?.total||size||0);
      if(total>0){const pct=Math.min(100,Math.round(loaded/total*100));onProgress(`Mengambil bagian PDF yang diperlukan dari Google Drive: ${(loaded/1024/1024).toFixed(1)} / ${(total/1024/1024).toFixed(1)} MB (${pct}%)…`)}
    };
-   pdf=await task.promise;const totalPages=pdf.numPages;let merged={};
+   pdf=await task.promise;const totalPages=pdf.numPages;let pageResults=[];
    for(let n=1;n<=totalPages;n++){
      onProgress(`Menyiapkan halaman ${n} dari ${totalPages} langsung dari Google Drive…`);
      const page=await pdf.getPage(n);const base64=await renderPdfPageForAI(page);page.cleanup();
      onProgress(`AI membaca halaman ${n} dari ${totalPages}…`);
      const out=await invokeExtractLease({filename:meta.name||'drive-file.pdf',documentType,images:[{base64,mimeType:'image/jpeg',page:n}],pageStart:n,pageEnd:n,totalPages});
-     if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);merged=mergeAIResults(merged,out.data);
+     if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);pageResults.push({page:n,data:out.data});
      await new Promise(r=>setTimeout(r,60));
    }
-   onProgress('Semua halaman selesai dibaca. Menggabungkan hasil…');return merged
+   return await consolidateWholeDocument(pageResults,documentType,meta.name||'drive-file.pdf',totalPages,onProgress)
  }catch(e){
    const msg=String(e?.message||e);
    if(/401|unauthorized|missing pdf|unexpected server response/i.test(msg))throw new Error(`Streaming Google Drive gagal: ${msg}. Coba hubungkan ulang Google Drive.`);
@@ -427,9 +439,9 @@ async function invokeDriveAI(url,documentType,onProgress=()=>{}){
  if(mime.startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
  if(size>500*1024*1024)throw new Error('File Google Drive lebih dari 500 MB.');
  const isPdf=mime==='application/pdf'||/\.pdf$/i.test(meta.name||'');
+ if(isPdf){const data=await invokeLargeDrivePdfAI(id,meta,documentType,onProgress);return {data,webViewLink:url};}
  if(size>18*1024*1024){
    if(!isPdf){onProgress(`Mengunduh foto besar dari Google Drive untuk dioptimalkan di perangkat (${(size/1024/1024).toFixed(1)} MB)…`);let ir=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`,{headers});if(!ir.ok)throw new Error(`Tidak dapat mengunduh foto Google Drive (${ir.status}).`);let blob=await ir.blob();let f=new File([blob],meta.name||'drive-image',{type:mime||blob.type||'image/jpeg'});const data=await invokeLargeImageAI(f,documentType,onProgress);return {data,webViewLink:url};}
-   const data=await invokeLargeDrivePdfAI(id,meta,documentType,onProgress);return {data,webViewLink:url};
  }
  onProgress('Mengirim referensi file ke server. AI sedang membaca dan mengekstrak data…');
  const out=await invokeExtractLease({driveFileId:id,driveAccessToken:googleDriveToken,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');
