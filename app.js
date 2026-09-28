@@ -282,17 +282,35 @@ function mergeAIResults(a,b){
    else if(v!==''&&v!==0&&v!=null){if(out[k]===''||out[k]===0||out[k]==null)out[k]=v;else if(['surveyNo','surveyDate','validUntil'].includes(k))out[k]=v}
  }return out
 }
-async function canvasJpegBase64(canvas,quality=.72){return new Promise((resolve,reject)=>canvas.toBlob(async b=>{if(!b)return reject(new Error('Gagal membuat gambar halaman PDF.'));try{resolve(await blobToBase64(b))}catch(e){reject(e)}},'image/jpeg',quality))}
+async function canvasJpegBase64(canvas,quality=.58){return new Promise((resolve,reject)=>canvas.toBlob(async b=>{if(!b)return reject(new Error('Gagal membuat gambar halaman PDF.'));try{resolve(await blobToBase64(b))}catch(e){reject(e)}},'image/jpeg',quality))}
+async function renderPdfPageForAI(page){
+ const base=page.getViewport({scale:1});
+ // Keep each page intentionally small: the Edge Function receives only one compressed page per request.
+ const maxSide=1400,scale=Math.min(1.45,maxSide/Math.max(base.width,base.height));
+ const vp=page.getViewport({scale});const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
+ const ctx=c.getContext('2d',{alpha:false});await page.render({canvasContext:ctx,viewport:vp,background:'white'}).promise;
+ let base64=await canvasJpegBase64(c,.58);
+ // Extra guard for unusually dense scans. Re-render smaller rather than sending a large request to Supabase.
+ if(base64.length>1400000){const smallScale=scale*.72,svp=page.getViewport({scale:smallScale});c.width=Math.ceil(svp.width);c.height=Math.ceil(svp.height);await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:svp,background:'white'}).promise;base64=await canvasJpegBase64(c,.5)}
+ c.width=c.height=1;return base64
+}
 async function invokeLargePdfAI(file,documentType,onProgress=()=>{}){
  if(!window.pdfjsLib)throw new Error('Modul PDF besar belum termuat. Muat ulang halaman lalu coba lagi.');
  if(file.size>500*1024*1024)throw new Error('File lebih dari 500 MB.');
- onProgress('Membuka PDF besar…');const objectUrl=URL.createObjectURL(file);let pdf;
- try{pdf=await pdfjsLib.getDocument({url:objectUrl,disableAutoFetch:false,disableStream:false}).promise;const total=pdf.numPages;let merged={};const batchSize=3;
-   for(let start=1;start<=total;start+=batchSize){const images=[];const end=Math.min(total,start+batchSize-1);
-     onProgress(`Menyiapkan halaman ${start}–${end} dari ${total}…`);
-     for(let n=start;n<=end;n++){const page=await pdf.getPage(n);const vp=page.getViewport({scale:1.35});const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp,background:'white'}).promise;images.push({base64:await canvasJpegBase64(c,.72),mimeType:'image/jpeg',page:n});c.width=c.height=1;page.cleanup()}
-     onProgress(`AI membaca halaman ${start}–${end} dari ${total}…`);const out=await invokeExtractLease({filename:file.name,documentType,images,pageStart:start,pageEnd:end,totalPages:total});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi batch kosong');merged=mergeAIResults(merged,out.data);
-   }onProgress('Semua halaman selesai dibaca. Menggabungkan hasil…');return merged
+ onProgress('Membuka PDF di perangkat Anda…');const objectUrl=URL.createObjectURL(file);let pdf;
+ try{
+   pdf=await pdfjsLib.getDocument({url:objectUrl,disableAutoFetch:true,disableStream:false,disableRange:false}).promise;
+   const total=pdf.numPages;let merged={};
+   for(let n=1;n<=total;n++){
+     onProgress(`Menyiapkan halaman ${n} dari ${total} di perangkat Anda…`);
+     const page=await pdf.getPage(n);const base64=await renderPdfPageForAI(page);page.cleanup();
+     onProgress(`AI membaca halaman ${n} dari ${total}…`);
+     const out=await invokeExtractLease({filename:file.name,documentType,images:[{base64,mimeType:'image/jpeg',page:n}],pageStart:n,pageEnd:n,totalPages:total});
+     if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);merged=mergeAIResults(merged,out.data);
+     // Yield to Safari/Chrome so memory from the previous canvas/request can be reclaimed.
+     await new Promise(r=>setTimeout(r,40));
+   }
+   onProgress('Semua halaman selesai dibaca. Menggabungkan hasil…');return merged
  }finally{try{pdf?.destroy()}catch(_){}URL.revokeObjectURL(objectUrl)}
 }
 async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
