@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.11 RC
+# Sewa & Akta Tanah — v1.19.13 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -98,9 +98,17 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - Data ledger lama berformat 6 digit dinormalisasi saat dibuka tanpa mengubah mekanisme FIFO.
 
 
-## v1.19.11 RC — Gross/Net Rent & Withholding Tax
+## v1.19.13 RC — Gross/Net Rent & Withholding Tax
 - Memisahkan nilai sewa bruto, pajak yang dipotong penyewa, netto yang harus diterima, dan uang aktual yang masuk rekening.
 - Tarif pajak editable; tidak hard-code tarif tertentu.
 - FIFO menggunakan kewajiban netto, sementara nilai bruto menurut Akta tetap dipertahankan.
 - Riwayat pembayaran aktual dapat mencatat jumlah pajak yang dipotong.
 - Tidak memerlukan SQL baru; metadata pajak disimpan bersama data pembayaran kontrak.
+
+
+## v1.19.13
+Menambahkan Perjanjian di Bawah Tangan sebagai dokumen sewa tambahan. Data disimpan di database pada contracts.payments_meta.supplementalAgreements, dapat ditautkan ke Google Drive, dibaca AI, dan jadwal pembayarannya dimasukkan ke FIFO. Seluruh nilai ekonomi tetap dicatat utuh.
+
+
+## v1.19.13 RC — Collapsible Long Pages
+Halaman/form panjang memakai section header yang dapat dibuka/tutup, ringkasan pada header, Buka Semua/Tutup Semua, dan preferensi tersimpan di perangkat. Section yang terdeteksi memiliki warning tetap dibuka agar perhatian penting tidak tersembunyi. Tidak memerlukan SQL baru.
