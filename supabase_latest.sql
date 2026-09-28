@@ -2,7 +2,7 @@
 alter table public.contracts add column if not exists payments_meta jsonb not null default '{}'::jsonb;
 update public.contracts set payments_meta='{}'::jsonb where payments_meta is null;
 
--- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.14)
+-- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.15)
 -- Jalankan file ini untuk instalasi/update terbaru. Idempotent.
 create table if not exists public.lease_documents (
  id uuid primary key default gen_random_uuid(),
