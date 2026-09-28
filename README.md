@@ -1,3 +1,7 @@
+## v1.15.15
+- Input tanggal cepat: ketik DDMMYY (contoh 280926) menjadi 28-09-2026.
+- Dashboard OpenAI: jumlah scan AI bulan berjalan pada browser ini dan tautan aman ke Billing OpenAI untuk saldo resmi. API key tetap hanya di Supabase; saldo tidak dipalsukan/diestimasi sebagai saldo resmi.
+
 # Sewa & Akta Tanah Manager v1.1 — Login Supabase
 
 Frontend dapat disimpan di repository GitHub public. Login memakai Supabase Auth; password tidak disimpan di GitHub.
