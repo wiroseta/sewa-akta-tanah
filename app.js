@@ -1,4 +1,4 @@
-const APP_BUILD="1.18.2-RC";
+const APP_BUILD="1.18.3-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='';const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -124,7 +124,7 @@ async function invokeExtractLease(body){
   if(out?.error)throw new Error(out.error+(out.stage?' [tahap: '+out.stage+']':''));
   return out;
 }
-async function extractDocument(){const file=$('#aiFile').files?.[0],btn=$('#extractBtn'),st=$('#extractStatus');if(!file)return alert('Pilih file PDF atau foto scan terlebih dahulu.');if(file.size>18*1024*1024)return alert('File terlalu besar. Maksimum 18 MB untuk pembacaan langsung.');btn.disabled=true;aiProgress(st,'Menyiapkan file untuk dibaca…');try{const base64=await fileToBase64(file);aiProgress(st,'Mengirim dokumen ke AI…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');aiProgress(st,'AI selesai membaca. Memproses hasil…');applyExtracted(out.data);recordAIScan();aiProgressDone(st,'Dokumen selesai dibaca. Periksa semua hasil, terutama angka, tanggal, nomor akta, dan klausul sebelum menyimpan.')}catch(e){console.error(e);aiProgressError(st,'Gagal membaca dokumen: '+(e.message||e))}finally{btn.disabled=false}}
+async function extractDocument(){const file=$('#aiFile').files?.[0],btn=$('#extractBtn'),st=$('#extractStatus');if(!file)return alert('Pilih file PDF atau foto scan terlebih dahulu.');btn.disabled=true;try{const data=await invokeDocumentAI(file,'lease',m=>aiProgress(st,m));applyExtracted(data);recordAIScan();aiProgressDone(st,'Dokumen selesai dibaca. Periksa semua hasil, terutama angka, tanggal, nomor akta, dan klausul sebelum menyimpan.')}catch(e){console.error(e);aiProgressError(st,'Gagal membaca dokumen: '+(e.message||e))}finally{btn.disabled=false}}
 function driveFileId(url){
   const s=String(url||'').trim();
   const m=s.match(/\/d\/([a-zA-Z0-9_-]+)/)||s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
@@ -275,8 +275,27 @@ $('#pbbBtn').onclick=openPbbList;$('#pbbClose').onclick=()=>$('#pbbDlg').close()
 $('#pbbForm').onsubmit=async e=>{e.preventDefault();let x=Object.fromEntries(new FormData(e.target)),num=k=>x[k]?parseMoney(x[k]):null;let row={user_id:(dataOwnerId||currentUser.id),nop:x.nop||'',taxpayer_name:x.taxpayerName||'',object_address:x.objectAddress||'',tax_year:x.taxYear?Number(x.taxYear):null,land_area:num('landArea'),building_area:num('buildingArea'),njop_land_per_m2:num('landNjopM2'),njop_land_total:num('landNjopTotal'),njop_building_per_m2:num('buildingNjopM2'),njop_building_total:num('buildingNjopTotal'),njop_total:num('totalNjop'),pbb_due:num('taxDue'),pbb_payable:num('payableAmount'),due_date:idToISO(x.dueDate)||null,payment_status:x.paymentStatus||'belum_bayar',paid_date:x.paymentStatus==='lunas'?(idToISO(x.paidDate)||null):null,drive_sppt_url:x.spptUrl||'',drive_payment_url:x.paymentProofUrl||'',google_maps_url:x.googleMapsUrl||'',warning_ignored:e.target.elements.namedItem('warningIgnored').checked,warning_ignore_reason:x.warningIgnoreReason||'',notes:x.notes||''};let r=pbbEdit>=0?await sb.from('pbb_records').update(row).eq('id',pbbData[pbbEdit].id).select().single():await sb.from('pbb_records').insert(row).select().single();if(r.error)return alert('Gagal menyimpan PBB: '+r.error.message);try{await replacePbbLinks('pbb_land_titles',r.data.id,'land_title_id',checkedValues('#pbbLandChoices'));await replacePbbLinks('pbb_buildings',r.data.id,'building_id',checkedValues('#pbbBuildingChoices'));$('#pbbEditDlg').close();await loadPbbData();render();openPbbList()}catch(err){alert('PBB tersimpan tetapi relasi gagal: '+err.message)}};
 
 async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
- if(!file)throw new Error('Pilih file terlebih dahulu.');if(file.size>18*1024*1024)throw new Error('File terlalu besar. Maksimum 18 MB.');
- onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
+ if(!file)throw new Error('Pilih file terlebih dahulu.');
+ const maxBytes=45*1024*1024;if(file.size>maxBytes)throw new Error('File terlalu besar. Maksimum 45 MB.');
+ // File kecil tetap memakai jalur langsung. File >18 MB diunggah sementara ke Supabase Storage
+ // agar request browser -> Edge Function tidak mentok batas payload base64.
+ if(file.size<=18*1024*1024){
+  onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
+ }
+ if(!currentUser)throw new Error('Silakan login terlebih dahulu.');
+ const safe=(file.name||'dokumen.pdf').replace(/[^a-zA-Z0-9._-]+/g,'_');
+ const path=`${currentUser.id}/${Date.now()}-${safe}`;
+ onProgress(`File ${(file.size/1024/1024).toFixed(1)} MB. Mengunggah sementara dengan aman…`);
+ const up=await sb.storage.from('ai-temp').upload(path,file,{contentType:file.type||'application/pdf',upsert:false});
+ if(up.error)throw new Error('Upload sementara gagal: '+up.error.message+' Pastikan SQL v1.18.3 sudah dijalankan.');
+ try{
+  onProgress('Upload selesai. Menyiapkan file untuk AI…');
+  const signed=await sb.storage.from('ai-temp').createSignedUrl(path,600);
+  if(signed.error||!signed.data?.signedUrl)throw new Error('Gagal membuat akses sementara: '+(signed.error?.message||'signed URL kosong'));
+  onProgress('Mengirim dokumen besar ke AI. AI sedang membaca dan mengekstrak data…');
+  const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',tempFileUrl:signed.data.signedUrl,documentType});
+  if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
+ }finally{await sb.storage.from('ai-temp').remove([path]).catch(()=>{})}
 }
 async function invokeDriveAI(url,documentType,onProgress=()=>{}){const id=driveFileId(url);if(!id)throw new Error('Link Google Drive tidak valid.');onProgress('Menghubungkan ke Google Drive…');if(!googleDriveToken)await requestDriveToken();onProgress('Mengirim referensi file ke server. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({driveFileId:id,driveAccessToken:googleDriveToken,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return {data:out.data,webViewLink:url}}
 function applyLandTitleAI(row,x){x=normalizeAIObject(x||{});let m={rightType:'rightType',certificateNo:'certificateNo',landArea:'landArea',validUntil:'validUntil',address:'address',holderName:'holderName',surveyNo:'surveyNo',surveyDate:'surveyDate',notes:'notes'};Object.entries(m).forEach(([k,c])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=row.querySelector('.'+c);if(e)e.value=(k==='validUntil'||k==='surveyDate')?isoToID(x[k]):x[k]}})}

@@ -14,9 +14,19 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.18.2] request received");
+ console.log("[extract-lease v1.18.3] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
- let {filename,mimeType,base64,documentType='lease',driveFileId,driveAccessToken}=await req.json();
+ let {filename,mimeType,base64,documentType='lease',driveFileId,driveAccessToken,tempFileUrl}=await req.json();
+ if(!base64&&tempFileUrl){
+   stage="temp-download"; console.log("[extract-lease] downloading temporary upload", {filename,documentType});
+   const u=new URL(String(tempFileUrl));
+   if(!u.hostname.endsWith('.supabase.co'))throw new Error('URL file sementara tidak valid');
+   const fileRes=await fetch(tempFileUrl);if(!fileRes.ok)throw new Error(`Tidak dapat membaca file sementara (${fileRes.status})`);
+   const bytes=new Uint8Array(await fileRes.arrayBuffer());const maxBytes=45*1024*1024;
+   if(bytes.byteLength>maxBytes)throw new Error('File lebih dari 45 MB. Kompres PDF terlebih dahulu.');
+   let binary=""; const chunk=0x8000;for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
+   base64=btoa(binary);console.log("[extract-lease] temporary upload OK",{bytes:bytes.byteLength});
+ }
  if(!base64&&driveFileId){
    stage="drive-auth"; console.log("[extract-lease] Drive request", {driveFileId, documentType, hasToken:!!driveAccessToken});
    if(!driveAccessToken)throw new Error("Token Google Drive tidak tersedia");
