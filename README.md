@@ -102,7 +102,7 @@ Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, seli
 - Menambahkan Apple Touch Icon 180x180 serta PWA icons 192x192 dan 512x512.
 - Memperbarui manifest/cache-buster tanpa mengubah fungsi aplikasi v1.16.0 RC.
 
-## v1.17.0 RC — User Roles
+## v1.17.2 RC — User Roles
 Sebelum memakai menu Users, jalankan `supabase_v117_user_roles_migration.sql` sekali di Supabase SQL Editor.
 Roles: Administrator (full access), Document Manager (create/edit/upload/AI), Viewer (read-only).
 Existing accounts are preserved as Administrator of their own existing workspace/data.

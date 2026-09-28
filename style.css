@@ -62,3 +62,12 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 
 /* v1.17.0 — professional user roles */
 #usersDlg{width:min(760px,calc(100vw - 24px))}.user-form{display:grid;grid-template-columns:2fr 1.3fr 1.3fr auto;gap:10px;align-items:end;padding:0}.user-form label{display:grid;gap:6px;font-weight:700;font-size:13px}.user-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #e5e7eb}body[data-role="viewer"] .ai-extract,body[data-role="viewer"] #addPayment,body[data-role="viewer"] #addContact,body[data-role="viewer"] #addBank,body[data-role="viewer"] #addClause,body[data-role="viewer"] #addLeaseFacility,body[data-role="viewer"] #assetAddPbb{display:none!important}@media(max-width:760px){.user-form{grid-template-columns:1fr}.user-form button{width:100%}.user-row{align-items:flex-start}}
+
+/* v1.17.2 - Klausul Penting readability */
+.repeat-row.clause{display:grid;grid-template-columns:minmax(0,2fr) minmax(150px,.7fr) auto;gap:12px;padding:16px;margin:12px 0;border:1px solid #dedee5;border-radius:16px;background:#fafafd;align-items:end}
+.repeat-row.clause label{min-width:0;color:#3a3a40;font-size:12px;font-weight:750}
+.repeat-row.clause .clause-detail-label{grid-column:1/-2}
+.repeat-row.clause .clause-page-label{grid-column:1/-2}
+.repeat-row.clause textarea.detail{min-height:82px;resize:vertical;line-height:1.45;white-space:pre-wrap}
+.repeat-row.clause>button{grid-column:3;grid-row:1/4;align-self:stretch;min-width:46px;background:#fde7e9;color:#8a1c1c;font-size:18px}
+@media(max-width:720px){.repeat-row.clause{grid-template-columns:1fr}.repeat-row.clause .clause-title-label,.repeat-row.clause .clause-importance-label,.repeat-row.clause .clause-detail-label,.repeat-row.clause .clause-page-label,.repeat-row.clause>button{grid-column:1;grid-row:auto}.repeat-row.clause>button{width:100%;min-height:44px}.repeat-row.clause textarea.detail{min-height:110px}}
