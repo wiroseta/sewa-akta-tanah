@@ -301,7 +301,31 @@ async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
  if(file.size>18*1024*1024){if(!isPdf)throw new Error('File foto lebih dari 18 MB. Kompres foto terlebih dahulu.');return invokeLargePdfAI(file,documentType,onProgress)}
  onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
 }
-async function invokeDriveAI(url,documentType,onProgress=()=>{}){const id=driveFileId(url);if(!id)throw new Error('Link Google Drive tidak valid.');onProgress('Menghubungkan ke Google Drive…');if(!googleDriveToken)await requestDriveToken();onProgress('Mengirim referensi file ke server. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({driveFileId:id,driveAccessToken:googleDriveToken,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return {data:out.data,webViewLink:url}}
+async function invokeDriveAI(url,documentType,onProgress=()=>{}){
+ const id=driveFileId(url);if(!id)throw new Error('Link Google Drive tidak valid.');
+ onProgress('Menghubungkan ke Google Drive…');if(!googleDriveToken)await requestDriveToken();
+ const headers={Authorization:`Bearer ${googleDriveToken}`};
+ onProgress('Membaca informasi file Google Drive…');
+ const mr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers});
+ if(mr.status===401){googleDriveToken='';await requestDriveToken();return invokeDriveAI(url,documentType,onProgress)}
+ if(!mr.ok)throw new Error(`Tidak dapat membaca metadata Google Drive (${mr.status}).`);
+ const meta=await mr.json(),size=Number(meta.size||0),mime=String(meta.mimeType||'');
+ if(mime.startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
+ if(size>500*1024*1024)throw new Error('File Google Drive lebih dari 500 MB.');
+ const isPdf=mime==='application/pdf'||/\.pdf$/i.test(meta.name||'');
+ if(size>18*1024*1024){
+   if(!isPdf)throw new Error('File besar dari Google Drive harus berupa PDF.');
+   onProgress(`Mengunduh PDF besar dari Google Drive (${(size/1024/1024).toFixed(1)} MB)…`);
+   const fr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`,{headers});
+   if(!fr.ok)throw new Error(`Tidak dapat mengunduh file Google Drive (${fr.status}).`);
+   const blob=await fr.blob();const file=new File([blob],meta.name||'drive-file.pdf',{type:mime||'application/pdf'});
+   onProgress('PDF Google Drive selesai diunduh. Menyiapkan pembacaan per halaman…');
+   const data=await invokeLargePdfAI(file,documentType,onProgress);return {data,webViewLink:url};
+ }
+ onProgress('Mengirim referensi file ke server. AI sedang membaca dan mengekstrak data…');
+ const out=await invokeExtractLease({driveFileId:id,driveAccessToken:googleDriveToken,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');
+ onProgress('AI selesai membaca. Memproses hasil…');return {data:out.data,webViewLink:url}
+}
 function applyLandTitleAI(row,x){x=normalizeAIObject(x||{});let m={rightType:'rightType',certificateNo:'certificateNo',landArea:'landArea',validUntil:'validUntil',address:'address',holderName:'holderName',surveyNo:'surveyNo',surveyDate:'surveyDate',notes:'notes'};Object.entries(m).forEach(([k,c])=>{if(x[k]!==undefined&&x[k]!==null&&x[k]!==''){let e=row.querySelector('.'+c);if(e)e.value=(k==='validUntil'||k==='surveyDate')?isoToID(x[k]):x[k]}})}
 async function extractLandTitleRow(btn){let row=btn.closest('.landtitle'),file=row.querySelector('.landAiFile').files?.[0],st=row.querySelector('.land-ai-status');btn.disabled=true;try{applyLandTitleAI(row,await invokeDocumentAI(file,'land_title',m=>aiProgress(st,m)));recordAIScan();aiProgressDone(st,'Sertifikat selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal membaca sertifikat: '+(e.message||e))}finally{btn.disabled=false}}window.extractLandTitleRow=extractLandTitleRow;
 async function extractLandTitleDriveRow(btn){let row=btn.closest('.landtitle'),url=row.querySelector('.driveUrl').value.trim(),st=row.querySelector('.land-ai-status');btn.disabled=true;try{let r=await invokeDriveAI(url,'land_title',m=>aiProgress(st,m));applyLandTitleAI(row,r.data);recordAIScan();row.querySelector('.driveUrl').value=r.webViewLink;aiProgressDone(st,'Sertifikat Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal membaca sertifikat dari Drive: '+(e.message||e))}finally{btn.disabled=false}}window.extractLandTitleDriveRow=extractLandTitleDriveRow;

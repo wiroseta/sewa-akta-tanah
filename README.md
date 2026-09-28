@@ -1,20 +1,14 @@
-# Sewa & Akta Tanah — v1.18.4 RC Large PDF Batch Reader
+# Sewa & Akta Tanah — v1.18.5 RC
 
-Baseline: v1.18.2 RC Rebuild Drive Fix.
+## Large PDF Local + Google Drive Fix
+- Memperbaiki error `Cannot read properties of undefined (reading length) [tahap: openai]` pada batch gambar.
+- PDF lokal besar tetap diproses per 3 halaman, maksimum 500 MB.
+- PDF Google Drive private >18 MB sampai 500 MB sekarang diunduh melalui sesi Google pengguna di browser lalu diproses dengan mesin batch yang sama.
+- File Google Drive kecil tetap memakai jalur server yang lebih cepat.
+- Progress menunjukkan metadata, download Drive, persiapan halaman, pembacaan AI per batch, dan penggabungan hasil.
 
-## Perbaikan v1.18.4
-- PDF lokal besar sekarang dapat dibaca sampai 500 MB, termasuk file 294,1 MB.
-- PDF >18 MB tidak dikirim utuh ke AI. Browser membuka PDF dan merender 3 halaman per batch menjadi JPEG teroptimasi.
-- Setiap batch dikirim ke Edge Function dan hasil ekstraksi digabungkan kembali di browser.
-- Status proses menampilkan halaman yang sedang disiapkan/dibaca AI.
-- PDF <=18 MB tetap memakai alur lama agar cepat.
-- Foto tunggal tetap maksimum 18 MB.
-- Google Drive server-side masih memakai guard 45 MB pada v1.18.4; untuk file 294,1 MB gunakan Choose File dari perangkat pada versi ini.
-- Tidak ada SQL migration baru.
-
-## Deployment
-1. Replace seluruh file web di GitHub Pages.
-2. Deploy ulang `supabase/functions/extract-lease/index.ts` sebagai Edge Function `extract-lease`.
-3. Tidak perlu menjalankan SQL baru.
-4. Hard refresh dan pastikan badge menunjukkan `v1.18.4 RC`.
-5. Uji `HGB 120.pdf` melalui Choose File lalu `Baca PDF/Foto Sertifikat`.
+## Deploy
+1. Replace file GitHub dengan isi ZIP ini.
+2. Deploy ulang `supabase/functions/extract-lease/index.ts`.
+3. Tidak ada SQL baru.
+4. Pastikan badge versi menunjukkan v1.18.5 RC.

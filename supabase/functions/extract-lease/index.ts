@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.18.4] request received");
+ console.log("[extract-lease v1.18.5] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages}=await req.json();
  if(!base64&&driveFileId){
@@ -52,7 +52,7 @@ KHUSUS LUAS AKTA SEWA: leaseLandArea dan leaseBuildingArea hanya boleh diisi dar
  if(Array.isArray(images)&&images.length){for(const im of images)content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:"high"})}
  else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:"high"});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
- stage="openai"; console.log("[extract-lease] sending document to OpenAI", {filename,mimeType,documentType,base64Chars:base64.length});
+ stage="openai"; console.log("[extract-lease] sending document to OpenAI", {filename,mimeType,documentType,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]})});
  const raw=await r.json();if(!r.ok)throw new Error(raw?.error?.message||`OpenAI error ${r.status}`);
  const text=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
