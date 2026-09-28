@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.7 RC
+# Sewa & Akta Tanah — v1.19.8 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -73,3 +73,12 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - Riwayat Dokumen Tersimpan memiliki tombol **Hapus** untuk Administrator, dengan konfirmasi rinci.
 - Pencegahan duplikat berdasarkan Akta aktif + jenis dokumen + nomor akta + tanggal dokumen.
 - Paket distribusi dirapikan: gunakan hanya `supabase_latest.sql` untuk update database terbaru. File migration versi lama tidak lagi disertakan di root ZIP.
+
+
+## v1.19.8 RC — Flexible Payment & Installment Ledger
+- Setiap termin menyimpan target kewajiban dan dapat menerima beberapa pembayaran/cicilan.
+- Sistem menghitung total terbayar, sisa/kurang bayar, lunas, dan lebih bayar otomatis.
+- Dashboard memberi warning atas sisa tagihan yang belum lunas pada/menjelang jatuh tempo.
+- Pembayaran aktual menyimpan tanggal, jumlah, metode, referensi/bukti, dan catatan.
+- Data tetap tersimpan di JSONB `contracts.payments`; tidak diperlukan tabel SQL baru untuk fitur ini.
+- `supabase_latest.sql` tetap menjadi satu-satunya file update database yang perlu diperhatikan.

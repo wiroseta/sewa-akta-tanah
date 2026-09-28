@@ -1,4 +1,4 @@
--- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.7)
+-- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.8)
 -- Jalankan file ini untuk instalasi/update terbaru. Idempotent.
 create table if not exists public.lease_documents (
  id uuid primary key default gen_random_uuid(),
