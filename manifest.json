@@ -1,11 +1,11 @@
 {
   "name": "Sewa & Akta Tanah Manager",
   "short_name": "Sewa Akta",
-  "start_url": "./",
+  "start_url": "./?v=1.18.2",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#f5f5f7",
-  "description": "Sewa & Akta Tanah v1.16.1",
+  "description": "Sewa & Akta Tanah v1.18.2 RC",
   "icons": [
     {
       "src": "icons/icon-192.png",
