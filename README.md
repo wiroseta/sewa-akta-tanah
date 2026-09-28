@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.0 RC
+# Sewa & Akta Tanah — v1.19.1 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -16,6 +16,17 @@ Perubahan utama:
 1. Replace file web di GitHub dengan isi ZIP ini.
 2. Deploy ulang `supabase/functions/extract-lease/index.ts`.
 3. Tidak ada SQL baru.
-4. Hard refresh dan pastikan badge `v1.19.0 RC`.
+4. Hard refresh dan pastikan badge `v1.19.1 RC`.
 
 Catatan: batas 500 MB adalah ukuran file input. PDF besar diproses per halaman agar Edge Function tidak menerima file ratusan MB sekaligus.
+
+
+## v1.19.1 — Document History & AI Comparison
+- Riwayat Akta Sewa: versi lama disimpan sebagai snapshot sebelum perubahan dan versi baru setelah disimpan.
+- Riwayat Sertifikat Tanah per properti: snapshot sebelum/sesudah perubahan HGB/SHM/dll.
+- Tombol **Riwayat & Bandingkan** pada Akta Sewa dan Sertifikat Tanah.
+- AI membandingkan dua versi dan menandai perubahan, klausul lama yang tidak ditemukan di dokumen baru, serta klausul yang secara eksplisit disebut tetap berlaku.
+- Pencarian **Cari Klausul & Riwayat** mencakup versi lama.
+- Jalankan `supabase_v1191_document_history_ai_comparison.sql` sekali, lalu deploy ulang Edge Function `extract-lease`.
+
+Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otomatis masih berlaku; aplikasi menandainya untuk verifikasi.

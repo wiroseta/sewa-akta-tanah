@@ -14,9 +14,9 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.18.6] request received");
+ console.log("[extract-lease v1.19.1] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
- let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages}=await req.json();
+ let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData}=await req.json();
  if(!base64&&driveFileId){
    stage="drive-auth"; console.log("[extract-lease] Drive request", {driveFileId, documentType, hasToken:!!driveAccessToken});
    if(!driveAccessToken)throw new Error("Token Google Drive tidak tersedia");
@@ -35,6 +35,22 @@ serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:c
    let binary=""; const chunk=0x8000;
    for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
    base64=btoa(binary); console.log("[extract-lease] Drive download OK", {bytes:bytes.byteLength}); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
+ }
+ if(documentType==='history_compare'){
+   stage="openai-compare";
+   if(!comparisonData?.old||!comparisonData?.new)throw new Error("Data perbandingan tidak lengkap");
+   const comparePrompt=`Bandingkan dua versi dokumen hukum/properti Indonesia berikut secara netral dan teliti. Jangan menyimpulkan klausul lama masih berlaku hanya karena tidak ada di dokumen baru. Jika klausul lama tidak ditemukan di dokumen baru, tandai perlu verifikasi. Jika dokumen baru secara eksplisit menyatakan klausul/akta lama tetap berlaku, masukkan ke explicitlyCarriedForward. Untuk sertifikat tanah, bandingkan jenis hak, nomor, luas, NIB, surat ukur, pemegang hak, masa berlaku, dan lokasi. Untuk akta sewa, bandingkan pihak, objek, jangka waktu, nilai sewa, pembayaran, deposit, perpanjangan, pemeliharaan, pajak, sublease/pengalihan, pengakhiran, force majeure, serah terima, sengketa, dan klausul penting. Kembalikan HANYA JSON valid: {"summary":"","changes":[{"topic":"","oldValue":"","newValue":"","note":""}],"missingFromNew":[{"topic":"","oldText":"","source":""}],"explicitlyCarriedForward":[{"topic":"","reason":""}]}.
+
+JENIS: ${comparisonData.entityType||''}
+DOKUMEN LAMA:
+${JSON.stringify(comparisonData.old)}
+
+DOKUMEN BARU:
+${JSON.stringify(comparisonData.new)}`;
+   const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:comparePrompt})});
+   const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
+   const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan perbandingan yang bukan JSON valid")}
+   return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
