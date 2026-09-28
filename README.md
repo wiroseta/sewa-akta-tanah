@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.10 RC
+# Sewa & Akta Tanah — v1.19.11 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -96,3 +96,11 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - Tanggal Riwayat Pembayaran Aktual mengikuti format Indonesia DD-MM-YYYY.
 - Input cepat DDMMYY, contoh 060225, otomatis menjadi 06-02-2025 saat blur dan sebelum penyimpanan.
 - Data ledger lama berformat 6 digit dinormalisasi saat dibuka tanpa mengubah mekanisme FIFO.
+
+
+## v1.19.11 RC — Gross/Net Rent & Withholding Tax
+- Memisahkan nilai sewa bruto, pajak yang dipotong penyewa, netto yang harus diterima, dan uang aktual yang masuk rekening.
+- Tarif pajak editable; tidak hard-code tarif tertentu.
+- FIFO menggunakan kewajiban netto, sementara nilai bruto menurut Akta tetap dipertahankan.
+- Riwayat pembayaran aktual dapat mencatat jumlah pajak yang dipotong.
+- Tidak memerlukan SQL baru; metadata pajak disimpan bersama data pembayaran kontrak.
