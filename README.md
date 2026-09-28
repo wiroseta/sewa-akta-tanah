@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.16 RC
+# Sewa & Akta Tanah — v1.19.17 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -132,3 +132,13 @@ Menambahkan `contracts.payments_meta` melalui `supabase_latest.sql` dan memperba
 - **Verifikasi Ulang AI** otomatis memakai Google Drive tersimpan bila tidak ada file/link baru yang dipilih; pengguna tidak perlu mencari file Drive yang sama lagi.
 - Jika pengguna memilih file lokal atau memasukkan link Drive baru, sumber tersebut tetap dapat dipakai untuk verifikasi; data lama tidak ditimpa sampai hasil verifikasi diterapkan dan Akta disimpan.
 - Tidak memerlukan perubahan schema baru di atas `supabase_latest.sql` v1.19.15/v1.19.14; file SQL terbaru tetap disertakan sebagai satu-satunya migration utama.
+
+
+## v1.19.17 RC — AI PPh Final 4(2) Gross/Net Extraction
+- AI memisahkan nilai sewa menurut Akta, bruto dasar PPh, PPh Final, dan netto yang diterima.
+- Default PPh Final sewa tanah/bangunan 10% dari jumlah bruto; jika Akta tidak jelas, hasil ditandai perlu verifikasi.
+- Jika nilai Akta sudah termasuk PPh: PPh dipotong dari bruto.
+- Jika nilai Akta secara eksplisit netto/belum termasuk PPh dan PPh ditambahkan di atas netto: aplikasi melakukan gross-up (bruto = netto / (1 - tarif)).
+- Klausul sumber pajak dan interpretasi AI ditampilkan untuk pemeriksaan pengguna.
+- FIFO menggunakan nilai netto yang benar, sedangkan laporan tetap menunjukkan bruto dan PPh.
+- Fitur Google Drive permanen dan Verifikasi Ulang AI v1.19.16 tetap dipertahankan.
