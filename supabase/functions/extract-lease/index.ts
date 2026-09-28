@@ -15,7 +15,24 @@ function subtractNotice(endDate:string,value:number,unit:string){
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});try{
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
- const {filename,mimeType,base64,documentType='lease'}=await req.json();if(!base64)throw new Error("File kosong");
+ let {filename,mimeType,base64,documentType='lease',driveFileId,driveAccessToken}=await req.json();
+ if(!base64&&driveFileId){
+   if(!driveAccessToken)throw new Error("Token Google Drive tidak tersedia");
+   const metaRes=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(driveFileId)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${driveAccessToken}`}});
+   if(!metaRes.ok)throw new Error(`Tidak dapat membaca metadata Google Drive (${metaRes.status})`);
+   const meta=await metaRes.json();
+   const size=Number(meta.size||0); const maxDriveBytes=45*1024*1024;
+   if(size>maxDriveBytes)throw new Error("File Google Drive lebih dari 45 MB. Kompres PDF terlebih dahulu.");
+   if(String(meta.mimeType||'').startsWith('application/vnd.google-apps.'))throw new Error("Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.");
+   const fileRes=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(driveFileId)}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${driveAccessToken}`}});
+   if(!fileRes.ok)throw new Error(`Tidak dapat mengunduh file Google Drive (${fileRes.status})`);
+   const bytes=new Uint8Array(await fileRes.arrayBuffer());
+   if(bytes.byteLength>maxDriveBytes)throw new Error("File Google Drive lebih dari 45 MB. Kompres PDF terlebih dahulu.");
+   let binary=""; const chunk=0x8000;
+   for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
+   base64=btoa(binary); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
+ }
+ if(!base64)throw new Error("File kosong");
  const prompts:any={
  lease:`Baca akta/perjanjian sewa atau dokumen tanah Indonesia ini dengan sangat teliti. Kembalikan HANYA JSON valid, tanpa markdown. Jangan menebak data yang tidak terlihat; gunakan string kosong, 0, atau array kosong. Semua tanggal harus YYYY-MM-DD. Semua nilai uang harus angka tanpa Rp/pemisah ribuan.
 
