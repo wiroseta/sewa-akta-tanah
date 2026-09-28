@@ -1,14 +1,18 @@
-# Sewa & Akta Tanah — v1.17.8 RC Indonesian Text Normalization Fix
+# Sewa & Akta Tanah — v1.17.9 RC Save / Relationship Schema Fix
 
 ## Perubahan
-- Memperbaiki tanggal ISO yang masih muncul di dalam teks hasil AI/Klausul Penting.
-- Semua pola tanggal YYYY-MM-DD di Ringkasan Klausul dan Catatan dinormalisasi menjadi DD-MM-YYYY.
-- Normalisasi Rupiah/luas yang sudah ada tetap diterapkan secara recursive pada hasil AI.
-- Data klausul lama dinormalisasi saat dibuka, sehingga tidak perlu scan AI ulang hanya untuk memperbaiki format tampilan.
-- Saat data disimpan kembali, teks klausul/catatan yang sudah dinormalisasi ikut tersimpan.
-- Seluruh Role Security Fix v1.17.7 tetap dipertahankan.
+- Mempertahankan seluruh fitur dan normalisasi Indonesia dari v1.17.8.
+- Memperbaiki kegagalan Simpan Akta ketika app mengakses `lease_land_titles`, `lease_buildings`, `lease_pbb`, atau `lease_facilities`.
+- Menambahkan migration Supabase idempotent untuk membuat tabel relasi yang memang dipakai `app.js`.
+- Migration menyalin relasi dari tabel legacy `contract_land_titles`, `contract_buildings`, `contract_pbb`, dan `facilities` bila tersedia.
+- Menambahkan RLS workspace-aware untuk Administrator dan Document Manager.
+- Meminta PostgREST reload schema setelah migration.
 
-## Supabase
-**Supabase update: TIDAK DIPERLUKAN.**
+## WAJIB sebelum tes Simpan
+1. Buka Supabase → SQL Editor.
+2. Jalankan seluruh isi `supabase_v1179_lease_relationship_tables_fix.sql`.
+3. Pastikan hasilnya sukses.
+4. Upload/deploy file aplikasi v1.17.9 ke GitHub Pages.
+5. Refresh halaman lalu tes Simpan Akta tanpa scan AI ulang.
 
-Gunakan struktur Supabase yang sudah aktif dari v1.17.1.
+Migration aman dijalankan ulang dan tidak menghapus data lama.

@@ -297,3 +297,9 @@ begin
  end loop;
 end$$;
 
+
+-- ============================================================
+-- SOURCE: supabase_v1179_lease_relationship_tables_fix.sql
+-- IMPORTANT: run the standalone migration file in Supabase SQL Editor.
+-- ============================================================
+-- v1.17.9 creates lease_* relationship tables used by app.js and workspace-aware RLS.
