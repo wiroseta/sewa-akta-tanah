@@ -13,24 +13,28 @@ function subtractNotice(endDate:string,value:number,unit:string){
  } else return "";
  return dt.toISOString().slice(0,10);
 }
-serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});try{
+serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
+ console.log("[extract-lease] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,documentType='lease',driveFileId,driveAccessToken}=await req.json();
  if(!base64&&driveFileId){
+   stage="drive-auth"; console.log("[extract-lease] Drive request", {driveFileId, documentType, hasToken:!!driveAccessToken});
    if(!driveAccessToken)throw new Error("Token Google Drive tidak tersedia");
+   stage="drive-metadata"; console.log("[extract-lease] reading Drive metadata");
    const metaRes=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(driveFileId)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${driveAccessToken}`}});
    if(!metaRes.ok)throw new Error(`Tidak dapat membaca metadata Google Drive (${metaRes.status})`);
-   const meta=await metaRes.json();
+   const meta=await metaRes.json(); console.log("[extract-lease] Drive metadata OK", {name:meta.name,mimeType:meta.mimeType,size:meta.size});
    const size=Number(meta.size||0); const maxDriveBytes=45*1024*1024;
    if(size>maxDriveBytes)throw new Error("File Google Drive lebih dari 45 MB. Kompres PDF terlebih dahulu.");
    if(String(meta.mimeType||'').startsWith('application/vnd.google-apps.'))throw new Error("Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.");
+   stage="drive-download"; console.log("[extract-lease] downloading Drive file");
    const fileRes=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(driveFileId)}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${driveAccessToken}`}});
    if(!fileRes.ok)throw new Error(`Tidak dapat mengunduh file Google Drive (${fileRes.status})`);
    const bytes=new Uint8Array(await fileRes.arrayBuffer());
    if(bytes.byteLength>maxDriveBytes)throw new Error("File Google Drive lebih dari 45 MB. Kompres PDF terlebih dahulu.");
    let binary=""; const chunk=0x8000;
    for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
-   base64=btoa(binary); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
+   base64=btoa(binary); console.log("[extract-lease] Drive download OK", {bytes:bytes.byteLength}); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
  }
  if(!base64)throw new Error("File kosong");
  const prompts:any={
@@ -46,6 +50,7 @@ KHUSUS LUAS AKTA SEWA: leaseLandArea dan leaseBuildingArea hanya boleh diisi dar
  const content:any[]=[{type:"input_text",text:prompt}];
  if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:"high"});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
+ stage="openai"; console.log("[extract-lease] sending document to OpenAI", {filename,mimeType,documentType,base64Chars:base64.length});
  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]})});
  const raw=await r.json();if(!r.ok)throw new Error(raw?.error?.message||`OpenAI error ${r.status}`);
  const text=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
@@ -53,4 +58,4 @@ KHUSUS LUAS AKTA SEWA: leaseLandArea dan leaseBuildingArea hanya boleh diisi dar
  const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
  if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
  return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
-}catch(e){return new Response(JSON.stringify({error:e.message||String(e)}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});
+}catch(e){const message=e?.message||String(e);console.error("[extract-lease] failed",{stage,message});return new Response(JSON.stringify({error:message,stage}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});
