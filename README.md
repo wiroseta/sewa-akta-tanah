@@ -53,3 +53,11 @@ Catatan hukum: status “tidak ditemukan di dokumen baru” tidak dianggap otoma
 - File lokal dan Google Drive divalidasi hingga 500 MB. PDF besar diproses per halaman agar tidak dikirim utuh ke Edge Function.
 - Progress pembacaan historis ditampilkan selama persiapan, pembacaan per halaman, dan penggabungan hasil.
 - Tidak ada perubahan database/SQL tambahan dari v1.19.3.
+
+
+## v1.19.5 — Saved Historical Documents Visible
+- Dialog Akta Lama / Dokumen Historis sekarang menampilkan Riwayat Dokumen Tersimpan untuk Akta Sewa aktif.
+- Status Sudah/Belum dibaca AI ditentukan dari ai_status/extracted_data yang sudah tersimpan; tidak memicu scan ulang.
+- Hasil AI lama dapat dilihat langsung.
+- Dokumen historis dapat dibandingkan dengan Akta Sewa aktif menggunakan data ekstraksi tersimpan.
+- Reader universal file besar hingga 500 MB dari v1.19.4 tetap dipertahankan.
