@@ -24,14 +24,14 @@ serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:c
    const metaRes=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(driveFileId)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${driveAccessToken}`}});
    if(!metaRes.ok)throw new Error(`Tidak dapat membaca metadata Google Drive (${metaRes.status})`);
    const meta=await metaRes.json(); console.log("[extract-lease] Drive metadata OK", {name:meta.name,mimeType:meta.mimeType,size:meta.size});
-   const size=Number(meta.size||0); const maxDriveBytes=45*1024*1024;
-   if(size>maxDriveBytes)throw new Error("File Google Drive lebih dari 45 MB. Kompres PDF terlebih dahulu.");
+   const size=Number(meta.size||0); const maxDriveBytes=500*1024*1024;
+   if(size>maxDriveBytes)throw new Error("File Google Drive lebih dari 500 MB.");
    if(String(meta.mimeType||'').startsWith('application/vnd.google-apps.'))throw new Error("Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.");
    stage="drive-download"; console.log("[extract-lease] downloading Drive file");
    const fileRes=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(driveFileId)}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${driveAccessToken}`}});
    if(!fileRes.ok)throw new Error(`Tidak dapat mengunduh file Google Drive (${fileRes.status})`);
    const bytes=new Uint8Array(await fileRes.arrayBuffer());
-   if(bytes.byteLength>maxDriveBytes)throw new Error("File Google Drive lebih dari 45 MB. Kompres PDF terlebih dahulu.");
+   if(bytes.byteLength>maxDriveBytes)throw new Error("File Google Drive lebih dari 500 MB.");
    let binary=""; const chunk=0x8000;
    for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
    base64=btoa(binary); console.log("[extract-lease] Drive download OK", {bytes:bytes.byteLength}); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';

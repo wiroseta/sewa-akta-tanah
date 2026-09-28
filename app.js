@@ -1,4 +1,4 @@
-const APP_BUILD="1.18.9-RC";
+const APP_BUILD="1.19.0-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='';const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -124,7 +124,7 @@ async function invokeExtractLease(body){
   if(out?.error)throw new Error(out.error+(out.stage?' [tahap: '+out.stage+']':''));
   return out;
 }
-async function extractDocument(){const file=$('#aiFile').files?.[0],btn=$('#extractBtn'),st=$('#extractStatus');if(!file)return alert('Pilih file PDF atau foto scan terlebih dahulu.');if(file.size>18*1024*1024)return alert('File terlalu besar. Maksimum 18 MB untuk pembacaan langsung.');btn.disabled=true;aiProgress(st,'Menyiapkan file untuk dibaca…');try{const base64=await fileToBase64(file);aiProgress(st,'Mengirim dokumen ke AI…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');aiProgress(st,'AI selesai membaca. Memproses hasil…');applyExtracted(out.data);recordAIScan();aiProgressDone(st,'Dokumen selesai dibaca. Periksa semua hasil, terutama angka, tanggal, nomor akta, dan klausul sebelum menyimpan.')}catch(e){console.error(e);aiProgressError(st,'Gagal membaca dokumen: '+(e.message||e))}finally{btn.disabled=false}}
+async function extractDocument(){const file=$('#aiFile').files?.[0],btn=$('#extractBtn'),st=$('#extractStatus');if(!file)return alert('Pilih file PDF atau foto scan terlebih dahulu.');btn.disabled=true;try{const data=await invokeDocumentAI(file,'lease',m=>aiProgress(st,m));applyExtracted(data);recordAIScan();aiProgressDone(st,'Dokumen selesai dibaca. Periksa semua hasil, terutama angka, tanggal, nomor akta, dan klausul sebelum menyimpan.')}catch(e){console.error(e);aiProgressError(st,'Gagal membaca dokumen: '+(e.message||e))}finally{btn.disabled=false}}
 function driveFileId(url){
   const s=String(url||'').trim();
   const m=s.match(/\/d\/([a-zA-Z0-9_-]+)/)||s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
@@ -148,10 +148,10 @@ async function fetchDriveFile(fileId){
   if(String(meta.mimeType).startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
   r=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
   if(!r.ok)throw new Error('Tidak dapat mengunduh file Google Drive ('+r.status+'). Pastikan akun Anda punya akses.');
-  const blob=await r.blob(); if(blob.size>18*1024*1024)throw new Error('File lebih dari 18 MB.');
+  const blob=await r.blob(); if(blob.size>500*1024*1024)throw new Error('File lebih dari 500 MB.');
   return {name:meta.name||'drive-file.pdf',mimeType:meta.mimeType||blob.type||'application/pdf',blob,webViewLink:meta.webViewLink};
 }
-async function extractFromDrive(){const url=$('#driveUrl').value.trim(),id=driveFileId(url),btn=$('#driveExtractBtn'),st=$('#driveStatus');if(!id)return alert('Masukkan link Google Drive file yang valid.');btn.disabled=true;aiProgress(st,'Menghubungkan ke Google Drive…');try{if(!googleDriveToken)await requestDriveToken();aiProgress(st,'Mengirim referensi file ke server dengan aman…');const out=await invokeExtractLease({driveFileId:id,driveAccessToken:googleDriveToken,documentType:'lease'});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');aiProgress(st,'AI selesai membaca. Memproses hasil…');applyExtracted(out.data);setField('docUrl',url);syncOpenDocButton();recordAIScan();aiProgressDone(st,'File Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){console.error(e);aiProgressError(st,'Gagal: '+(e.message||e))}finally{btn.disabled=false}}
+async function extractFromDrive(){const url=$('#driveUrl').value.trim(),btn=$('#driveExtractBtn'),st=$('#driveStatus');if(!driveFileId(url))return alert('Masukkan link Google Drive file yang valid.');btn.disabled=true;try{const r=await invokeDriveAI(url,'lease',m=>aiProgress(st,m));applyExtracted(r.data);setField('docUrl',url);syncOpenDocButton();recordAIScan();aiProgressDone(st,'File Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){console.error(e);aiProgressError(st,'Gagal: '+(e.message||e))}finally{btn.disabled=false}}
 function openRowLink(btn,cls){const u=btn.parentElement.querySelector('.'+cls)?.value?.trim();if(!u)return alert('Link belum diisi.');try{const x=new URL(u);if(!['http:','https:'].includes(x.protocol))throw 0;window.open(x.href,'_blank','noopener,noreferrer')}catch(e){alert('Link tidak valid. Gunakan link https://')}}window.openRowLink=openRowLink;
 
 async function getAllPropertyObjects(assetId){
@@ -314,10 +314,19 @@ async function invokeLargePdfAI(file,documentType,onProgress=()=>{}){
    onProgress('Semua halaman selesai dibaca. Menggabungkan hasil…');return merged
  }finally{try{pdf?.destroy()}catch(_){}URL.revokeObjectURL(objectUrl)}
 }
+async function invokeLargeImageAI(file,documentType,onProgress=()=>{}){
+ onProgress('Mengoptimalkan foto besar di perangkat Anda…');
+ let bmp;try{bmp=await createImageBitmap(file)}catch(_){throw new Error('Foto besar tidak dapat dibuka oleh browser/perangkat ini. Coba simpan sebagai PDF atau perkecil resolusi foto.');}
+ const maxSide=1800,scale=Math.min(1,maxSide/Math.max(bmp.width,bmp.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(bmp.width*scale));c.height=Math.max(1,Math.round(bmp.height*scale));
+ c.getContext('2d',{alpha:false}).drawImage(bmp,0,0,c.width,c.height);try{bmp.close()}catch(_){}
+ const base64=await canvasJpegBase64(c,.62);c.width=c.height=1;onProgress('Mengirim foto yang sudah dioptimalkan ke AI…');
+ const out=await invokeExtractLease({filename:file.name,documentType,images:[{base64,mimeType:'image/jpeg',page:1}],pageStart:1,pageEnd:1,totalPages:1});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');return out.data
+}
 async function invokeDocumentAI(file,documentType,onProgress=()=>{}){
  if(!file)throw new Error('Pilih file terlebih dahulu.');
+ if(file.size>500*1024*1024)throw new Error('File lebih dari 500 MB.');
  const isPdf=(file.type==='application/pdf'||/\.pdf$/i.test(file.name));
- if(file.size>18*1024*1024){if(!isPdf)throw new Error('File foto lebih dari 18 MB. Kompres foto terlebih dahulu.');return invokeLargePdfAI(file,documentType,onProgress)}
+ if(file.size>18*1024*1024){if(!isPdf)return invokeLargeImageAI(file,documentType,onProgress);return invokeLargePdfAI(file,documentType,onProgress)}
  onProgress('Menyiapkan file untuk dibaca…');const base64=await fileToBase64(file);onProgress('Mengirim dokumen ke AI. AI sedang membaca dan mengekstrak data…');const out=await invokeExtractLease({filename:file.name,mimeType:file.type||'application/pdf',base64,documentType});if(!out?.data)throw new Error(out?.error||'Hasil ekstraksi kosong');onProgress('AI selesai membaca. Memproses hasil…');return out.data
 }
 async function invokeLargeDrivePdfAI(id,meta,documentType,onProgress=()=>{}){
@@ -361,7 +370,7 @@ async function invokeDriveAI(url,documentType,onProgress=()=>{}){
  if(size>500*1024*1024)throw new Error('File Google Drive lebih dari 500 MB.');
  const isPdf=mime==='application/pdf'||/\.pdf$/i.test(meta.name||'');
  if(size>18*1024*1024){
-   if(!isPdf)throw new Error('File besar dari Google Drive harus berupa PDF.');
+   if(!isPdf){onProgress(`Mengunduh foto besar dari Google Drive untuk dioptimalkan di perangkat (${(size/1024/1024).toFixed(1)} MB)…`);let ir=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`,{headers});if(!ir.ok)throw new Error(`Tidak dapat mengunduh foto Google Drive (${ir.status}).`);let blob=await ir.blob();let f=new File([blob],meta.name||'drive-image',{type:mime||blob.type||'image/jpeg'});const data=await invokeLargeImageAI(f,documentType,onProgress);return {data,webViewLink:url};}
    const data=await invokeLargeDrivePdfAI(id,meta,documentType,onProgress);return {data,webViewLink:url};
  }
  onProgress('Mengirim referensi file ke server. AI sedang membaca dan mengekstrak data…');
