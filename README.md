@@ -1,117 +1,13 @@
-## v1.15.15
-- Input tanggal cepat: ketik DDMMYY (contoh 280926) menjadi 28-09-2026.
-- Dashboard OpenAI: jumlah scan AI bulan berjalan pada browser ini dan tautan aman ke Billing OpenAI untuk saldo resmi. API key tetap hanya di Supabase; saldo tidak dipalsukan/diestimasi sebagai saldo resmi.
+# Sewa & Akta Tanah — v1.17.4 RC
 
-# Sewa & Akta Tanah Manager v1.1 — Login Supabase
+## iPhone Compact Dashboard
+- Menu **Users / Backup / Keluar** dipindahkan ke dropdown **••• Menu** pada layar mobile.
+- Tombol utama **Properti / Lokasi, PBB, + Akta Sewa** tetap terlihat.
+- Kartu ringkasan dibuat lebih kecil dalam grid 3 kolom agar lebih banyak informasi terlihat tanpa scroll.
+- Status OpenAI/Scan AI juga dibuat compact.
+- Desktop tetap mempertahankan akses toolbar yang luas.
 
-Frontend dapat disimpan di repository GitHub public. Login memakai Supabase Auth; password tidak disimpan di GitHub.
+## Supabase update
+**TIDAK DIPERLUKAN untuk v1.17.4.** Ini hanya perubahan UI/CSS/JavaScript.
 
-## Setup singkat
-1. Buat project di Supabase.
-2. Authentication > Users: buat user pemilik aplikasi (email + password).
-3. Project Settings/API: salin Project URL dan Publishable key (atau anon key lama) ke `config.js`.
-4. Upload semua file ke GitHub repository dan aktifkan GitHub Pages.
-5. Di Supabase Authentication > URL Configuration, masukkan URL GitHub Pages sebagai Site URL / allowed redirect URL bila diperlukan.
-
-## Penting
-- Jangan pernah masukkan Supabase secret/service-role key atau OpenAI API key ke repository/frontend.
-- Versi ini menambahkan login sungguhan, tetapi data kontrak masih tersimpan di localStorage browser per user ID. Jangan gunakan sebagai penyimpanan final dokumen hukum.
-- Tahap berikutnya: pindahkan data ke tabel Supabase dengan Row Level Security (RLS), private storage untuk dokumen, dan Edge Function untuk OpenAI.
-
-
-## v1.8.3
-Validasi total jadwal pembayaran dengan ringkasan nilai sewa, total termin, selisih, dan persentase terjadwal.
-
-
-## Riwayat Versi / Changelog
-
-### v1.15.6
-- Form Sertifikat Tanah memakai label permanen agar arti setiap field tetap terlihat setelah AI mengisi data.
-- Field dikelompokkan menjadi Data Sertifikat, Surat Ukur, Dokumen & Lokasi, dan Baca Otomatis dengan AI.
-- Tombol AI diperjelas menjadi Baca PDF/Foto Sertifikat dan Baca Sertifikat dari Google Drive.
-- Tanggal masa berlaku dan tanggal Surat Ukur tetap opsional dan tidak dipaksa sama dengan tanggal lain.
-- Perbaikan penyimpanan nama pemegang hak, nomor Surat Ukur, dan tanggal Surat Ukur ke database.
-- PBB tetap menggunakan label permanen untuk setiap field dan luas PBB tetap independen dari Sertifikat/Akta Sewa.
-
-### v1.15.5
-- AI scan/upload PDF/foto dan Google Drive private untuk Sertifikat Tanah.
-- AI scan/upload PDF/foto dan Google Drive private untuk SPPT PBB.
-- Luas Sertifikat Tanah, Akta Sewa, dan PBB disimpan independen sesuai dokumen sumber dan tidak dipaksa sama.
-- Akta Sewa memiliki luas tanah dan luas bangunan menurut Akta Sewa sendiri.
-- Sertifikat menyimpan pemegang hak, nomor/tanggal surat ukur, dan masa berlaku opsional.
-- PBB menyimpan nama wajib pajak dan alamat objek pajak.
-- Tanggal berakhir sertifikat tidak diisi otomatis bila tidak tersedia.
-- Mulai versi ini hanya satu README.md digunakan untuk dokumentasi dan changelog.
-
-## v1.15.7
-- Menambahkan tombol **+ PBB untuk Properti Ini** langsung di halaman Properti/Lokasi.
-- Form PBB yang dibuka dari properti hanya menampilkan Sertifikat Tanah dan Bangunan milik properti tersebut untuk dipilih sebagai relasi.
-- Memperketat AI Sertifikat agar secara khusus mencari bagian **SURAT UKUR** dan mengisi nomor serta tanggal Surat Ukur bila terbaca.
-- Menyamakan tinggi field **Jenis Hak** dengan field Sertifikat lainnya.
-- Field tanggal Sertifikat/Surat Ukur kosong secara visual dengan format YYYY-MM-DD sampai ada data.
-- Memastikan Nama Pemegang Hak, Nomor Surat Ukur, dan Tanggal Surat Ukur ikut tersimpan ke database.
-
-
-## v1.15.8
-- Memperbaiki mapping field PBB ke nama kolom Supabase yang benar (`njop_land_per_m2`, `njop_land_total`, `njop_building_per_m2`, `njop_building_total`, `njop_total`, `pbb_due`, `drive_sppt_url`, `drive_payment_url`).
-- Memisahkan **PBB terutang** dan **PBB yang harus dibayar**.
-- Setiap record PBB tetap per NOP + tahun dan memiliki link SPPT serta link bukti bayar sendiri.
-- Menambahkan **Abaikan warning dashboard** dan alasan opsional tanpa mengubah status pembayaran.
-- Dashboard menampilkan warning PBB belum dibayar yang mendekati/melewati jatuh tempo, kecuali sudah dibayar atau warning sengaja diabaikan.
-- Tanggal PBB ditampilkan/input sebagai DD-MM-YYYY; database tetap menyimpan tipe date standar.
-- Nilai Rupiah PBB ditampilkan sebagai `Rp 4.155.000,00`; luasan sebagai `10.500,00 m²`.
-- Tanggal pembayaran PBB kosong dan nonaktif ketika status masih Belum Bayar.
-- Form Akta Sewa dibuat lebih fluid/responsive agar kolom kanan tidak terpotong dan horizontal scroll hilang.
-
-
-## v1.15.9
-- Cache-busting untuk `config.js` dan `app.js` agar GitHub Pages/iPhone tidak menjalankan JavaScript versi lama.
-- Mapping PBB tetap menggunakan kolom Supabase standar `njop_building_per_m2` dan `njop_building_total`.
-- Tidak memerlukan scan AI PBB ulang.
-
-
-## v1.15.11
-- Dashboard Hak Tanah sekarang hanya memakai master Sertifikat Tanah (`land_titles`) sebagai sumber masa berlaku.
-- Peringatan lama dari `contracts.land_rights` tidak lagi dipakai agar tanggal historis tidak menghasilkan warning palsu.
-- Perhitungan tanggal mendukung format UI DD-MM-YYYY dan penyimpanan ISO YYYY-MM-DD.
-- Tanggal pada Agenda & Peringatan ditampilkan dalam format Indonesia DD-MM-YYYY.
-
-
-## v1.15.13
-- Menambahkan indikator proses yang jelas saat AI membaca Akta Sewa, Sertifikat Tanah, dan SPPT PBB.
-- Status membedakan tahap mengambil file Google Drive, menyiapkan dokumen, mengirim ke AI, AI membaca/mengekstrak, memproses hasil, selesai, dan gagal.
-- Sertifikat Tanah tidak lagi hanya mengandalkan alert saat proses AI berlangsung.
-- Tidak menggunakan persentase progres semu; indikator menampilkan tahap proses aktual.
-
-
-## v1.15.14
-- Cache-buster index.html diperbarui ke v1.15.14 untuk config.js dan app.js agar browser/GitHub Pages mengambil JavaScript terbaru.
-- Mempertahankan Google Drive token fix dan AI progress dari versi sebelumnya.
-
-
-## v1.16.0 Release Candidate
-- Backup seluruh data akun ke satu file JSON.
-- Restore backup dengan konfirmasi eksplisit; data akun aktif diganti dari backup.
-- Dokumen asli di Google Drive tidak dihapus/diubah oleh backup atau restore.
-- Input tanggal cepat DDMMYY dan indikator progress AI tetap dipertahankan.
-- Uji backup terlebih dahulu sebelum memakai restore pada data produksi.
-
-
-## v1.16.1 RC
-- Menambahkan app icon/PWA icon baru yang disetujui untuk iPhone Home Screen.
-- Menambahkan Apple Touch Icon 180x180 serta PWA icons 192x192 dan 512x512.
-- Memperbarui manifest/cache-buster tanpa mengubah fungsi aplikasi v1.16.0 RC.
-
-## v1.17.2 RC — User Roles
-Sebelum memakai menu Users, jalankan `supabase_v117_user_roles_migration.sql` sekali di Supabase SQL Editor.
-Roles: Administrator (full access), Document Manager (create/edit/upload/AI), Viewer (read-only).
-Existing accounts are preserved as Administrator of their own existing workspace/data.
-
-
-## Supabase
-
-**Supabase update: TIDAK DIPERLUKAN untuk v1.17.3.**
-
-- `supabase_schema_history.sql` adalah arsip gabungan migration lama dan **tidak perlu dijalankan** saat update normal.
-- `supabase_seed_langkee.sql` dipertahankan sebagai data seed khusus dan bukan migration versi.
-- Mulai versi berikutnya, hanya `supabase_update_latest.sql` yang perlu dijalankan jika README menyatakan ada perubahan database.
+`supabase_schema_history.sql` hanya arsip/referensi dan **jangan dijalankan untuk update normal**.

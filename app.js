@@ -290,6 +290,8 @@ $('#userForm').onsubmit=async e=>{e.preventDefault();if(currentRole!=='administr
 function lockViewerDialog(dlg){if(currentRole!=='viewer')return;dlg.querySelectorAll('input,select,textarea').forEach(e=>e.disabled=true);dlg.querySelectorAll('button[type="submit"],.write-only').forEach(e=>e.hidden=true)}
 ['dlg','assetDlg','pbbEditDlg'].forEach(id=>{let d=$('#'+id);if(d)d.addEventListener('toggle',()=>{if(d.open)lockViewerDialog(d)})});
 
+const mobileMenuBtn=$('#mobileMenuBtn'),utilityMenu=document.querySelector('.utility-menu');
+if(mobileMenuBtn&&utilityMenu){mobileMenuBtn.onclick=e=>{e.stopPropagation();let open=utilityMenu.classList.toggle('open');mobileMenuBtn.setAttribute('aria-expanded',String(open))};document.addEventListener('click',e=>{if(!utilityMenu.contains(e.target)){utilityMenu.classList.remove('open');mobileMenuBtn.setAttribute('aria-expanded','false')}});utilityMenu.querySelectorAll('.utility-menu-panel button').forEach(b=>b.addEventListener('click',()=>{utilityMenu.classList.remove('open');mobileMenuBtn.setAttribute('aria-expanded','false')}))}
 if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});initAuth();
 
 // v1.16.0 RC: input tanggal cepat DDMMYY
