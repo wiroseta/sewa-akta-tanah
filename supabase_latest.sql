@@ -1,3 +1,3 @@
--- Sewa & Akta Tanah v1.19.39
+-- Sewa & Akta Tanah v1.19.40
 -- Tidak ada perubahan SQL/database baru untuk versi ini.
 -- Tidak perlu menjalankan SQL apa pun jika schema v1.19.35 sudah diterapkan.

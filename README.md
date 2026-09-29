@@ -1,4 +1,4 @@
-# v1.19.39 RC — Safe Delete & Duplicate Prevention
+# v1.19.40 RC — Safe Delete & Duplicate Prevention
 
 - Administrator dapat menghapus satu record histori PBB/SPPT yang salah tanpa menghapus NOP/tahun lain.
 - Akta Sewa memiliki Hapus aman; relasi dan dokumen historis milik akta ikut dibersihkan, tetapi Property/PBB/Sertifikat sumber tidak dihapus.
@@ -7,7 +7,7 @@
 - Tombol Hapus hanya tersedia untuk Administrator.
 - Tidak ada SQL baru dan Edge Function tidak perlu dideploy ulang.
 
-v1.19.39 RC — Export Excel & Simpan ke Google Drive
+v1.19.40 RC — Export Excel & Simpan ke Google Drive
 
 Perubahan:
 - Master PBB: tombol 📊 Export Excel menghasilkan Rekap_PBB_DD-MM-YYYY.xlsx berisi SPPT aktif + histori dengan kolom penting dan link dokumen.
@@ -17,8 +17,8 @@ Perubahan:
 - Semua fitur v1.19.36 tetap dipertahankan.
 
 DEPLOYMENT:
-1. Tidak ada SQL baru untuk v1.19.39. Jika SQL v1.19.35 belum dijalankan, jalankan SQL tersebut dari baseline sebelumnya.
-2. Upload web v1.19.39 ke GitHub Pages.
+1. Tidak ada SQL baru untuk v1.19.40. Jika SQL v1.19.35 belum dijalankan, jalankan SQL tersebut dari baseline sebelumnya.
+2. Upload web v1.19.40 ke GitHub Pages.
 3. Tidak perlu deploy ulang Edge Function.
 4. Saat pertama memakai upload Excel, Hubungkan Google Drive kembali satu kali untuk memberikan izin drive.file.
 
@@ -42,7 +42,7 @@ DEPLOYMENT:
 v1.19.36: tombol Print Semua PBB pada Master PBB. Hasil cetak A4 landscape berisi semua SPPT (aktif + histori) dengan informasi penting: alias/properti, NOP, tahun, wajib pajak, alamat, luas tanah, total NJOP, PBB dibayar, status, dan tanggal bayar. Tidak ada perubahan database/Edge Function.
 
 
-## v1.19.39 RC — Hak Tanah 3-Year Early Warning
+## v1.19.40 RC — Hak Tanah 3-Year Early Warning
 - Peringatan internal Hak Tanah dimulai saat sisa masa berlaku <= 3 tahun.
 - <= 3 tahun: persiapan perpanjangan dan dokumen pendukung.
 - <= 2 tahun: perlu tindak lanjut perpanjangan.
