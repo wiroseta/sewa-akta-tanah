@@ -226,3 +226,7 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 
 /* v1.19.35 PBB ↔ Sertifikat coverage */
 .pbb-land-relations{display:grid;gap:10px;margin:10px 0 14px}.pbb-land-card{border:1px solid #dfe5ed;border-radius:14px;padding:12px;background:#fff}.pbb-land-head{display:flex;gap:10px;align-items:flex-start}.pbb-land-head input[type=checkbox]{width:auto!important;margin-top:4px}.pbb-land-title{font-weight:750}.pbb-land-meta{font-size:.9em;color:#6e6e73;margin-top:2px}.pbb-land-detail{display:grid;grid-template-columns:180px 180px 1fr;gap:10px;margin:10px 0 0 28px}.pbb-land-detail label{font-size:.85em;color:#666}.pbb-land-detail input,.pbb-land-detail select{margin-top:4px}.pbb-land-card:not(.selected) .pbb-land-detail{display:none}.pbb-coverage-warning{padding:10px 12px;border-radius:10px;background:#fff4e5;border:1px solid #f2c46d;color:#7a4b00;margin-bottom:12px}.pbb-coverage-ok{font-size:.85em;color:#5f6368;margin:6px 0 0 28px}@media(max-width:700px){.pbb-land-detail{grid-template-columns:1fr;margin-left:0}.pbb-land-head{align-items:flex-start}}
+
+/* v1.19.36 print-all PBB */
+.pbb-page-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+@media(max-width:640px){.pbb-page-actions{width:100%}.pbb-page-actions button{flex:1 1 auto}}
