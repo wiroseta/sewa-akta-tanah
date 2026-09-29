@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.21 RC
+# Sewa & Akta Tanah — v1.19.23 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -172,3 +172,20 @@ Akta Sewa sekarang dibuka sebagai halaman detail penuh di dalam aplikasi (bukan 
 - Rekonsiliasi tetap memakai alokasi FIFO dari Riwayat Pembayaran Aktual ke termin paling lama.
 - Riwayat Pembayaran Aktual diperbaiki menjadi satu row penuh: Tanggal, Netto, Pajak, Bank, Referensi, Catatan, dan tombol Hapus berada pada baris yang sama di desktop. Tombol minus diganti menjadi `Hapus`.
 - Tidak memerlukan perubahan schema/database.
+
+
+## v1.19.23 RC — PBB Berbasis NOP & Histori SPPT
+- Menu PBB sekarang dikelompokkan berdasarkan NOP.
+- SPPT tahun terbaru otomatis menjadi data PBB aktif untuk NOP tersebut.
+- SPPT tahun lama tetap tersimpan dan dapat dibuka dari Riwayat SPPT.
+- Status aktif menampilkan jatuh tempo; bila lunas menampilkan tanggal pembayaran.
+- Dashboard PBB hanya memakai SPPT aktif/terbaru per NOP untuk warning, agar SPPT historis tidak membuat warning aktif ganda.
+- Saat menyimpan NOP + tahun yang sudah ada, record tahun itu diperbarui dan tidak dibuat duplikat.
+- Tidak memerlukan perubahan schema/SQL baru; kompatibel dengan data PBB v1.19.21.
+
+
+## v1.19.23 RC
+- Master PBB menjadi halaman penuh terpisah dari Dashboard.
+- Master per NOP menampilkan Nama Wajib Pajak dan Alamat Objek Pajak.
+- Search Master PBB mencari NOP, nama wajib pajak, alamat objek pajak, tahun, dan metadata properti yang tersedia.
+- Histori SPPT per NOP dan current-year logic v1.19.22 tetap dipertahankan.
