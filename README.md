@@ -1,62 +1,10 @@
-# v1.19.42 RC — Property-Scoped Full History Search
-
-Perubahan utama:
-- Cari Klausul & Riwayat tidak lagi dibatasi 500 snapshot terbaru.
-- Seluruh `document_history` dibaca bertahap (pagination 1.000 record) sehingga histori lama tetap dapat ditemukan.
-- Hasil pencarian menampilkan identitas Akta/Sertifikat, status TERBARU/HISTORIS, tanggal versi, dan potongan teks yang cocok.
-- Hasil Akta Sewa menyediakan tombol **Buka Akta** serta **Riwayat & Bandingkan**.
-- Maksimal 200 hasil ditampilkan sekaligus agar UI tetap ringan; jumlah hasil total tetap dihitung dari seluruh histori.
-- Tidak ada perubahan schema/database dan tidak ada SQL baru yang perlu dijalankan.
-
-# v1.19.42 RC — Property-Scoped Full History Search
-
-- Administrator dapat menghapus satu record histori PBB/SPPT yang salah tanpa menghapus NOP/tahun lain.
-- Akta Sewa memiliki Hapus aman; relasi dan dokumen historis milik akta ikut dibersihkan, tetapi Property/PBB/Sertifikat sumber tidak dihapus.
-- Property Master hanya dapat dihapus bila tidak memiliki Akta Sewa, PBB, Sertifikat Tanah, atau Bangunan terkait. Aplikasi menampilkan jumlah dependensi dan memblokir penghapusan.
-- Penyimpanan PBB tetap mencegah duplikat NOP + Tahun pada input baru/AI dengan memperbarui record yang sudah ada.
-- Tombol Hapus hanya tersedia untuk Administrator.
-- Tidak ada SQL baru dan Edge Function tidak perlu dideploy ulang.
-
-v1.19.40 RC — Export Excel & Simpan ke Google Drive
+# v1.19.44 RC — In-Akta Search & Compact PBB Picker
 
 Perubahan:
-- Master PBB: tombol 📊 Export Excel menghasilkan Rekap_PBB_DD-MM-YYYY.xlsx berisi SPPT aktif + histori dengan kolom penting dan link dokumen.
-- Master PBB: tombol ☁️ Simpan Excel ke Google Drive membuat file Excel yang sama lalu upload langsung ke Google Drive pengguna.
-- OAuth Google Drive memakai scope gabungan drive.readonly + drive.file. drive.file dipakai agar aplikasi hanya dapat membuat/mengelola file yang dibuat oleh aplikasi, tanpa meminta hak edit seluruh Drive.
-- Token sesi lama yang hanya readonly otomatis dianggap tidak cukup sehingga pengguna diminta Hubungkan Google Drive sekali lagi untuk izin upload.
-- Semua fitur v1.19.36 tetap dipertahankan.
-
-DEPLOYMENT:
-1. Tidak ada SQL baru untuk v1.19.40. Jika SQL v1.19.35 belum dijalankan, jalankan SQL tersebut dari baseline sebelumnya.
-2. Upload web v1.19.40 ke GitHub Pages.
-3. Tidak perlu deploy ulang Edge Function.
-4. Saat pertama memakai upload Excel, Hubungkan Google Drive kembali satu kali untuk memberikan izin drive.file.
-
-v1.19.36 RC — Print Semua PBB (Tabel Ringkas)
-
-Perubahan:
-- Bagian Sertifikat Tanah pada PBB didesain ulang agar jelas: jenis hak, nomor, luas sertifikat, alamat, jenis cakupan, luas cakupan PBB, dan keterangan.
-- Satu sertifikat boleh terkait dengan lebih dari satu NOP/PBB (many-to-many); ini bukan error.
-- Jenis cakupan: Seluruh sertifikat, Sebagian sertifikat, atau Belum diketahui. Luas tidak dipaksa jika dokumen tidak menyebutkannya.
-- Menampilkan jumlah relasi PBB lain pada sertifikat yang sama dan total luas cakupan yang sudah tercatat.
-- Warning muncul bila luas PBB ini sendiri atau total luas cakupan tercatat lintas PBB melebihi luas sertifikat.
-- Relasi tetap disimpan per record PBB dan metadata cakupan tersimpan di pbb_land_titles.
-- Semua fitur v1.19.34 tetap dipertahankan.
-
-DEPLOYMENT:
-1. Jalankan supabase_latest.sql SEKALI.
-2. Upload web v1.19.36 ke GitHub Pages.
-3. Tidak perlu deploy ulang Edge Function untuk perubahan ini.
-
-
-v1.19.36: tombol Print Semua PBB pada Master PBB. Hasil cetak A4 landscape berisi semua SPPT (aktif + histori) dengan informasi penting: alias/properti, NOP, tahun, wajib pajak, alamat, luas tanah, total NJOP, PBB dibayar, status, dan tanggal bayar. Tidak ada perubahan database/Edge Function.
-
-
-## v1.19.40 RC — Hak Tanah 3-Year Early Warning
-- Peringatan internal Hak Tanah dimulai saat sisa masa berlaku <= 3 tahun.
-- <= 3 tahun: persiapan perpanjangan dan dokumen pendukung.
-- <= 2 tahun: perlu tindak lanjut perpanjangan.
-- <= 1 tahun: mendesak.
-- Lewat tanggal berlaku: hak tanah telah berakhir.
-- Dashboard menampilkan jumlah Hak tanah <= 3 tahun.
-- Tidak ada perubahan SQL dan Edge Function.
+- Detail Akta Sewa memiliki tombol **Cari Data Properti & Akta**.
+- Pencarian default ke properti Akta yang sedang dibuka, tetapi dapat diganti ke Semua Properti.
+- Sumber pencarian: Master Properti, Sertifikat, Bangunan, PBB, Akta Sewa, Klausul Penting/Catatan dalam Akta, dan seluruh document_history.
+- Pencarian dapat dipakai untuk data seperti luas tanah, luas bangunan, nomor sertifikat, NOP, nilai sewa, tanggal, perpanjangan, denda, PPh, dan klausul lain.
+- PBB Terkait default hanya menampilkan PBB terpilih. PBB belum terpilih tersembunyi dan dapat dibuka dengan **Tampilkan PBB Lainnya**.
+- PBB yang dipilih pindah ke daftar terpilih; bila dibatalkan kembali ke PBB lainnya.
+- Tidak ada perubahan schema database / SQL baru.
