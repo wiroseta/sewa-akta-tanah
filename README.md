@@ -1,4 +1,13 @@
-v1.19.27 RC — Master Properti Page, Search & Alias
+v1.19.28 RC — Google Drive OAuth Session Reuse Fix
+
+Perubahan v1.19.28:
+- Pembacaan Google Drive tidak lagi memulai OAuth interaktif secara otomatis.
+- OAuth hanya dimulai saat tombol Hubungkan Google Drive ditekan.
+- Access token Google Drive yang masih valid disimpan di sessionStorage dan dipakai ulang setelah reload pada sesi browser yang sama.
+- Jika token kedaluwarsa/401, aplikasi berhenti dengan instruksi Hubungkan Google Drive; tidak membuka popup OAuth sendiri.
+- requestAccessToken tidak lagi memaksa prompt=consent.
+- Packaging SQL dirapikan: supabase_latest.sql hanya berisi perubahan yang perlu dijalankan untuk build ini; histori lama dipindahkan/tersimpan di supabase_schema_history.sql.
+
 
 # Sewa & Akta Tanah — v1.19.23 RC
 

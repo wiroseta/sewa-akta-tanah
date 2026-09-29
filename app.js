@@ -174,18 +174,24 @@ function driveFileId(url){
   return m?m[1]:'';
 }
 function googleClientReady(){return window.google?.accounts?.oauth2 && window.SEWA_CONFIG?.googleClientId && !window.SEWA_CONFIG.googleClientId.startsWith('ISI_')}
+const DRIVE_TOKEN_KEY='sewaGoogleDriveTokenV1',DRIVE_TOKEN_EXP_KEY='sewaGoogleDriveTokenExpV1';
+function clearStoredDriveToken(){googleDriveToken='';try{sessionStorage.removeItem(DRIVE_TOKEN_KEY);sessionStorage.removeItem(DRIVE_TOKEN_EXP_KEY)}catch(_){}}
+function restoreDriveToken(){try{const t=sessionStorage.getItem(DRIVE_TOKEN_KEY)||'',exp=Number(sessionStorage.getItem(DRIVE_TOKEN_EXP_KEY)||0);if(t&&exp>Date.now()+30000){googleDriveToken=t;return true}if(t||exp)clearStoredDriveToken()}catch(_){}return false}
+function storeDriveToken(r){googleDriveToken=r.access_token||'';const ttl=Math.max(60,Number(r.expires_in||3600));try{sessionStorage.setItem(DRIVE_TOKEN_KEY,googleDriveToken);sessionStorage.setItem(DRIVE_TOKEN_EXP_KEY,String(Date.now()+ttl*1000))}catch(_){}return googleDriveToken}
 function requestDriveToken(){return new Promise((resolve,reject)=>{
   if(!googleClientReady())return reject(new Error('Google OAuth Client ID belum dikonfigurasi di config.js'));
-  const client=google.accounts.oauth2.initTokenClient({client_id:SEWA_CONFIG.googleClientId,scope:'https://www.googleapis.com/auth/drive.readonly',callback:r=>{if(r.error)return reject(new Error(r.error));googleDriveToken=r.access_token;resolve(googleDriveToken)}});
-  client.requestAccessToken({prompt:googleDriveToken?'':'consent'});
+  const client=google.accounts.oauth2.initTokenClient({client_id:SEWA_CONFIG.googleClientId,scope:'https://www.googleapis.com/auth/drive.readonly',callback:r=>{if(r.error)return reject(new Error(r.error));resolve(storeDriveToken(r))}});
+  // OAuth hanya boleh dimulai dari tombol Hubungkan Google Drive. Jangan paksa consent berulang.
+  client.requestAccessToken({prompt:''});
 })}
-async function connectDrive(){const st=$('#driveStatus'),b=$('#driveConnectBtn');try{b.disabled=true;st.textContent='Membuka izin Google Drive…';await requestDriveToken();st.textContent='✓ Google Drive terhubung untuk sesi ini.';b.textContent='Hubungkan Ulang Google Drive'}catch(e){st.textContent='Gagal menghubungkan Google Drive: '+(e.message||e)}finally{b.disabled=false}}
+function requireDriveToken(){if(googleDriveToken||restoreDriveToken())return googleDriveToken;throw new Error('Google Drive belum terhubung atau sesi izin sudah berakhir. Tekan “Hubungkan Google Drive” terlebih dahulu, lalu ulangi pembacaan.')}
+async function connectDrive(){const st=$('#driveStatus'),b=$('#driveConnectBtn');try{b.disabled=true;st.textContent='Membuka izin Google Drive…';await requestDriveToken();st.textContent='✓ Google Drive terhubung. Izin yang masih valid akan dipakai ulang tanpa meminta OAuth saat membaca file.';b.textContent='Hubungkan Ulang Google Drive'}catch(e){st.textContent='Gagal menghubungkan Google Drive: '+(e.message||e)}finally{b.disabled=false}}
 async function blobToBase64(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=()=>reject(r.error);r.readAsDataURL(blob)})}
 async function fetchDriveFile(fileId){
-  if(!googleDriveToken)await requestDriveToken();
+  requireDriveToken();
   const metaUrl=`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=id,name,mimeType,size,webViewLink&supportsAllDrives=true`;
   let r=await fetch(metaUrl,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
-  if(r.status===401){googleDriveToken='';await requestDriveToken();r=await fetch(metaUrl,{headers:{Authorization:`Bearer ${googleDriveToken}`}})}
+  if(r.status===401){clearStoredDriveToken();throw new Error('Sesi izin Google Drive sudah berakhir. Tekan “Hubungkan Google Drive” lalu coba lagi.')}
   if(!r.ok)throw new Error('Tidak dapat membaca metadata file Google Drive ('+r.status+').');
   const meta=await r.json();
   if(String(meta.mimeType).startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
@@ -489,11 +495,11 @@ async function invokeLargeDrivePdfAI(id,meta,documentType,onProgress=()=>{}){
 }
 async function invokeDriveAI(url,documentType,onProgress=()=>{}){
  const id=driveFileId(url);if(!id)throw new Error('Link Google Drive tidak valid.');
- onProgress('Menghubungkan ke Google Drive…');if(!googleDriveToken)await requestDriveToken();
+ onProgress('Menghubungkan ke Google Drive…');requireDriveToken();
  let headers={Authorization:`Bearer ${googleDriveToken}`};
  onProgress('Membaca informasi file Google Drive…');
  let mr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers});
- if(mr.status===401){googleDriveToken='';await requestDriveToken();headers={Authorization:`Bearer ${googleDriveToken}`};mr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size&supportsAllDrives=true`,{headers})}
+ if(mr.status===401){clearStoredDriveToken();throw new Error('Sesi izin Google Drive sudah berakhir. Tekan “Hubungkan Google Drive” lalu coba lagi.')}
  if(!mr.ok)throw new Error(`Tidak dapat membaca metadata Google Drive (${mr.status}).`);
  const meta=await mr.json(),size=Number(meta.size||0),mime=String(meta.mimeType||'');
  if(mime.startsWith('application/vnd.google-apps.'))throw new Error('Gunakan file PDF/JPG/PNG di Google Drive, bukan Google Docs/Sheets.');
@@ -578,6 +584,7 @@ function lockViewerDialog(dlg){if(currentRole!=='viewer')return;dlg.querySelecto
 
 const mobileMenuBtn=$('#mobileMenuBtn'),utilityMenu=document.querySelector('.utility-menu');
 if(mobileMenuBtn&&utilityMenu){mobileMenuBtn.onclick=e=>{e.stopPropagation();let open=utilityMenu.classList.toggle('open');mobileMenuBtn.setAttribute('aria-expanded',String(open))};document.addEventListener('click',e=>{if(!utilityMenu.contains(e.target)){utilityMenu.classList.remove('open');mobileMenuBtn.setAttribute('aria-expanded','false')}});utilityMenu.querySelectorAll('.utility-menu-panel button').forEach(b=>b.addEventListener('click',()=>{utilityMenu.classList.remove('open');mobileMenuBtn.setAttribute('aria-expanded','false')}))}
+restoreDriveToken();
 if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});initAuth();
 
 // v1.16.0 RC: input tanggal cepat DDMMYY
