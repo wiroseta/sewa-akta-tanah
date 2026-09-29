@@ -321,3 +321,9 @@ create index if not exists pbb_property_alias_idx on public.pbb_records (propert
 -- v1.19.35 RC: PBB ↔ land title coverage metadata
 alter table public.pbb_land_titles add column if not exists coverage_type text not null default 'unknown', add column if not exists covered_area numeric, add column if not exists coverage_notes text not null default '';
 create index if not exists pbb_land_titles_land_title_idx on public.pbb_land_titles (land_title_id);
+
+-- ============================================================
+-- v1.19.47: direct PBB -> Master Properti relationship
+-- ============================================================
+alter table public.pbb_records add column if not exists asset_id uuid references public.assets(id) on delete set null;
+create index if not exists pbb_records_asset_id_idx on public.pbb_records(asset_id);
