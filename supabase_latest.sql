@@ -44,3 +44,6 @@ alter table public.lease_documents
     'perjanjian_tambahan','lainnya'
   ));
 notify pgrst, 'reload schema';
+
+-- v1.19.27: human-friendly property alias
+alter table public.assets add column if not exists alias text not null default '';

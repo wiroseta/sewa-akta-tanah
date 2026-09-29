@@ -303,3 +303,6 @@ end$$;
 -- IMPORTANT: run the standalone migration file in Supabase SQL Editor.
 -- ============================================================
 -- v1.17.9 creates lease_* relationship tables used by app.js and workspace-aware RLS.
+
+-- v1.19.27: human-friendly property alias
+alter table public.assets add column if not exists alias text not null default '';

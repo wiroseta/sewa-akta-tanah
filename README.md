@@ -1,3 +1,5 @@
+v1.19.27 RC — Master Properti Page, Search & Alias
+
 # Sewa & Akta Tanah — v1.19.23 RC
 
 ## Universal 500 MB AI Document Reader
@@ -205,3 +207,12 @@ Akta Sewa sekarang dibuka sebagai halaman detail penuh di dalam aplikasi (bukan 
 - Tombol Kembali/Batal dari detail mengembalikan pengguna ke Master Akta Sewa, bukan menumpuk kedua halaman.
 - Mempertahankan posisi scroll daftar Akta saat kembali.
 - Cache buster aplikasi dinaikkan ke v1.19.25.
+
+
+## v1.19.26 RC — PBB NOP Auto History in Form
+- Tambah/Edit PBB sekarang otomatis menampilkan Riwayat SPPT tersimpan berdasarkan NOP yang sama.
+- Histori dimuat segera saat NOP diketik maupun setelah NOP terisi dari pembacaan AI file/Google Drive.
+- SPPT yang sedang diedit tidak diduplikasi di daftar histori.
+- Histori menampilkan tahun, wajib pajak, alamat objek, nilai PBB, jatuh tempo, status, tanggal dibayar, serta tombol Buka/Edit dan SPPT bila link tersedia.
+- Data hasil AI yang belum disimpan tetap dianggap draft; histori hanya berasal dari data PBB yang sudah tersimpan.
+- Tidak memerlukan perubahan SQL.
