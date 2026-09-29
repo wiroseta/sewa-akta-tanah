@@ -306,3 +306,9 @@ end$$;
 
 -- v1.19.27: human-friendly property alias
 alter table public.assets add column if not exists alias text not null default '';
+
+-- ============================================================
+-- v1.19.34: PBB Alias / Nama Properti per NOP
+-- ============================================================
+alter table public.pbb_records add column if not exists property_alias text not null default '';
+create index if not exists pbb_property_alias_idx on public.pbb_records (property_alias);
