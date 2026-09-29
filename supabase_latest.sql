@@ -1,3 +1,3 @@
--- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.28)
--- Tidak ada perubahan database/SQL yang diperlukan untuk v1.19.28.
--- Perbaikan versi ini hanya pada alur Google Drive OAuth di aplikasi.
+-- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.29)
+-- Tidak ada perubahan database/SQL yang diperlukan untuk v1.19.29.
+-- Tidak perlu menjalankan SQL untuk build ini.

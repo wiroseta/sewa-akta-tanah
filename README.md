@@ -1,3 +1,11 @@
+v1.19.29 RC — Google Drive Connect Buttons Everywhere
+
+Perubahan v1.19.29:
+- Tombol Hubungkan Google Drive tersedia pada setiap area yang benar-benar membaca dokumen private dengan AI: Akta Sewa, PBB/SPPT, Sertifikat Tanah, Perjanjian di Bawah Tangan, dan Akta Lama/Dokumen Historis.
+- Semua tombol koneksi memakai satu sesi/token Google Drive yang sama; setelah satu area terhubung, area lain dapat memakai token yang masih valid.
+- Tombol Baca dari Google Drive tetap tidak memulai OAuth secara otomatis. Jika sesi berakhir, pengguna diminta menekan Hubungkan Google Drive secara eksplisit.
+- Tidak ada perubahan database untuk v1.19.29.
+
 v1.19.28 RC — Google Drive OAuth Session Reuse Fix
 
 Perubahan v1.19.28:
