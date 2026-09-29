@@ -375,6 +375,21 @@ async function renderAssetCards(){
   const counts=await Promise.all(filtered.map(x=>propertyCounts(x.a.id).catch(()=>({lands:0,buildings:0}))));
   box.innerHTML=filtered.map((x,j)=>{let a=x.a,i=x.i;return `<div class="asset-master-card"><div class="property-label">PROPERTI / LOKASI</div>${a.alias?`<h3 class="asset-alias">${a.alias}</h3><div class="asset-official-name">${a.name||'-'}</div>`:`<h3>${a.name||'-'}</h3>`}<div class="asset-address">${a.address||'-'}</div><div class="property-counts"><span>📜 ${counts[j].lands} sertifikat tanah</span><span>🏭 ${counts[j].buildings} bangunan</span></div><div class="asset-master-actions"><button type="button" onclick="openAssetEdit(${i})">Buka Properti</button>${a.googleMapsUrl?`<button type="button" class="secondary" onclick="window.open('${a.googleMapsUrl}','_blank','noopener,noreferrer')">📍 Maps</button>`:''}${currentRole==='administrator'?`<button type="button" class="secondary danger-action" onclick="deletePropertySafe('${a.id}')">Hapus</button>`:''}</div></div>`}).join('')
 }
+function assetDetailNodeText(el){let parts=[el.innerText||''];el.querySelectorAll('input,textarea,select').forEach(x=>{parts.push(x.value||'');if(x.tagName==='SELECT')parts.push(x.options[x.selectedIndex]?.text||'')});return parts.join(' ').toLowerCase()}
+function runAssetDetailSearch(){
+  const root=$('#assetDlg'),input=$('#assetDetailSearch'),count=$('#assetDetailSearchCount'),related=$('#assetDetailRelatedResults');if(!root||!input)return;
+  const q=input.value.trim().toLowerCase(),terms=q.split(/\s+/).filter(Boolean);let shown=0,total=0;
+  const matches=t=>!terms.length||terms.every(k=>t.includes(k));
+  root.querySelectorAll('#assetForm > .grid > label, #assetForm > .master-section, #assetForm > label').forEach(el=>{total++;let ok=matches(assetDetailNodeText(el));el.classList.toggle('asset-search-hidden',!ok);if(ok)shown++});
+  let rel=[];const a=assetEdit>=0?assets[assetEdit]:null;
+  if(a&&terms.length){
+    data.forEach((x,i)=>{if(String(x.assetId||'')===String(a.id)&&matches(JSON.stringify(x).toLowerCase()))rel.push(`<div class="asset-related-hit"><b>📄 Akta Sewa · ${x.tenant||'-'}</b><span>Akta ${x.deedNo||'-'} · ${x.start||'-'} s/d ${x.end||'-'}</span><button type="button" class="secondary" onclick="openEdit(${i})">Buka Akta</button></div>`)});
+    pbbData.forEach((x,i)=>{let linked=[x.property_alias,x.object_address].filter(Boolean).join(' ').toLowerCase();let belongs=(a.alias&&linked.includes(String(a.alias).toLowerCase()))||(a.name&&linked.includes(String(a.name).toLowerCase()));if(belongs&&matches(JSON.stringify(x).toLowerCase()))rel.push(`<div class="asset-related-hit"><b>🧾 PBB · ${x.nop||'-'}</b><span>Tahun ${x.tax_year||'-'} · ${x.payment_status==='lunas'?'Sudah Bayar':'Belum Bayar'}</span><button type="button" class="secondary" onclick="openPbbEdit(${i})">Buka PBB</button></div>`)});
+  }
+  related.innerHTML=rel.length?`<h3>Hasil terkait lokasi ini</h3>${rel.join('')}`:'';related.hidden=!rel.length;
+  if(count)count.textContent=terms.length?`${shown} bagian cocok${rel.length?' · '+rel.length+' data terkait':''}`:'Semua data ditampilkan';
+}
+window.runAssetDetailSearch=runAssetDetailSearch;
 async function openAssetEdit(i=-1){
   assetEdit=i;let a=i>=0?assets[i]:{};
   $('#assetForm').reset();$('#assetLandTitles').innerHTML='';$('#assetBuildings').innerHTML='';
@@ -385,14 +400,14 @@ async function openAssetEdit(i=-1){
     c.buildings.forEach(v=>addRepeat('assetBuildings',{name:v.name,buildingType:v.building_type,buildingArea:v.building_area,address:v.address,driveUrl:v.drive_url,floorPlanUrl:v.floor_plan_url,mapsUrl:v.google_maps_url,notes:v.notes},'building'));
     let firstLand=$('#assetLandTitles .landtitle');if(firstLand&&isAutoLandPropertyName($('#assetForm').elements.namedItem('name')?.value))syncAutoLandPropertyName(firstLand,true);
   }catch(e){alert('Gagal membaca detail properti: '+e.message)}
-  $('#assetPage').hidden=true;$('#assetDlg').showModal();lockViewerDialog($('#assetDlg'))
+  $('#assetPage').hidden=true;$('#assetDlg').hidden=false;document.body.classList.add('asset-detail-open');$('#assetDetailTitle').textContent=a.alias||a.name||'Properti / Lokasi';$('#assetDetailSearch').value='';runAssetDetailSearch();lockViewerDialog($('#assetDlg'));window.scrollTo({top:0,behavior:'smooth'})
 }window.openAssetEdit=openAssetEdit;
 async function replacePropertyChildren(table,assetId,rows,mapper){
   let del=await sb.from(table).delete().eq('asset_id',assetId);if(del.error)throw del.error;
   if(!rows.length)return;
   let ins=await sb.from(table).insert(rows.map(r=>({user_id:(dataOwnerId||currentUser.id),asset_id:assetId,...mapper(r)})));if(ins.error)throw ins.error
 }
-$('#assetsBtn').onclick=openAssetList;$('#assetBack').onclick=showDashboard;$('#newAssetBtn').onclick=()=>openAssetEdit(-1);$('#assetSearch').addEventListener('input',renderAssetCards);$('#assetCancel').onclick=()=>{$('#assetDlg').close();openAssetList()};
+$('#assetsBtn').onclick=openAssetList;$('#assetBack').onclick=showDashboard;$('#newAssetBtn').onclick=()=>openAssetEdit(-1);$('#assetSearch').addEventListener('input',renderAssetCards);function closeAssetDetailPage(){if($('#assetDlg'))$('#assetDlg').hidden=true;document.body.classList.remove('asset-detail-open');openAssetList()}$('#assetCancel').onclick=closeAssetDetailPage;$('#assetDetailBack').onclick=closeAssetDetailPage;$('#assetDetailSearch').addEventListener('input',runAssetDetailSearch);
 $('#assetAddLandTitle').onclick=()=>addRepeat('assetLandTitles',{},'landtitle');
 $('#assetAddBuilding').onclick=()=>addRepeat('assetBuildings',{},'building');
 $('#assetAddPbb').onclick=async()=>{if(assetEdit<0||!assets[assetEdit]?.id)return alert('Simpan Properti terlebih dahulu sebelum menambahkan PBB.');window.pbbPropertyAssetId=assets[assetEdit].id;await openPbbEdit(-1,assets[assetEdit].id)};
@@ -409,7 +424,7 @@ $('#assetForm').onsubmit=async e=>{
     await replacePropertyChildren('land_titles',id,lands,v=>({right_type:v.rightType,certificate_no:v.certificateNo,land_area:v.landArea?Number(v.landArea):null,valid_until:idToISO(v.validUntil)||null,address:v.address,drive_url:v.driveUrl,map_plan_url:v.mapPlanUrl,google_maps_url:v.mapsUrl,holder_name:v.holderName||'',survey_no:v.surveyNo||'',survey_date:idToISO(v.surveyDate)||null,notes:v.notes}));
     await replacePropertyChildren('buildings',id,buildings,v=>({name:v.name,building_type:v.buildingType,building_area:v.buildingArea?Number(v.buildingArea):null,address:v.address,drive_url:v.driveUrl,floor_plan_url:v.floorPlanUrl,google_maps_url:v.mapsUrl,notes:v.notes}));
     await captureAssetLandVersion(id,assetEdit>=0?'Perubahan sertifikat disimpan':'Sertifikat pertama disimpan');
-    await loadData();$('#assetDlg').close();openAssetList()
+    await loadData();closeAssetDetailPage()
   }catch(err){alert('Properti tersimpan, tetapi detail tanah/bangunan gagal: '+err.message)}
 };
 
