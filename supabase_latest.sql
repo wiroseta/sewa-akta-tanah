@@ -1,3 +1,3 @@
--- v1.19.37 RC
--- Tidak ada perubahan SQL baru pada versi ini.
--- SQL v1.19.35 harus sudah pernah dijalankan sebelum memakai model cakupan PBB ↔ Sertifikat.
+-- v1.19.38 RC
+-- Tidak ada perubahan database/SQL pada versi ini.
+-- Tidak perlu menjalankan SQL untuk upgrade dari v1.19.37 ke v1.19.38.
