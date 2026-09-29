@@ -1,3 +1,3 @@
--- Sewa & Akta Tanah — LATEST DATABASE UPDATE (v1.19.30)
--- Tidak ada perubahan database/SQL yang diperlukan untuk v1.19.30.
--- Tidak perlu menjalankan SQL untuk update ini.
+-- Sewa & Akta Tanah v1.19.31 RC
+-- Tidak ada perubahan schema/database yang perlu dijalankan untuk versi ini.
+-- Perubahan v1.19.31 berada pada pipeline AI PBB dan logika aplikasi untuk menyimpan histori pembayaran per NOP+tahun.

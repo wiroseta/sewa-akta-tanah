@@ -1,6 +1,15 @@
-v1.19.30 RC — PBB History Document Count Label Fix
+v1.19.32 RC — PBB Historical Drive Link Completion
 
-Perubahan v1.19.30:
+Perubahan v1.19.32:
+- Riwayat SPPT pada form PBB sekarang menampilkan status apakah link SPPT dan Bukti Bayar sudah/belum tersedia.
+- Tombol histori menjadi “Buka / Edit Link” untuk role yang boleh mengedit; membuka record tahun historis yang benar, sehingga link Google Drive SPPT dan Google Drive bukti bayar dapat ditambahkan tanpa mengubah SPPT aktif.
+- Tombol “Bukti Bayar” juga ditampilkan langsung pada histori form bila link tersedia.
+- Koreksi penting: histori yang dibuat otomatis dari ringkasan pembayaran AI TIDAK lagi mewarisi link SPPT tahun utama. Link SPPT/bukti bayar historis dibiarkan kosong sampai link dokumen tahun tersebut benar-benar diberikan.
+- Tidak ada perubahan schema database / SQL baru.
+
+v1.19.31 RC — PBB History Document Count Label Fix
+
+Perubahan v1.19.31:
 - Label kartu PBB diubah dari “Riwayat SPPT (N tahun sebelumnya)” menjadi “Riwayat SPPT (N dokumen)”.
 - Angka sekarang menyatakan jumlah record/dokumen SPPT historis yang tersimpan, bukan selisih tahun.
 - Tahun setiap SPPT tetap ditampilkan pada masing-masing baris histori.
@@ -233,3 +242,10 @@ Akta Sewa sekarang dibuka sebagai halaman detail penuh di dalam aplikasi (bukan 
 - Histori menampilkan tahun, wajib pajak, alamat objek, nilai PBB, jatuh tempo, status, tanggal dibayar, serta tombol Buka/Edit dan SPPT bila link tersedia.
 - Data hasil AI yang belum disimpan tetap dianggap draft; histori hanya berasal dari data PBB yang sudah tersimpan.
 - Tidak memerlukan perubahan SQL.
+## v1.19.31 RC — PBB Whole-Document Payment History
+- AI PBB membaca seluruh dokumen, termasuk tabel/ringkasan histori pembayaran.
+- Tahun-tahun dengan NOP yang sama ditampung sebagai `paymentHistory`.
+- Saat PBB utama disimpan, histori yang ditemukan AI otomatis di-upsert per kombinasi NOP+tahun (tanpa duplikat).
+- Status Sudah Bayar/Lunas disimpan sebagai `lunas` dan tanggal bayar disimpan bila tercantum.
+- Field historis yang tidak ada di sumber tidak ditebak/tidak disalin dari tahun aktif.
+- Tidak memerlukan perubahan schema SQL.
