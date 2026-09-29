@@ -1,6 +1,6 @@
-v1.19.32 RC — PBB Historical Drive Link Completion
+v1.19.33 RC — PBB Historical Drive Link Completion
 
-Perubahan v1.19.32:
+Perubahan v1.19.33:
 - Riwayat SPPT pada form PBB sekarang menampilkan status apakah link SPPT dan Bukti Bayar sudah/belum tersedia.
 - Tombol histori menjadi “Buka / Edit Link” untuk role yang boleh mengedit; membuka record tahun historis yang benar, sehingga link Google Drive SPPT dan Google Drive bukti bayar dapat ditambahkan tanpa mengubah SPPT aktif.
 - Tombol “Bukti Bayar” juga ditampilkan langsung pada histori form bila link tersedia.
