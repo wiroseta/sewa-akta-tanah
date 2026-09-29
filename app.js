@@ -242,6 +242,8 @@ function openLeaseDetailPage(x={}){
   if(!page)return;
   window.__leaseListScrollY=window.scrollY;
   if(shell)shell.hidden=true;
+  if($('#leasePage'))$('#leasePage').hidden=true;
+  if($('#pbbPage'))$('#pbbPage').hidden=true;
   page.hidden=false;
   document.body.classList.add('lease-detail-open');
   const title=$('#leaseDetailTitle');
@@ -254,8 +256,11 @@ function openLeaseDetailPage(x={}){
 function closeLeaseDetailPage(fromPop=false){
   const page=$('#dlg'), shell=$('#appShell');
   if(page)page.hidden=true;
-  if(shell)shell.hidden=false;
+  if(shell)shell.hidden=true;
+  if($('#pbbPage'))$('#pbbPage').hidden=true;
+  if($('#leasePage'))$('#leasePage').hidden=false;
   document.body.classList.remove('lease-detail-open');
+  render();
   requestAnimationFrame(()=>window.scrollTo({top:window.__leaseListScrollY||0,behavior:'instant'}));
   if(!fromPop && history.state?.leaseDetail){try{history.back()}catch{}}
 }

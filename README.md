@@ -198,3 +198,10 @@ Akta Sewa sekarang dibuka sebagai halaman detail penuh di dalam aplikasi (bukan 
 - Navigasi PBB diperbaiki dan cache-buster app.js/config.js dinaikkan ke v1.19.24 agar browser/GitHub Pages tidak menjalankan JavaScript v1.19.20 yang tersimpan di cache.
 - Halaman PBB kini dibuka terlebih dahulu lalu memuat data; jika query PBB gagal, halaman tetap terbuka dan menampilkan detail error, bukan terlihat seperti tombol tidak bekerja.
 - Tidak memerlukan SQL baru.
+
+
+## v1.19.25 RC — Exclusive Lease Detail View Fix
+- Detail Akta Sewa kini eksklusif: Master Akta Sewa dan Master PBB disembunyikan saat detail dibuka.
+- Tombol Kembali/Batal dari detail mengembalikan pengguna ke Master Akta Sewa, bukan menumpuk kedua halaman.
+- Mempertahankan posisi scroll daftar Akta saat kembali.
+- Cache buster aplikasi dinaikkan ke v1.19.25.
