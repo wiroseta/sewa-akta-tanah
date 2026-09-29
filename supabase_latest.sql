@@ -33,3 +33,14 @@ create policy lease_documents_workspace_delete on public.lease_documents for del
 update public.lease_documents set ai_status='sudah_dibaca', ai_read_at=coalesce(ai_read_at,created_at)
 where extracted_data is not null and extracted_data <> '{}'::jsonb;
 notify pgrst, 'reload schema';
+
+-- v1.19.20 — izinkan referensi Akta yang ditemukan AI dan tipe dokumen rantai Akta.
+-- Constraint lama pada sebagian instalasi hanya mengizinkan tipe historis awal.
+alter table public.lease_documents drop constraint if exists lease_documents_document_type_check;
+alter table public.lease_documents
+  add constraint lease_documents_document_type_check
+  check (document_type in (
+    'akta_lama','referensi_akta','addendum','perpanjangan','pengganti',
+    'perjanjian_tambahan','lainnya'
+  ));
+notify pgrst, 'reload schema';
