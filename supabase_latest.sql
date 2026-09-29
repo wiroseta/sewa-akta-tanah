@@ -1,3 +1,3 @@
--- v1.19.38 RC
--- Tidak ada perubahan database/SQL pada versi ini.
--- Tidak perlu menjalankan SQL untuk upgrade dari v1.19.37 ke v1.19.38.
+-- Sewa & Akta Tanah v1.19.39
+-- Tidak ada perubahan SQL/database baru untuk versi ini.
+-- Tidak perlu menjalankan SQL apa pun jika schema v1.19.35 sudah diterapkan.

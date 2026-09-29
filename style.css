@@ -230,3 +230,5 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 /* v1.19.36 print-all PBB */
 .pbb-page-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 @media(max-width:640px){.pbb-page-actions{width:100%}.pbb-page-actions button{flex:1 1 auto}}
+
+.danger-action{border-color:#d88!important;color:#a00!important;background:#fff7f7!important}
