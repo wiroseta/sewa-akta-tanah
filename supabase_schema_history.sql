@@ -312,3 +312,12 @@ alter table public.assets add column if not exists alias text not null default '
 -- ============================================================
 alter table public.pbb_records add column if not exists property_alias text not null default '';
 create index if not exists pbb_property_alias_idx on public.pbb_records (property_alias);
+
+
+-- v1.19.34 RC: PBB property alias
+alter table public.pbb_records add column if not exists property_alias text not null default '';
+create index if not exists pbb_property_alias_idx on public.pbb_records (property_alias);
+
+-- v1.19.35 RC: PBB ↔ land title coverage metadata
+alter table public.pbb_land_titles add column if not exists coverage_type text not null default 'unknown', add column if not exists covered_area numeric, add column if not exists coverage_notes text not null default '';
+create index if not exists pbb_land_titles_land_title_idx on public.pbb_land_titles (land_title_id);
