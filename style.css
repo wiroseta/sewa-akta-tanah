@@ -246,7 +246,7 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 .lease-pbb-alias{font-size:1.02rem;line-height:1.25}
 .lease-pbb-label small{font-size:.88rem;color:var(--muted,#6b7280);line-height:1.35}
 
-/* v1.19.44 — in-Akta property/data search + compact PBB relation picker */
+/* v1.19.45 — in-Akta property/data search + compact PBB relation picker */
 .lease-pbb-toggle{margin:8px 0 10px}.lease-pbb-empty{padding:10px 2px;color:var(--muted,#6b7280)}
 .lease-data-source{font-size:.78rem;font-weight:750;letter-spacing:.03em}.lease-data-hit{border:1px solid #e2e4e8;border-radius:14px;padding:12px;margin:10px 0;background:#fff}.lease-data-hit .history-search-snippet{white-space:normal}
 @media(max-width:760px){.lease-top-actions{flex-wrap:wrap}.lease-top-actions #leaseDataSearchBtn{flex:1 1 100%}}
