@@ -1,4 +1,4 @@
-# Sewa & Akta Tanah — v1.19.20 RC
+# Sewa & Akta Tanah — v1.19.21 RC
 
 ## Universal 500 MB AI Document Reader
 
@@ -165,3 +165,10 @@ Akta Sewa sekarang dibuka sebagai halaman detail penuh di dalam aplikasi (bukan 
 - Terapkan Hasil ke Form tidak menulis histori ke database sebelum Simpan.
 - Tombol `＋ Akta Lanjutan` membuat record baru yang terhubung ke Akta sebelumnya sebagai Perpanjangan, Addendum, Pengganti, atau Akta Baru Terkait.
 - Jalankan `supabase_latest.sql` v1.19.20 sebelum pengujian.
+
+
+## v1.19.21 RC — Payment Reconciliation & Single-Row Ledger Fix
+- Dashboard kini menilai pelunasan termin berdasarkan **netto yang seharusnya diterima** sesuai mode/rate PPh kontrak, bukan membandingkan penerimaan netto terhadap nilai bruto termin. Ini menghilangkan false warning seperti kekurangan 10% pada pembayaran yang sebenarnya sudah lunas.
+- Rekonsiliasi tetap memakai alokasi FIFO dari Riwayat Pembayaran Aktual ke termin paling lama.
+- Riwayat Pembayaran Aktual diperbaiki menjadi satu row penuh: Tanggal, Netto, Pajak, Bank, Referensi, Catatan, dan tombol Hapus berada pada baris yang sama di desktop. Tombol minus diganti menjadi `Hapus`.
+- Tidak memerlukan perubahan schema/database.
