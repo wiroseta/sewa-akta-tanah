@@ -1,4 +1,4 @@
-# v1.19.41 RC — Full Database Lease History Search
+# v1.19.42 RC — Property-Scoped Full History Search
 
 Perubahan utama:
 - Cari Klausul & Riwayat tidak lagi dibatasi 500 snapshot terbaru.
@@ -8,7 +8,7 @@ Perubahan utama:
 - Maksimal 200 hasil ditampilkan sekaligus agar UI tetap ringan; jumlah hasil total tetap dihitung dari seluruh histori.
 - Tidak ada perubahan schema/database dan tidak ada SQL baru yang perlu dijalankan.
 
-# v1.19.41 RC — Full Database Lease History Search
+# v1.19.42 RC — Property-Scoped Full History Search
 
 - Administrator dapat menghapus satu record histori PBB/SPPT yang salah tanpa menghapus NOP/tahun lain.
 - Akta Sewa memiliki Hapus aman; relasi dan dokumen historis milik akta ikut dibersihkan, tetapi Property/PBB/Sertifikat sumber tidak dihapus.
