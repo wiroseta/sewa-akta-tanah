@@ -1,4 +1,14 @@
-# v1.19.40 RC — Safe Delete & Duplicate Prevention
+# v1.19.41 RC — Full Database Lease History Search
+
+Perubahan utama:
+- Cari Klausul & Riwayat tidak lagi dibatasi 500 snapshot terbaru.
+- Seluruh `document_history` dibaca bertahap (pagination 1.000 record) sehingga histori lama tetap dapat ditemukan.
+- Hasil pencarian menampilkan identitas Akta/Sertifikat, status TERBARU/HISTORIS, tanggal versi, dan potongan teks yang cocok.
+- Hasil Akta Sewa menyediakan tombol **Buka Akta** serta **Riwayat & Bandingkan**.
+- Maksimal 200 hasil ditampilkan sekaligus agar UI tetap ringan; jumlah hasil total tetap dihitung dari seluruh histori.
+- Tidak ada perubahan schema/database dan tidak ada SQL baru yang perlu dijalankan.
+
+# v1.19.41 RC — Full Database Lease History Search
 
 - Administrator dapat menghapus satu record histori PBB/SPPT yang salah tanpa menghapus NOP/tahun lain.
 - Akta Sewa memiliki Hapus aman; relasi dan dokumen historis milik akta ikut dibersihkan, tetapi Property/PBB/Sertifikat sumber tidak dihapus.

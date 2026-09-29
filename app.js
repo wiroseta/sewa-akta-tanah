@@ -301,8 +301,36 @@ function renderHistoryComparison(box,x){let changes=x.changes||[],missing=x.miss
 async function captureLeaseVersion(contractId,label='Disimpan'){let r=await sb.from('contracts').select('*').eq('id',contractId).single();if(r.error)throw r.error;let snap=rowToApp(r.data);await saveHistorySnapshot('lease',contractId,r.data.asset_id,snap,'save',label)}
 async function captureAssetLandVersion(assetId,label='Sertifikat disimpan'){let a=await sb.from('assets').select('*').eq('id',assetId).single(),l=await sb.from('land_titles').select('*').eq('asset_id',assetId).order('created_at');if(a.error)throw a.error;if(l.error)throw l.error;await saveHistorySnapshot('land',assetId,assetId,{asset:a.data,landTitles:l.data||[]},'save',label)}
 async function openHistorySearch(){ $('#historySearchInput').value='';$('#historySearchResults').innerHTML='<div class="muted">Ketik kata pencarian.</div>';$('#historySearchDlg').showModal() }
-async function runHistorySearch(){let q=$('#historySearchInput').value.trim().toLowerCase();if(q.length<2){$('#historySearchResults').innerHTML='<div class="muted">Ketik minimal 2 karakter.</div>';return}let r=await sb.from('document_history').select('*').order('created_at',{ascending:false}).limit(500);if(r.error){$('#historySearchResults').textContent=r.error.message;return}let hits=(r.data||[]).filter(x=>JSON.stringify(x.snapshot).toLowerCase().includes(q));$('#historySearchResults').innerHTML=hits.length?hits.slice(0,100).map(x=>`<div class="history-search-hit"><b>${x.entity_type==='lease'?'Akta Sewa':'Sertifikat Tanah'} · ${new Date(x.created_at).toLocaleDateString('id-ID')}</b><div>${highlightHistoryHit(x.snapshot,q)}</div></div>`).join(''):'<div class="muted">Tidak ditemukan.</div>'}
-function highlightHistoryHit(s,q){let text=JSON.stringify(s).replace(/[{}\[\]"]/g,' ').replace(/,/g,', ');let i=text.toLowerCase().indexOf(q);let a=Math.max(0,i-120),b=Math.min(text.length,i+q.length+220);return (a?'…':'')+text.slice(a,b)+(b<text.length?'…':'')}
+function historySearchEscape(v=''){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function fetchAllDocumentHistory(){
+ const pageSize=1000,all=[];let from=0;
+ while(true){
+  let r=await sb.from('document_history').select('*').order('created_at',{ascending:false}).range(from,from+pageSize-1);
+  if(r.error)throw r.error;
+  let rows=r.data||[];all.push(...rows);
+  if(rows.length<pageSize)break;
+  from+=pageSize;
+ }
+ return all;
+}
+function historySearchLeaseIndex(entityId){return data.findIndex(v=>String(v.id)===String(entityId))}
+async function openLeaseFromHistorySearch(entityId){let i=historySearchLeaseIndex(entityId);if(i<0)return alert('Akta aktif untuk riwayat ini tidak ditemukan. Riwayatnya tetap dapat dibuka melalui tombol Riwayat & Bandingkan.');$('#historySearchDlg').close();await openEdit(i)}
+async function compareLeaseFromHistorySearch(entityId){let i=historySearchLeaseIndex(entityId),x=i>=0?data[i]:null;$('#historySearchDlg').close();await openHistory('lease',entityId,x?.tenant||'Akta Sewa')}
+window.openLeaseFromHistorySearch=openLeaseFromHistorySearch;window.compareLeaseFromHistorySearch=compareLeaseFromHistorySearch;
+function historySearchIdentity(x){let s=x.snapshot||{};if(x.entity_type==='lease')return {title:s.tenant||s.lessee||'Akta Sewa',sub:[s.asset,s.deedNo?`Akta ${s.deedNo}`:'',s.deedDate||'',s.start&&s.end?`${s.start} s/d ${s.end}`:''].filter(Boolean).join(' · ')};let lands=s.landTitles||[];let first=lands[0]||{};return {title:s.asset?.alias||s.asset?.name||'Sertifikat Tanah',sub:[first.right_type||first.rightType,first.certificate_no||first.certificateNo].filter(Boolean).join(' · ')}}
+async function runHistorySearch(){
+ let q=$('#historySearchInput').value.trim().toLowerCase(),box=$('#historySearchResults');
+ if(q.length<2){box.innerHTML='<div class="muted">Ketik minimal 2 karakter.</div>';return}
+ box.innerHTML='<div class="muted">Mencari di seluruh riwayat database…</div>';
+ try{
+  let rows=await fetchAllDocumentHistory(),latest=new Map();
+  rows.forEach(x=>{let k=`${x.entity_type}:${x.entity_id}`;if(!latest.has(k))latest.set(k,x.id)});
+  let hits=rows.filter(x=>JSON.stringify(x.snapshot||{}).toLowerCase().includes(q));
+  let shown=hits.slice(0,200);
+  box.innerHTML=`<div class="history-search-summary"><b>${hits.length} hasil</b> dari ${rows.length} versi riwayat diperiksa${hits.length>shown.length?` · menampilkan ${shown.length} teratas`:''}</div>`+(shown.length?shown.map(x=>{let id=historySearchIdentity(x),isLatest=latest.get(`${x.entity_type}:${x.entity_id}`)===x.id,isLease=x.entity_type==='lease',date=new Date(x.created_at).toLocaleString('id-ID');return `<div class="history-search-hit"><div class="history-search-head"><div><b>${historySearchEscape(id.title)}</b><div class="muted">${isLease?'Akta Sewa':'Sertifikat Tanah'} · ${isLatest?'VERSI TERBARU':'HISTORIS'} · ${historySearchEscape(date)}</div>${id.sub?`<div class="history-search-sub">${historySearchEscape(id.sub)}</div>`:''}</div><span class="pill ${isLatest?'':'warn'}">${isLatest?'TERBARU':'HISTORIS'}</span></div><div class="history-search-snippet">${highlightHistoryHit(x.snapshot,q)}</div>${isLease?`<div class="history-search-actions"><button type="button" onclick="openLeaseFromHistorySearch('${historySearchEscape(x.entity_id)}')">Buka Akta</button><button type="button" class="secondary" onclick="compareLeaseFromHistorySearch('${historySearchEscape(x.entity_id)}')">Riwayat & Bandingkan</button></div>`:''}</div>`}).join(''):'<div class="muted">Tidak ditemukan di seluruh riwayat database.</div>');
+ }catch(e){box.innerHTML=`<div class="compare-warning">Pencarian gagal: ${historySearchEscape(e.message)}</div>`}
+}
+function highlightHistoryHit(s,q){let text=JSON.stringify(s||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', '),low=text.toLowerCase(),i=low.indexOf(q);if(i<0)return '';let a=Math.max(0,i-140),b=Math.min(text.length,i+q.length+260),before=historySearchEscape(text.slice(a,i)),match=historySearchEscape(text.slice(i,i+q.length)),after=historySearchEscape(text.slice(i+q.length,b));return (a?'…':'')+before+'<mark>'+match+'</mark>'+after+(b<text.length?'…':'')}
 
 async function getPropertyChildren(assetId){
   const [lt,b]=await Promise.all([
