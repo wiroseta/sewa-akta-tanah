@@ -189,3 +189,12 @@ Akta Sewa sekarang dibuka sebagai halaman detail penuh di dalam aplikasi (bukan 
 - Master per NOP menampilkan Nama Wajib Pajak dan Alamat Objek Pajak.
 - Search Master PBB mencari NOP, nama wajib pajak, alamat objek pajak, tahun, dan metadata properti yang tersedia.
 - Histori SPPT per NOP dan current-year logic v1.19.22 tetap dipertahankan.
+
+
+## v1.19.24 RC — Master Akta Sewa + PBB Navigation Fix
+- Akta Sewa sekarang memiliki halaman Master tersendiri dengan daftar seluruh akta dan search bar di atas.
+- Tombol Tambah Akta Sewa dipindahkan ke halaman Master Akta Sewa.
+- Search tetap mencakup seluruh metadata akta yang tersimpan, termasuk penyewa, pemilik, properti, nomor akta, notaris/riwayat dan periode bila tersedia.
+- Navigasi PBB diperbaiki dan cache-buster app.js/config.js dinaikkan ke v1.19.24 agar browser/GitHub Pages tidak menjalankan JavaScript v1.19.20 yang tersimpan di cache.
+- Halaman PBB kini dibuka terlebih dahulu lalu memuat data; jika query PBB gagal, halaman tetap terbuka dan menampilkan detail error, bukan terlihat seperti tombol tidak bekerja.
+- Tidak memerlukan SQL baru.
