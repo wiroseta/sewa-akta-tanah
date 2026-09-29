@@ -1,12 +1,12 @@
-v1.19.29 RC — Google Drive Connect Buttons Everywhere
+v1.19.30 RC — PBB History Document Count Label Fix
 
-Perubahan v1.19.29:
-- Tombol Hubungkan Google Drive tersedia pada setiap area yang benar-benar membaca dokumen private dengan AI: Akta Sewa, PBB/SPPT, Sertifikat Tanah, Perjanjian di Bawah Tangan, dan Akta Lama/Dokumen Historis.
-- Semua tombol koneksi memakai satu sesi/token Google Drive yang sama; setelah satu area terhubung, area lain dapat memakai token yang masih valid.
-- Tombol Baca dari Google Drive tetap tidak memulai OAuth secara otomatis. Jika sesi berakhir, pengguna diminta menekan Hubungkan Google Drive secara eksplisit.
-- Tidak ada perubahan database untuk v1.19.29.
+Perubahan v1.19.30:
+- Label kartu PBB diubah dari “Riwayat SPPT (N tahun sebelumnya)” menjadi “Riwayat SPPT (N dokumen)”.
+- Angka sekarang menyatakan jumlah record/dokumen SPPT historis yang tersimpan, bukan selisih tahun.
+- Tahun setiap SPPT tetap ditampilkan pada masing-masing baris histori.
+- Tidak mengubah data PBB/SPPT maupun database.
+- Seluruh perbaikan Google Drive v1.19.29 tetap dipertahankan.
 
-v1.19.28 RC — Google Drive OAuth Session Reuse Fix
 
 Perubahan v1.19.28:
 - Pembacaan Google Drive tidak lagi memulai OAuth interaktif secara otomatis.
