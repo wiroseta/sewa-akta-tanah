@@ -506,3 +506,14 @@ button.v11961-command.v11962-shortcut-flash::after{content:attr(data-tooltip)!im
 /* v1.19.66 — Double Door SVG for global Buka Semua / Tutup Semua */
 .v11966-door-svg{width:22px;height:22px;display:block;overflow:visible}
 .v11961-command .v11966-door-svg{color:currentColor}
+
+
+/* v1.19.67 — chosen global SVG language + readable collapsible headers */
+.v11967-ui-svg{width:23px;height:23px;display:block;overflow:visible;color:currentColor}
+.v11967-lease-svg{width:24px;height:24px}
+button.v11967-readable-collapse{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;width:100%!important;max-width:none!important;height:auto!important;min-height:50px!important;padding:10px 13px!important;gap:8px!important;justify-content:stretch!important;text-align:left!important;overflow:hidden!important}
+button.v11967-readable-collapse .collapsible-title{display:block!important;font-size:16px!important;font-weight:800!important;line-height:1.2!important;white-space:normal!important;overflow:visible!important}
+button.v11967-readable-collapse .collapsible-summary{display:block!important;margin-left:auto!important;font-size:12px!important;line-height:1.2!important;white-space:normal!important;text-align:right!important}
+button.v11967-readable-collapse .collapsible-chevron{display:block!important;font-size:14px!important;min-width:18px!important;text-align:center!important}
+button.v11967-readable-collapse::after{display:none!important;content:none!important}
+@media(max-width:640px){button.v11967-readable-collapse{min-height:48px!important;padding:9px 11px!important}.v11967-ui-svg{width:22px;height:22px}}

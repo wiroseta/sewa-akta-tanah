@@ -1294,6 +1294,7 @@ function v11964IconHTML(icon){return icon==='__DRIVE__'?V11964_DRIVE_ICON:icon==
 function v11964Enhance(root=document){
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
  buttons.forEach(b=>{
+  if(b.classList.contains('collapsible-header'))return;
   let label=b.dataset.v11961Label||b.getAttribute('aria-label')||b.getAttribute('title')||'';
   label=String(label).split(/\s+[—·]\s+/)[0].replace(/\s+/g,' ').trim();
   if(!label||label==='Aksi') label=(b.textContent||'').replace(/\s+/g,' ').trim();
@@ -1396,6 +1397,7 @@ function v11965Spec(b,label){
 function v11965Enhance(root=document){
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
  buttons.forEach(b=>{
+   if(b.classList.contains('collapsible-header'))return;
    const label=v11965OriginalLabel(b), spec=v11965Spec(b,label);
    if(!spec){
      // Safety: no mystery icon. Preserve readable label for unmapped commands.
@@ -1419,4 +1421,74 @@ function v11965Enhance(root=document){
 document.addEventListener('DOMContentLoaded',()=>{
  v11965Enhance(document);
  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11965Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
+});
+
+
+// ============================================================
+// v1.19.67 RC — Final global visual-language pass requested 30 Sep 2026.
+// Properti = commercial building SVG; Maps = map + property SVG;
+// PBB = SPPT-like document SVG; Akta Sewa = generic notarial deed cover SVG;
+// open one detail = single open door; collapsible headers keep readable text.
+// ============================================================
+const V11967_PROPERTY_ICON=`<svg class="v11967-ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V9.5l6-2.5V21M11 21V4l8 3v14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.5 12h1M7.5 15h1M14 9h1M17 10h1M14 13h1M17 14h1M14 17h1M17 18h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const V11967_MAP_ICON=`<svg class="v11967-ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 5-2 5 2 5-2 3 1.2V19l-5 2-5-2-5 2-3-1.2zM8 3v16M13 5v14M18 3v18" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/><path d="M13.8 15.2v-3.4l2.2-1.7 2.2 1.7v3.4M13.2 12.2l2.8-2.1 2.8 2.1" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/></svg>`;
+const V11967_PBB_ICON=`<svg class="v11967-ui-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.6"/><text x="12" y="7.2" text-anchor="middle" font-size="4.1" font-weight="800" fill="currentColor" font-family="system-ui,sans-serif">PBB</text><path d="M7 9.2h10M7 12h10M7 14.8h6.2M7 17.6h6.2M10.3 9.2v5.6M13.6 9.2v5.6" fill="none" stroke="currentColor" stroke-width="1"/><rect x="14.7" y="16.1" width="2.6" height="2.6" fill="none" stroke="currentColor" stroke-width="1"/><path d="M15.3 16.7h.5v.5h-.5zM16.2 17.6h.5v.5h-.5z" fill="currentColor"/></svg>`;
+const V11967_LEASE_ICON=`<svg class="v11967-ui-svg v11967-lease-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.2 5.2 12 3.8l2.8 1.4-.7 3H9.9zM12 4v4M10.1 6.2h3.8" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><text x="12" y="12.4" text-anchor="middle" font-size="4" font-weight="850" fill="currentColor" font-family="system-ui,sans-serif">AKTA</text><text x="12" y="15.1" text-anchor="middle" font-size="1.75" font-weight="700" fill="currentColor" font-family="system-ui,sans-serif">PERJANJIAN SEWA</text><path d="M7.5 17.2h9M8.8 19h6.4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>`;
+const V11967_OPEN_ONE_ICON=`<svg class="v11967-ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h10.5V21H5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m15.5 3.5 4 2.2v13.6l-4 1.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="17.6" cy="12" r=".7" fill="currentColor"/></svg>`;
+function v11967IconHTML(icon){
+ if(icon==='__PROPERTY__')return V11967_PROPERTY_ICON;
+ if(icon==='__MAP__')return V11967_MAP_ICON;
+ if(icon==='__PBB__')return V11967_PBB_ICON;
+ if(icon==='__LEASE__')return V11967_LEASE_ICON;
+ if(icon==='__OPEN_ONE__')return V11967_OPEN_ONE_ICON;
+ return v11964IconHTML(icon);
+}
+const V11967_EXPLICIT={
+ assetsBtn:{label:'Properti / Lokasi',icon:'__PROPERTY__',key:'p'},
+ pbbBtn:{label:'PBB / SPPT',icon:'__PBB__',key:'b'},
+ leaseBtn:{label:'Akta Sewa',icon:'__LEASE__',key:'a'}
+};
+function v11967IsCollapsibleHeader(b){return b.classList.contains('collapsible-header')||!!b.closest('.collapsible-header')}
+function v11967Spec(b,label){
+ if(V11967_EXPLICIT[b.id])return V11967_EXPLICIT[b.id];
+ if(v11965IsDriveButton(b,label))return {label:label||'Buka di Google Drive',icon:'__DRIVE__',key:'g'};
+ if(/print|cetak/i.test(label))return {icon:'🖨',key:'r'};
+ if(/export.*excel/i.test(label))return {icon:'▦',key:'e'};
+ if(/buka semua/i.test(label))return {icon:'__OPEN_ALL__',key:'o'};
+ if(/tutup semua/i.test(label))return {icon:'__CLOSE_ALL__',key:'t'};
+ if(/google maps|\bmaps?\b|\bpeta\b|buka.*lokasi/i.test(label))return {icon:'__MAP__',key:'l'};
+ if(/buka\s*(\/\s*edit)?\s*properti|buka properti|buka akta|buka pbb|buka sertifikat|buka di data|buka detail/i.test(label))return {icon:'__OPEN_ONE__',key:'o'};
+ if(/properti\s*\/\s*lokasi|master properti|detail lokasi/i.test(label))return {icon:'__PROPERTY__',key:'p'};
+ if(/\bpbb\b|sppt|bukti bayar/i.test(label))return {icon:'__PBB__',key:'b'};
+ if(/akta sewa/i.test(label))return {icon:'__LEASE__',key:'a'};
+ return V11965_ACTION_RULES.find(r=>r.re.test(label))||V11965_OBJECT_RULES.find(r=>r.re.test(label))||null;
+}
+function v11967RestoreCollapsibleHeader(b){
+ const title=b.querySelector('.collapsible-title'),summary=b.querySelector('.collapsible-summary'),chev=b.querySelector('.collapsible-chevron');
+ if(!title||!chev)return;
+ const sec=b.closest('.collapsible-section');
+ b.classList.remove('v11961-command','v11964-ready','v11965-ready','v11964-text-fallback','v11965-text-fallback');
+ b.classList.add('v11967-readable-collapse');
+ delete b.dataset.v11961Shortcut;delete b.dataset.v11963Code;delete b.dataset.tooltip;
+ b.removeAttribute('title');
+ // If an older icon pass replaced the children, reconstruct from stored original title when possible.
+ if(!summary){ /* existing generated collapsible headers normally retain all three children */ }
+ chev.textContent=sec?.classList.contains('is-collapsed')?'▶':'▼';
+}
+function v11967Enhance(root=document){
+ const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
+ buttons.forEach(b=>{
+  if(v11967IsCollapsibleHeader(b)){v11967RestoreCollapsibleHeader(b);return;}
+  const label=v11965OriginalLabel(b),spec=v11967Spec(b,label);
+  if(!spec)return;
+  const key=(spec.key||v11961Key(label,null)).toLowerCase();
+  b.dataset.v11961Label=label;b.dataset.v11961Shortcut=key;b.dataset.v11963Code='Key'+key.toUpperCase();
+  b.classList.remove('v11964-text-fallback','v11965-text-fallback');b.classList.add('v11961-command','v11964-ready','v11965-ready','v11967-ready');
+  b.setAttribute('aria-label',label);const hint='⌘⌥'+key.toUpperCase();b.dataset.tooltip=label+' · '+hint;b.title=label+' — '+hint;
+  b.innerHTML='<span class="v11961-icon" aria-hidden="true">'+v11967IconHTML(spec.icon)+'</span><span class="v11961-sr">'+label+'</span>';
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11967Enhance(document);
+ new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11967Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
 });
