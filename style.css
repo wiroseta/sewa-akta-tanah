@@ -517,3 +517,11 @@ button.v11967-readable-collapse .collapsible-summary{display:block!important;mar
 button.v11967-readable-collapse .collapsible-chevron{display:block!important;font-size:14px!important;min-width:18px!important;text-align:center!important}
 button.v11967-readable-collapse::after{display:none!important;content:none!important}
 @media(max-width:640px){button.v11967-readable-collapse{min-height:48px!important;padding:9px 11px!important}.v11967-ui-svg{width:22px;height:22px}}
+
+
+/* v1.19.68 — global readable section headers */
+button.collapsible-header.v11968-readable-collapse{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,auto) 22px!important;align-items:center!important;width:100%!important;min-height:50px!important;text-align:left!important}
+button.collapsible-header.v11968-readable-collapse .collapsible-title{display:block!important;visibility:visible!important;opacity:1!important;width:auto!important;height:auto!important;clip:auto!important;position:static!important;font-size:16px!important;font-weight:800!important;white-space:normal!important;color:inherit!important}
+button.collapsible-header.v11968-readable-collapse .collapsible-summary{display:block!important;visibility:visible!important;opacity:1!important}
+button.collapsible-header.v11968-readable-collapse .collapsible-chevron{display:block!important;visibility:visible!important;opacity:1!important;text-align:center!important}
+@media(max-width:640px){button.collapsible-header.v11968-readable-collapse{grid-template-columns:minmax(0,1fr) auto 18px!important;min-height:48px!important}.collapsible-summary{max-width:88px!important}}

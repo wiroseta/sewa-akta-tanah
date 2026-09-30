@@ -1230,6 +1230,8 @@ function v11961Key(label,preferred){if(preferred)return preferred;const letters=
 function v11961Enhance(root=document){
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
  buttons.forEach(b=>{
+  // v1.19.68: collapsible headers are navigation containers, never convert them to icon-only commands.
+  if(b.classList.contains('collapsible-header'))return;
   const explicit=V11963_EXPLICIT[b.id];
   if(b.classList.contains('v11963-ready')&&!explicit)return;
   const label=explicit?.label||v11961CleanLabel(b); const rule=explicit||v11961Rule(label); const key=v11961Key(label,rule.key);
@@ -1491,4 +1493,55 @@ function v11967Enhance(root=document){
 document.addEventListener('DOMContentLoaded',()=>{
  v11967Enhance(document);
  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11967Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
+});
+
+
+// ============================================================
+// v1.19.68 RC — Global readable collapsible-header repair.
+// Audit safeguard for every page/dialog/window: section headers must always
+// retain a visible text title and chevron; icon-command enhancers must not
+// turn them into icon-only buttons.
+// ============================================================
+function v11968HeaderTitle(sec,head){
+ const saved=(head?.dataset?.collapseTitle||'').trim(); if(saved)return saved;
+ const existing=head?.querySelector?.('.collapsible-title')?.textContent?.trim(); if(existing)return existing;
+ const body=sec?.querySelector?.(':scope > .collapsible-content');
+ const h=body?.querySelector?.('h1,h2,h3,h4,.section-title,.master-section h3');
+ if(h?.textContent?.trim())return h.textContent.replace(/^\s*[📜🏭🧾⚡📋🤝§◷✓●•]+\s*/u,'').trim();
+ const key=String(sec?.dataset?.collapseKey||'').toLowerCase();
+ const known={
+  'lease-ai':'Pembacaan AI / Dokumen','ai':'Pembacaan AI / Dokumen','lease-relations':'Objek, PBB & Fasilitas',
+  'lease-supplemental':'Perjanjian di Bawah Tangan / Dokumen Tambahan','notes':'Catatan Tambahan',
+  'pbb-ai':'Pembacaan AI SPPT','pbb-data':'Data PBB / SPPT'
+ };
+ if(known[key])return known[key];
+ if(key.startsWith('h3-'))return key.slice(3).split('-').filter(Boolean).map(x=>x.charAt(0).toUpperCase()+x.slice(1)).join(' ');
+ return (head?.dataset?.v11961Label||head?.getAttribute?.('aria-label')||'Bagian').replace(/\s+[—·].*$/,'').trim()||'Bagian';
+}
+function v11968RepairHeader(head){
+ if(!head?.classList?.contains('collapsible-header'))return;
+ const sec=head.closest('.collapsible-section'); if(!sec)return;
+ const title=v11968HeaderTitle(sec,head); head.dataset.collapseTitle=title;
+ let summary=head.querySelector('.collapsible-summary')?.textContent?.trim()||'';
+ // Rebuild headers damaged by earlier global icon passes.
+ head.classList.remove('v11961-command','v11961-ready','v11963-ready','v11964-ready','v11965-ready','v11967-ready','v11964-text-fallback','v11965-text-fallback');
+ head.classList.add('v11967-readable-collapse','v11968-readable-collapse');
+ head.removeAttribute('title'); head.setAttribute('aria-label',(sec.classList.contains('is-collapsed')?'Buka ':'Tutup ')+title);
+ head.innerHTML='';
+ const t=document.createElement('span');t.className='collapsible-title';t.textContent=title;
+ const sm=document.createElement('span');sm.className='collapsible-summary';sm.textContent=summary;
+ const ch=document.createElement('span');ch.className='collapsible-chevron';ch.textContent=sec.classList.contains('is-collapsed')?'▶':'▼';
+ head.append(t,sm,ch);
+}
+function v11968Audit(root=document){
+ const heads=[];
+ if(root.matches?.('.collapsible-header'))heads.push(root);
+ root.querySelectorAll?.('.collapsible-header').forEach(h=>heads.push(h));
+ heads.forEach(v11968RepairHeader);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11968Audit(document);
+ // Run after older observers have finished their pass.
+ new MutationObserver(ms=>{const roots=[];ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)roots.push(n)}));if(roots.length)setTimeout(()=>roots.forEach(v11968Audit),0)}).observe(document.body,{childList:true,subtree:true});
+ document.addEventListener('click',e=>{const h=e.target.closest?.('.collapsible-header');if(h)setTimeout(()=>v11968RepairHeader(h),0)},true);
 });
