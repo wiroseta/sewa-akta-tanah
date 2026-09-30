@@ -1187,3 +1187,89 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(v11960RunShortcut(key)){e.preventDefault();e.stopPropagation()}
  },true);
 });
+
+// ============================================================
+// v1.19.61 RC — Global Icon Command System
+// Every actionable button is icon-first/icon-only, with an accessible label,
+// hover tooltip and context-aware Cmd+Option / Ctrl+Alt shortcut.
+// Existing IDs and click handlers are preserved.
+// ============================================================
+const V11961_ICON_RULES=[
+ {re:/properti\s*\/\s*lokasi|master properti|detail lokasi/i,icon:'🏠',key:'p'},
+ {re:/\bpbb\b/i,icon:'🧾',key:'b'},
+ {re:/akta sewa/i,icon:'📄',key:'a'},
+ {re:/menu/i,icon:'•••',key:'m'},
+ {re:/users?|pengguna/i,icon:'👥',key:'u'},
+ {re:/keluar|logout/i,icon:'⇥',key:'q'},
+ {re:/simpan/i,icon:'💾',key:'s'},
+ {re:/kembali/i,icon:'←',key:'k'},
+ {re:/batal/i,icon:'✕',key:'x'},
+ {re:/tutup semua/i,icon:'▴',key:'t'},
+ {re:/buka semua/i,icon:'▾',key:'o'},
+ {re:/\btutup\b/i,icon:'✕',key:'t'},
+ {re:/cari|search/i,icon:'⌕',key:'c'},
+ {re:/tambah|buat baru|baru|^\s*\+/i,icon:'＋',key:'n'},
+ {re:/hapus|delete/i,icon:'🗑',key:'h'},
+ {re:/edit|ubah/i,icon:'✎',key:'e'},
+ {re:/print|cetak/i,icon:'🖨',key:'r'},
+ {re:/export.*excel|excel/i,icon:'▦',key:'e'},
+ {re:/backup/i,icon:'⬇',key:'b'},
+ {re:/restore|pulihkan/i,icon:'↻',key:'r'},
+ {re:/hubungkan.*drive/i,icon:'🔗',key:'g'},
+ {re:/google drive|drive/i,icon:'☁',key:'d'},
+ {re:/verifikasi/i,icon:'✓',key:'v'},
+ {re:/baca.*ai|ai.*baca|baca file|baca pdf|baca sertifikat|baca otomatis/i,icon:'✨',key:'i'},
+ {re:/riwayat|history/i,icon:'◷',key:'y'},
+ {re:/bandingkan|compare/i,icon:'⇄',key:'g'},
+ {re:/maps?|peta|buka.*lokasi/i,icon:'📍',key:'l'},
+ {re:/upload/i,icon:'↑',key:'u'},
+ {re:/download/i,icon:'↓',key:'d'},
+ {re:/sebelumnya|prev/i,icon:'‹',key:'p'},
+ {re:/berikutnya|next|lanjut/i,icon:'›',key:'n'},
+ {re:/ok|terapkan|apply|pilih/i,icon:'✓',key:'o'},
+ {re:/salin|copy/i,icon:'⧉',key:'c'},
+ {re:/refresh|muat ulang/i,icon:'↻',key:'r'}
+];
+function v11961CleanLabel(b){
+ const aria=b.getAttribute('aria-label');
+ if(aria)return aria.trim();
+ const old=b.dataset.v11961Label;if(old)return old;
+ return (b.textContent||'').replace(/\s+/g,' ').replace(/^[^\p{L}\p{N}+]+/u,'').trim()||'Aksi';
+}
+function v11961Rule(label){return V11961_ICON_RULES.find(r=>r.re.test(label))||{icon:'●',key:null}}
+function v11961Key(label,preferred){
+ if(preferred)return preferred;
+ const letters=(label.toLocaleLowerCase('id').match(/[a-z0-9]/g)||[]);
+ return letters[0]||'z';
+}
+function v11961Enhance(root=document){
+ const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
+ buttons.forEach(b=>{
+  if(b.classList.contains('v11961-ready'))return;
+  const label=v11961CleanLabel(b); const rule=v11961Rule(label); const key=v11961Key(label,rule.key);
+  b.dataset.v11961Label=label;b.dataset.v11961Shortcut=key;
+  b.classList.add('v11961-command','v11961-ready');
+  b.setAttribute('aria-label',label);
+  const hint='⌘⌥'+key.toUpperCase();
+  b.dataset.tooltip=label+' · '+hint;b.title=label+' — '+hint;
+  b.innerHTML='<span class="v11961-icon" aria-hidden="true">'+rule.icon+'</span><span class="v11961-sr">'+label+'</span>';
+ });
+}
+function v11961Visible(el){return !!(el&&el.isConnected&&!el.disabled&&el.offsetParent!==null)}
+function v11961Shortcut(key){
+ const all=[...document.querySelectorAll('button[data-v11961-shortcut="'+CSS.escape(key)+'"]')].filter(v11961Visible);
+ if(!all.length)return false;
+ const dialog=document.querySelector('dialog[open]');
+ const detail=[...document.querySelectorAll('#propertyDetailPage:not([hidden]),#dlg:not([hidden]),.modal:not([hidden])')].pop();
+ const target=(dialog&&all.find(x=>dialog.contains(x)))||(detail&&all.find(x=>detail.contains(x)))||all[all.length-1];
+ target.click();return true;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11961Enhance(document);
+ new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11961Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
+ document.addEventListener('keydown',e=>{
+  if(!((e.metaKey||e.ctrlKey)&&e.altKey)||e.shiftKey)return;
+  const key=String(e.key||'').toLowerCase();
+  if(v11961Shortcut(key)){e.preventDefault();e.stopImmediatePropagation()}
+ },true);
+});
