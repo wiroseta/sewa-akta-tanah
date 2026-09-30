@@ -161,3 +161,27 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Penyebab: MutationObserver terus menulis ulang innerHTML ikon sehingga memicu loop mutasi DOM.
 - Ikon sekarang dirender satu kali dan event navigasi asli tetap aktif.
 - Tidak ada perubahan database / SQL.
+
+
+## v1.19.76 RC — Canonical Single-Icon Render Audit
+- Menonaktifkan legacy JavaScript icon rewriters yang menumpuk ikon setelah render.
+- Tombol aksi sekarang memakai satu ikon canonical dari markup/render function asal.
+- Master Properti: Dashboard, Tambah, Buka Properti, Maps, dan Hapus kembali ke ukuran standar tanpa ikon ganda.
+- Detail Properti: tombol kembali Master Properti dan Simpan memakai markup canonical.
+- Tidak ada perubahan database.
+
+### v1.19.76 RC CORRECTED-2
+- Koreksi form Tambah/Edit PBB: ikon Simpan canonical 💾, kontrol section readable, dan Google Drive SPPT compact satu baris.
+- URL Drive tetap tersimpan namun tampilan dipadatkan; tersedia Buka, Hubungkan, dan Baca/Verifikasi AI.
+- Nomor versi tetap v1.19.76 RC sesuai permintaan pengguna.
+
+
+## v1.19.76 RC CORRECTED-4
+- Master Akta Sewa: canonical single colored icons restored for Dashboard, Add, Open/Edit and Delete.
+- Prevents generic property-card icon CSS from blanking Lease action buttons.
+- Same v1.19.76 version; no database migration.
+
+### v1.19.76 RC CORRECTED-5
+- Akta Sewa detail toolbar now pins to the true top of the app when the dashboard shell is hidden, with an opaque mask so scrolled content cannot leak above it.
+- Removed the incorrect rainbow decoration from Google Drive labels; Drive actions retain their functional Drive/connect controls.
+- Same v1.19.76 RC version; no database migration required.
