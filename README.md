@@ -116,3 +116,30 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Mapping tombol navigasi utama memakai ID eksplisit agar tidak rusak setelah tombol sudah diubah menjadi icon-only.
 - Cache-buster CSS/JS/config/manifest dinaikkan ke 1.19.63.
 - Tidak ada perubahan database.
+
+
+## v1.19.64 RC — Complete Button Icon Audit + Google Drive Icon
+- Audit global seluruh tombol. Tidak ada lagi fallback titik/bulatan `●`.
+- Semua aksi Google Drive memakai simbol Google Drive segitiga yang konsisten, termasuk buka dokumen Drive, baca dari Drive, hubungkan Drive, SPPT/PBB, sertifikat, legalitas, bangunan, agen, dan dokumen historis.
+- Tombol yang dikenali memakai icon-only + tooltip fungsi + shortcut Cmd+Option (Mac) / Ctrl+Alt (non-Mac).
+- Tombol yang belum bisa dipetakan secara aman mempertahankan teks, bukan simbol misterius.
+- Shortcut tetap context-aware dan memakai physical KeyboardEvent.code dari v1.19.63.
+- Tidak ada perubahan database/Supabase.
+
+
+## v1.19.66 RC — Global Semantic Button Correction
+- Audit ulang tombol di seluruh halaman: fungsi/action sekarang selalu lebih prioritas daripada nama objek.
+- `Print Semua PBB` memakai ikon printer, bukan ikon SPPT/PBB.
+- Export Excel memakai ikon spreadsheet; simpan/buka ke Google Drive memakai logo Google Drive.
+- Tombol yang membuka URL Google Drive dideteksi sebagai Drive action meskipun labelnya hanya SPPT/Sertifikat/Dokumen.
+- Tidak ada fallback titik/bulatan. Tombol yang belum terpetakan mempertahankan teks asli.
+- Perubahan berlaku global pada Dashboard, Properti, PBB, Akta Sewa, Sertifikat, Legalitas, Agen, fasilitas, histori, dan dialog.
+- Tidak ada perubahan database.
+
+
+## v1.19.66 RC — Global Double Door Expand/Collapse Icons
+- Buka Semua memakai SVG dua daun pintu terbuka.
+- Tutup Semua memakai SVG dua daun pintu tertutup.
+- Diterapkan global pada seluruh halaman/komponen yang memiliki Buka Semua/Tutup Semua.
+- Tooltip dan shortcut tetap dipertahankan.
+- Tidak ada perubahan database.

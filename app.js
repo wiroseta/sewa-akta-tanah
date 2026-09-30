@@ -1132,8 +1132,8 @@ const V11960_COMMANDS=[
  {re:/\b(kembali|kembali ke daftar)/i,icon:'←',key:'k',word:'Kembali'},
  {re:/\bbatal\b/i,icon:'✕',key:'a',word:'Batal'},
  {re:/\btutup\b/i,icon:'✕',key:'t',word:'Tutup'},
- {re:/buka semua/i,icon:'▾',key:'u',word:'Buka Semua'},
- {re:/tutup semua/i,icon:'▴',key:'m',word:'Tutup Semua'},
+ {re:/buka semua/i,icon:'__OPEN_ALL__',key:'u',word:'Buka Semua'},
+ {re:/tutup semua/i,icon:'__CLOSE_ALL__',key:'m',word:'Tutup Semua'},
  {re:/cari klausul|cari data|\bcari\b/i,icon:'⌕',key:'c',word:'Cari'},
  {re:/hubungkan google drive/i,icon:'🔗',key:'g',word:'Hubungkan Google Drive'},
  {re:/baca.*google drive|baca dari google drive/i,icon:'✨',key:'d',word:'Baca dari Google Drive'},
@@ -1207,7 +1207,7 @@ const V11961_ICON_RULES=[
  {re:/\bpbb\b/i,icon:'🧾',key:'b'}, {re:/akta sewa/i,icon:'📄',key:'a'}, {re:/menu/i,icon:'•••',key:'m'},
  {re:/users?|pengguna/i,icon:'👥',key:'u'}, {re:/keluar|logout/i,icon:'⇥',key:'q'},
  {re:/simpan/i,icon:'💾',key:'s'}, {re:/kembali/i,icon:'←',key:'k'}, {re:/batal/i,icon:'✕',key:'x'},
- {re:/tutup semua/i,icon:'▴',key:'t'}, {re:/buka semua/i,icon:'▾',key:'o'}, {re:/\btutup\b/i,icon:'✕',key:'t'},
+ {re:/tutup semua/i,icon:'__CLOSE_ALL__',key:'t'}, {re:/buka semua/i,icon:'__OPEN_ALL__',key:'o'}, {re:/\btutup\b/i,icon:'✕',key:'t'},
  {re:/cari|search/i,icon:'⌕',key:'c'}, {re:/tambah|buat baru|baru|^\s*\+/i,icon:'＋',key:'n'},
  {re:/hapus|delete/i,icon:'🗑',key:'h'}, {re:/edit|ubah/i,icon:'✎',key:'e'}, {re:/print|cetak/i,icon:'🖨',key:'r'},
  {re:/export.*excel|excel/i,icon:'▦',key:'e'}, {re:/backup/i,icon:'⬇',key:'b'}, {re:/restore|pulihkan/i,icon:'↻',key:'r'},
@@ -1261,4 +1261,162 @@ document.addEventListener('DOMContentLoaded',()=>{
   const key=v11963KeyFromEvent(e); if(!key)return;
   if(v11961Shortcut(key)){e.preventDefault();e.stopImmediatePropagation();}
  },true);
+});
+
+// ============================================================
+// v1.19.64 RC — Complete Button Icon Audit + Google Drive Identity
+// No anonymous dot fallback. Every visible button gets a semantic icon,
+// tooltip and context-aware keyboard shortcut. Google Drive actions use
+// the recognizable Drive triangle mark.
+// ============================================================
+const V11964_DRIVE_ICON='<svg class="v11964-drive-svg" viewBox="0 0 87.3 78" aria-hidden="true"><path fill="#0066DA" d="M6.6 66.85 10.45 73.5c.8 1.4 1.95 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z"/><path fill="#00AC47" d="M43.65 25.05 29.9 1.25A9.5 9.5 0 0 0 26.6 0L13.75 22.25 27.5 46.05z"/><path fill="#EA4335" d="M73.55 76.8a9.5 9.5 0 0 0 3.3-3.3l1.6-2.75 7.65-13.25a9.5 9.5 0 0 0 1.2-4.5H59.8L46.05 76.8z"/><path fill="#00832D" d="M43.65 25.05 57.4 1.25A9.5 9.5 0 0 0 54.1 0H33.2a9.5 9.5 0 0 0-3.3 1.25z"/><path fill="#2684FC" d="M59.8 53H27.5L13.75 76.8a9.5 9.5 0 0 0 4.5 1.2h50.8a9.5 9.5 0 0 0 4.5-1.2z"/><path fill="#FFBA00" d="M73.4 26.55 60.55 4.3a9.5 9.5 0 0 0-3.15-3.05L43.65 25.05 59.8 53h27.5a9.5 9.5 0 0 0-1.2-4.5z"/></svg>';
+const V11964_RULES=[
+ {re:/dashboard/i,icon:'⌂',key:'d'}, {re:/properti\s*\/\s*lokasi|master properti|detail lokasi|buka properti/i,icon:'🏠',key:'p'},
+ {re:/\bpbb\b|sppt|bukti bayar/i,icon:'🧾',key:'b'}, {re:/akta sewa|buka akta/i,icon:'📄',key:'a'}, {re:/menu/i,icon:'•••',key:'m'},
+ {re:/google drive|\bdrive\b/i,icon:'__DRIVE__',key:'g'}, {re:/maps?|peta|lokasi/i,icon:'📍',key:'l'},
+ {re:/dokumen|sertifikat/i,icon:'📄',key:'f'}, {re:/denah/i,icon:'🗺️',key:'d'},
+ {re:/simpan/i,icon:'💾',key:'s'}, {re:/kembali/i,icon:'←',key:'k'}, {re:/batal|tutup tanpa perubahan/i,icon:'✕',key:'x'},
+ {re:/tutup semua/i,icon:'__CLOSE_ALL__',key:'t'}, {re:/buka semua/i,icon:'__OPEN_ALL__',key:'o'}, {re:/\btutup\b/i,icon:'✕',key:'t'},
+ {re:/cari|search/i,icon:'⌕',key:'c'}, {re:/tambah|buat baru|baru|^\s*\+/i,icon:'＋',key:'n'}, {re:/hapus|delete/i,icon:'🗑',key:'h'},
+ {re:/edit|ubah/i,icon:'✎',key:'e'}, {re:/\bbuka\b|lihat hasil/i,icon:'↗',key:'o'}, {re:/print|cetak/i,icon:'🖨',key:'r'},
+ {re:/export.*excel|excel/i,icon:'▦',key:'e'}, {re:/backup|download backup/i,icon:'⬇',key:'b'}, {re:/restore|pulihkan/i,icon:'↻',key:'r'},
+ {re:/verifikasi/i,icon:'✓',key:'v'}, {re:/baca.*ai|ai.*baca|baca file|baca pdf|baca otomatis|baca perjanjian|baca sppt/i,icon:'✨',key:'i'},
+ {re:/riwayat|history/i,icon:'◷',key:'y'}, {re:/bandingkan|compare/i,icon:'⇄',key:'g'}, {re:/upload/i,icon:'↑',key:'u'},
+ {re:/download/i,icon:'↓',key:'d'}, {re:/sebelumnya|prev/i,icon:'‹',key:'p'}, {re:/berikutnya|next|lanjut/i,icon:'›',key:'n'},
+ {re:/ok|terapkan|apply|pilih/i,icon:'✓',key:'o'}, {re:/salin|copy/i,icon:'⧉',key:'c'}, {re:/refresh|muat ulang/i,icon:'↻',key:'r'},
+ {re:/users?|pengguna/i,icon:'👥',key:'u'}, {re:/keluar|logout/i,icon:'⇥',key:'q'}, {re:/nonaktifkan/i,icon:'⊘',key:'n'},
+ {re:/lepas/i,icon:'⛓',key:'l'}, {re:/termin|pembayaran/i,icon:'💳',key:'p'}, {re:/fasilitas/i,icon:'⚙',key:'f'},
+ {re:/kontak/i,icon:'👤',key:'k'}, {re:/rekening/i,icon:'🏦',key:'r'}, {re:/klausul/i,icon:'§',key:'k'}, {re:/agen/i,icon:'🤝',key:'a'},
+ {re:/izin|legal/i,icon:'✓',key:'i'}, {re:/bangunan/i,icon:'🏭',key:'b'}
+];
+function v11964Rule(label){return V11964_RULES.find(r=>r.re.test(label))||null}
+function v11964IconHTML(icon){return icon==='__DRIVE__'?V11964_DRIVE_ICON:icon==='__OPEN_ALL__'?V11966_OPEN_ALL_ICON:icon==='__CLOSE_ALL__'?V11966_CLOSE_ALL_ICON:icon}
+function v11964Enhance(root=document){
+ const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
+ buttons.forEach(b=>{
+  let label=b.dataset.v11961Label||b.getAttribute('aria-label')||b.getAttribute('title')||'';
+  label=String(label).split(/\s+[—·]\s+/)[0].replace(/\s+/g,' ').trim();
+  if(!label||label==='Aksi') label=(b.textContent||'').replace(/\s+/g,' ').trim();
+  const explicit=V11963_EXPLICIT[b.id]; if(explicit)label=explicit.label;
+  let rule=explicit||v11964Rule(label);
+  // Never show an unexplained dot. Unknown commands keep a compact text label until explicitly mapped.
+  if(!rule){b.classList.remove('v11961-command');b.classList.add('v11964-text-fallback');b.innerHTML='<span class="v11964-fallback-label"></span>';b.querySelector('span').textContent=label||'Aksi';b.setAttribute('aria-label',label||'Aksi');b.title=label||'Aksi';return;}
+  const key=(rule.key||v11961Key(label,null)).toLowerCase();
+  b.dataset.v11961Label=label;b.dataset.v11961Shortcut=key;b.dataset.v11963Code='Key'+key.toUpperCase();
+  b.classList.remove('v11964-text-fallback');b.classList.add('v11961-command','v11964-ready');b.setAttribute('aria-label',label);
+  const hint='⌘⌥'+key.toUpperCase();b.dataset.tooltip=label+' · '+hint;b.title=label+' — '+hint;
+  b.innerHTML='<span class="v11961-icon" aria-hidden="true">'+v11964IconHTML(rule.icon)+'</span><span class="v11961-sr">'+label+'</span>';
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11964Enhance(document);
+ new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11964Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
+});
+
+
+// ============================================================
+// v1.19.66 RC — Global semantic button correction pass.
+// Action meaning has priority over object/page words. This prevents e.g.
+// "Print Semua PBB" from becoming a PBB receipt icon and "Simpan Excel ke
+// Google Drive" from becoming a generic save icon. Drive links always show
+// the Google Drive mark. Unknown actions keep their text (never a dot).
+// ============================================================
+const V11966_OPEN_ALL_ICON = `<svg class="v11966-door-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 10.5 2v20l-7-2.5zM20.5 4.5 13.5 2v20l7-2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.2" cy="12" r=".8" fill="currentColor"/><circle cx="15.8" cy="12" r=".8" fill="currentColor"/></svg>`;
+const V11966_CLOSE_ALL_ICON = `<svg class="v11966-door-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3" width="17" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v18" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9.3" cy="12" r=".75" fill="currentColor"/><circle cx="14.7" cy="12" r=".75" fill="currentColor"/></svg>`;
+const V11965_EXPLICIT = {
+  printAllPbbBtn:{label:'Print Semua PBB',icon:'🖨',key:'r'},
+  exportAllPbbExcelBtn:{label:'Export Excel',icon:'▦',key:'e'},
+  saveAllPbbDriveBtn:{label:'Simpan Excel ke Google Drive',icon:'__DRIVE__',key:'g'},
+  newPbbBtn:{label:'Tambah SPPT / PBB',icon:'＋',key:'n'},
+  pbbBack:{label:'Dashboard',icon:'⌂',key:'d'},
+  assetBack:{label:'Dashboard',icon:'⌂',key:'d'},
+  leaseListBack:{label:'Dashboard',icon:'⌂',key:'d'}
+};
+const V11965_ACTION_RULES = [
+ {re:/print|cetak/i,icon:'🖨',key:'r'},
+ {re:/export.*excel/i,icon:'▦',key:'e'},
+ {re:/simpan.*google drive|simpan.*drive|upload.*drive/i,icon:'__DRIVE__',key:'g'},
+ {re:/buka.*google drive|buka.*drive|google drive|\bdrive\b/i,icon:'__DRIVE__',key:'g'},
+ {re:/dashboard/i,icon:'⌂',key:'d'},
+ {re:/simpan/i,icon:'💾',key:'s'},
+ {re:/kembali/i,icon:'←',key:'k'},
+ {re:/batal|tutup tanpa perubahan/i,icon:'✕',key:'x'},
+ {re:/hapus|delete/i,icon:'🗑',key:'h'},
+ {re:/tambah|buat baru|baru|^\s*\+/i,icon:'＋',key:'n'},
+ {re:/cari|search/i,icon:'⌕',key:'c'},
+ {re:/edit|ubah/i,icon:'✎',key:'e'},
+ {re:/buka semua/i,icon:'__OPEN_ALL__',key:'o'},
+ {re:/tutup semua/i,icon:'__CLOSE_ALL__',key:'t'},
+ {re:/\btutup\b/i,icon:'✕',key:'t'},
+ {re:/verifikasi/i,icon:'✓',key:'v'},
+ {re:/baca.*ai|ai.*baca|baca file|baca pdf|baca otomatis|baca perjanjian|baca sppt/i,icon:'✨',key:'i'},
+ {re:/riwayat|history/i,icon:'◷',key:'y'},
+ {re:/bandingkan|compare/i,icon:'⇄',key:'g'},
+ {re:/maps?|peta|buka.*lokasi/i,icon:'📍',key:'l'},
+ {re:/backup|download backup/i,icon:'⬇',key:'b'},
+ {re:/restore|pulihkan/i,icon:'↻',key:'r'},
+ {re:/upload/i,icon:'↑',key:'u'},
+ {re:/download/i,icon:'↓',key:'d'},
+ {re:/salin|copy/i,icon:'⧉',key:'c'},
+ {re:/refresh|muat ulang/i,icon:'↻',key:'r'},
+ {re:/ok|terapkan|apply|pilih/i,icon:'✓',key:'o'},
+ {re:/keluar|logout/i,icon:'⇥',key:'q'}
+];
+const V11965_OBJECT_RULES = [
+ {re:/properti\s*\/\s*lokasi|master properti|detail lokasi/i,icon:'🏠',key:'p'},
+ {re:/\bpbb\b|sppt|bukti bayar/i,icon:'🧾',key:'b'},
+ {re:/akta sewa/i,icon:'📄',key:'a'},
+ {re:/sertifikat|dokumen/i,icon:'📄',key:'f'},
+ {re:/denah/i,icon:'🗺️',key:'d'},
+ {re:/users?|pengguna/i,icon:'👥',key:'u'},
+ {re:/menu/i,icon:'•••',key:'m'},
+ {re:/agen/i,icon:'🤝',key:'a'},
+ {re:/izin|legal/i,icon:'✓',key:'i'},
+ {re:/bangunan/i,icon:'🏭',key:'b'},
+ {re:/fasilitas/i,icon:'⚙',key:'f'},
+ {re:/rekening/i,icon:'🏦',key:'r'},
+ {re:/klausul/i,icon:'§',key:'k'}
+];
+function v11965OriginalLabel(b){
+ const ex=V11965_EXPLICIT[b.id]; if(ex)return ex.label;
+ let x=b.dataset.v11961Label||b.getAttribute('aria-label')||'';
+ if(!x||x==='Aksi')x=(b.textContent||'').replace(/\s+/g,' ').trim();
+ return String(x).split(/\s+[—·]\s+/)[0].trim()||'Aksi';
+}
+function v11965IsDriveButton(b,label){
+ if(/google drive|\bdrive\b/i.test(label))return true;
+ const oc=b.getAttribute('onclick')||'';
+ return /drive\.google\.com|googleusercontent\.com/i.test(oc);
+}
+function v11965Spec(b,label){
+ const ex=V11965_EXPLICIT[b.id]; if(ex)return ex;
+ if(v11965IsDriveButton(b,label))return {label:label||'Buka di Google Drive',icon:'__DRIVE__',key:'g'};
+ return V11965_ACTION_RULES.find(r=>r.re.test(label))||V11965_OBJECT_RULES.find(r=>r.re.test(label))||null;
+}
+function v11965Enhance(root=document){
+ const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
+ buttons.forEach(b=>{
+   const label=v11965OriginalLabel(b), spec=v11965Spec(b,label);
+   if(!spec){
+     // Safety: no mystery icon. Preserve readable label for unmapped commands.
+     b.classList.remove('v11961-command','v11964-ready');
+     b.classList.add('v11965-text-fallback');
+     b.textContent=label;
+     b.setAttribute('aria-label',label);
+     b.title=label;
+     delete b.dataset.v11961Shortcut;
+     return;
+   }
+   const key=(spec.key||v11961Key(label,null)).toLowerCase();
+   b.dataset.v11961Label=label;b.dataset.v11961Shortcut=key;b.dataset.v11963Code='Key'+key.toUpperCase();
+   b.classList.remove('v11964-text-fallback','v11965-text-fallback');
+   b.classList.add('v11961-command','v11964-ready','v11965-ready');
+   b.setAttribute('aria-label',label);
+   const hint='⌘⌥'+key.toUpperCase(); b.dataset.tooltip=label+' · '+hint; b.title=label+' — '+hint;
+   b.innerHTML='<span class="v11961-icon" aria-hidden="true">'+v11964IconHTML(spec.icon)+'</span><span class="v11961-sr">'+label+'</span>';
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11965Enhance(document);
+ new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11965Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
 });

@@ -495,3 +495,14 @@ button.v11961-command .v11961-icon{display:inline-flex;align-items:center;justif
 
 /* v1.19.62 — reliable shortcut feedback and header-safe tooltip */
 button.v11961-command.v11962-shortcut-flash::after{content:attr(data-tooltip)!important;position:absolute!important;z-index:30000!important;left:50%!important;top:calc(100% + 8px)!important;transform:translateX(-50%)!important;background:#1d1d1f!important;color:#fff!important;font-size:12px!important;font-weight:650!important;line-height:1.25!important;padding:7px 9px!important;border-radius:8px!important;white-space:nowrap!important;box-shadow:0 5px 18px #0003!important;pointer-events:none!important}
+
+/* v1.19.66 — semantic icon precedence correction */
+.v11964-drive-svg{width:1.35em;height:1.2em;display:block}
+.v11961-command .v11961-icon{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.v11964-text-fallback{min-width:auto!important;padding:.55rem .75rem!important}
+.v11964-fallback-label{white-space:nowrap;font-weight:700}
+
+
+/* v1.19.66 — Double Door SVG for global Buka Semua / Tutup Semua */
+.v11966-door-svg{width:22px;height:22px;display:block;overflow:visible}
+.v11961-command .v11966-door-svg{color:currentColor}
