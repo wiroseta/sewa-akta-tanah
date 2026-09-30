@@ -1,3 +1,3 @@
--- Sewa & Akta Tanah v1.19.58 RC
--- Tidak ada perubahan database / migration pada build ini.
--- Tidak perlu menjalankan SQL baru di Supabase untuk upgrade dari v1.19.57 ke v1.19.58.
+-- v1.19.60 RC
+-- Tidak ada perubahan database / Supabase schema pada build ini.
+-- Tidak ada SQL yang perlu dijalankan.

@@ -432,3 +432,49 @@ html,body{max-width:100%;overflow-x:hidden}
  .pbb-searchbar,.lease-master-search,.asset-searchbar{top:calc(var(--global-nav-h) + 46px)!important}
  .pbb-page-actions{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
+
+
+/* ============================================================
+   v1.19.59 RC — compact Akta command bar + keyboard shortcuts
+   ============================================================ */
+.lease-detail-topbar{grid-template-columns:auto minmax(0,1fr) auto!important;gap:8px!important}
+.lease-detail-topbar .compact-form-actions{display:flex!important;align-items:center!important;gap:6px!important}
+/* The form's old Kembali button duplicates the dedicated Akta navigation button. */
+.lease-detail-topbar .compact-form-actions #cancel{display:none!important}
+.lease-nav-action,.lease-save-action{position:relative!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-height:36px!important;padding:7px 10px!important;white-space:nowrap!important}
+.lease-nav-action .action-icon,.lease-save-action .action-icon{font-size:16px;line-height:1}
+.lease-nav-action .action-label,.lease-save-action .action-label{font-size:12px;font-weight:700;line-height:1}
+.lease-nav-action u,.lease-save-action u{text-decoration-thickness:1.5px;text-underline-offset:2px}
+.lease-nav-action[data-tooltip]::after,.lease-save-action[data-tooltip]::after{content:attr(data-tooltip);position:absolute;top:calc(100% + 7px);left:50%;transform:translateX(-50%) translateY(-2px);padding:6px 8px;border-radius:7px;background:#202124;color:#fff;font-size:11px;font-weight:600;line-height:1.2;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:.12s ease;z-index:1200;box-shadow:0 4px 14px #0003}
+.lease-nav-action[data-tooltip]:hover::after,.lease-nav-action[data-tooltip]:focus-visible::after,.lease-save-action[data-tooltip]:hover::after,.lease-save-action[data-tooltip]:focus-visible::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){
+ .lease-detail-topbar{grid-template-columns:38px minmax(0,1fr) auto!important;gap:5px!important}
+ .lease-detail-topbar #leaseBackBtn{font-size:initial!important;width:38px!important;height:34px!important;min-height:34px!important;padding:5px!important}
+ .lease-detail-topbar #leaseBackBtn::after{content:none!important}
+ .lease-detail-topbar #leaseBackBtn .action-label{display:none!important}
+ .lease-detail-topbar .compact-form-actions button[type="submit"]{height:34px!important;min-height:34px!important;padding:5px 8px!important}
+ .lease-save-action .action-label{display:none!important}
+ .lease-save-action{width:38px!important;padding:5px!important}
+}
+
+/* ============================================================
+   v1.19.60 RC — Global compact command system
+   Consistent buttons, icon-first mobile layout, tooltips and shortcut hints.
+   ============================================================ */
+button.v11960-command{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:7px 12px;white-space:normal;line-height:1.15}
+button.v11960-command .v11960-icon{font-size:1.05em;line-height:1;flex:0 0 auto}
+button.v11960-command .v11960-label{min-width:0}
+button.v11960-command[data-tooltip]{position:relative}
+@media (hover:hover) and (pointer:fine){
+ button.v11960-command[data-tooltip]:hover::after{content:attr(data-tooltip);position:absolute;z-index:10000;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);background:#1d1d1f;color:white;font-size:12px;font-weight:600;line-height:1.25;padding:7px 9px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 16px #0003;pointer-events:none}
+}
+/* top/action areas share the same compact visual rhythm */
+.actions,.compact-form-actions,.head-actions,.primary-actions,.ai-extract-actions,.history-compare-controls,.historical-saved-head,.property-link-footer{gap:8px}
+.actions button,.compact-form-actions button,.head-actions button,.primary-actions button,.ai-extract-actions button,.history-compare-controls button,.historical-saved-head button,.property-link-footer button{min-height:36px;padding-top:7px;padding-bottom:7px}
+@media(max-width:640px){
+ button.v11960-command{min-width:42px;min-height:42px;padding:8px 10px}
+ /* icon-first on mobile only for commands explicitly enhanced; aria-label/title retain meaning */
+ button.v11960-command.v11960-mobile-icon .v11960-label{display:none}
+ button.v11960-command.v11960-mobile-icon{width:44px;max-width:44px;padding-left:8px;padding-right:8px;overflow:hidden}
+ .actions,.compact-form-actions,.ai-extract-actions,.history-compare-controls,.historical-saved-head,.property-link-footer{gap:6px}
+}

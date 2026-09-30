@@ -1083,3 +1083,107 @@ async function extractPermitDriveRow(btn){let row=btn.closest('.permit'),url=row
 async function extractAgentDriveRow(btn){let row=btn.closest('.agent'),url=row.querySelector('.driveUrl')?.value?.trim(),st=row.querySelector('.agent-ai-status');if(!driveFileId(url))return alert('Masukkan link Google Drive perjanjian agen terlebih dahulu.');btn.disabled=true;try{let r=await invokeDriveAI(url,'agent_agreement',m=>aiProgress(st,m));applyAIObjectToRow(row,r.data,{agencyName:'agencyName',brokerName:'brokerName',businessLicenseNo:'businessLicenseNo',competencyNo:'competencyNo',agreementNo:'agreementNo',agreementDate:'agreementDate',startDate:'startDate',endDate:'endDate',transactionType:'transactionType',exclusivity:'exclusivity',transactionValue:'transactionValue',commissionPct:'commissionPct',commissionAmount:'commissionAmount',commissionPayer:'commissionPayer',commissionStatus:'commissionStatus',commissionPaidDate:'commissionPaidDate',paymentTerms:'paymentTerms',importantClauses:'importantClauses'});if(r.webViewLink)row.querySelector('.driveUrl').value=r.webViewLink;recordAIScan();aiProgressDone(st,'Perjanjian agen dari Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal: '+e.message)}finally{btn.disabled=false}} window.extractAgentDriveRow=extractAgentDriveRow;
 function v11957ClarifyRemoveButtons(){document.querySelectorAll('.repeat-row.landtitle>button:last-child,.repeat-row.building>button:last-child,.repeat-row.permit>button:last-child,.repeat-row.agent>button:last-child').forEach(b=>{if(b.textContent.trim()==='−')b.textContent=b.closest('.permit')?'Hapus Izin':b.closest('.agent')?'Hapus Perjanjian':b.closest('.building')?'Hapus Bangunan':'Hapus Sertifikat';b.classList.add('danger-remove')})}
 document.addEventListener('DOMContentLoaded',()=>{v11957ClarifyRemoveButtons();new MutationObserver(v11957ClarifyRemoveButtons).observe(document.body,{childList:true,subtree:true})});
+
+
+// ============================================================
+// v1.19.59 RC — Akta compact command bar and Mac keyboard shortcuts.
+// Cmd+Option+K = Kembali; Cmd+Option+S = Simpan Akta.
+// Ctrl+Alt equivalents are also accepted on non-Mac keyboards.
+// ============================================================
+function v11959LeaseCommandBar(){
+ const form=document.querySelector('#form');
+ const save=form?.querySelector('.compact-form-actions button[type="submit"]');
+ if(save&&!save.classList.contains('lease-save-action')){
+  save.classList.add('lease-save-action');
+  save.setAttribute('aria-label','Simpan Akta');
+  save.setAttribute('data-tooltip','Simpan Akta · ⌘⌥S');
+  save.innerHTML='<span class="action-icon" aria-hidden="true">💾</span><span class="action-label"><u>S</u>impan</span>';
+ }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11959LeaseCommandBar();
+ new MutationObserver(v11959LeaseCommandBar).observe(document.body,{childList:true,subtree:true});
+ document.addEventListener('keydown',e=>{
+  const modifier=(e.metaKey||e.ctrlKey)&&e.altKey;
+  if(!modifier)return;
+  const lease=document.querySelector('#dlg');
+  if(!lease||lease.hidden)return;
+  const k=String(e.key||'').toLowerCase();
+  if(k==='k'){
+   e.preventDefault();
+   document.querySelector('#leaseBackBtn')?.click();
+  }else if(k==='s'){
+   e.preventDefault();
+   const form=document.querySelector('#form');
+   if(form){ if(form.requestSubmit) form.requestSubmit(); else form.querySelector('button[type="submit"]')?.click(); }
+  }
+ },true);
+});
+
+// ============================================================
+// v1.19.60 RC — Global compact buttons/layout + keyboard shortcuts.
+// Applies the v1.19.59 command-bar idea consistently without changing
+// existing button IDs/listeners. Shortcuts: Cmd+Option (Mac) or Ctrl+Alt.
+// ============================================================
+const V11960_COMMANDS=[
+ {re:/simpan properti/i,icon:'💾',key:'p',word:'Simpan Properti'},
+ {re:/simpan akta/i,icon:'💾',key:'s',word:'Simpan Akta'},
+ {re:/simpan pbb/i,icon:'💾',key:'b',word:'Simpan PBB'},
+ {re:/\b(kembali|kembali ke daftar)/i,icon:'←',key:'k',word:'Kembali'},
+ {re:/\bbatal\b/i,icon:'✕',key:'a',word:'Batal'},
+ {re:/\btutup\b/i,icon:'✕',key:'t',word:'Tutup'},
+ {re:/buka semua/i,icon:'▾',key:'u',word:'Buka Semua'},
+ {re:/tutup semua/i,icon:'▴',key:'m',word:'Tutup Semua'},
+ {re:/cari klausul|cari data|\bcari\b/i,icon:'⌕',key:'c',word:'Cari'},
+ {re:/hubungkan google drive/i,icon:'🔗',key:'g',word:'Hubungkan Google Drive'},
+ {re:/baca.*google drive|baca dari google drive/i,icon:'✨',key:'d',word:'Baca dari Google Drive'},
+ {re:/baca (file|pdf|sertifikat)|baca otomatis/i,icon:'✨',key:'r',word:'Baca'},
+ {re:/verifikasi ulang/i,icon:'⌕',key:'v',word:'Verifikasi'},
+ {re:/riwayat.*bandingkan|bandingkan/i,icon:'◷',key:'i',word:'Riwayat & Bandingkan'},
+ {re:/export excel/i,icon:'▦',key:'e',word:'Export Excel'},
+ {re:/\bprint\b|cetak/i,icon:'🖨',key:'n',word:'Print'},
+ {re:/backup/i,icon:'⬇',key:'x',word:'Backup'},
+ {re:/restore/i,icon:'↻',key:'o',word:'Restore'},
+ {re:/tambah|\+ /i,icon:'＋',key:'h',word:'Tambah'},
+ {re:/hapus/i,icon:'🗑',key:'j',word:'Hapus'},
+ {re:/\bedit\b/i,icon:'✎',key:'l',word:'Edit'}
+];
+function v11960UnderlineLabel(label,key){
+ const i=label.toLocaleLowerCase('id').indexOf(key);if(i<0)return label;
+ return label.slice(0,i)+'<u>'+label[i]+'</u>'+label.slice(i+1);
+}
+function v11960EnhanceButtons(root=document){
+ root.querySelectorAll('button').forEach(b=>{
+  if(b.classList.contains('v11960-ready'))return;
+  const raw=(b.textContent||'').replace(/\s+/g,' ').trim();if(!raw)return;
+  const spec=V11960_COMMANDS.find(x=>x.re.test(raw));if(!spec)return;
+  b.classList.add('v11960-command','v11960-ready');
+  // Icon-first mobile is reserved for short navigation/action commands; destructive and AI actions keep labels.
+  if(/^(Kembali|Batal|Tutup|Cari|Edit)$/.test(spec.word))b.classList.add('v11960-mobile-icon');
+  const clean=raw.replace(/^[^\p{L}\p{N}＋←✕⌕▾▴]+/u,'').trim()||spec.word;
+  const label=clean.length>34?spec.word:clean;
+  b.setAttribute('aria-label',label);
+  b.dataset.tooltip=label+' · ⌘⌥'+spec.key.toUpperCase();
+  b.dataset.v11960Shortcut=spec.key;
+  b.title=label+' — shortcut ⌘⌥'+spec.key.toUpperCase();
+  b.innerHTML='<span class="v11960-icon" aria-hidden="true">'+spec.icon+'</span><span class="v11960-label">'+v11960UnderlineLabel(label,spec.key)+'</span>';
+ });
+}
+function v11960Visible(el){return !!(el&&el.isConnected&&!el.disabled&&el.offsetParent!==null)}
+function v11960RunShortcut(key){
+ const candidates=[...document.querySelectorAll('button[data-v11960-shortcut="'+CSS.escape(key)+'"]')].filter(v11960Visible);
+ if(!candidates.length)return false;
+ // Prefer the command inside the currently open dialog/detail view.
+ const openDialog=document.querySelector('dialog[open]');
+ const target=(openDialog&&candidates.find(b=>openDialog.contains(b)))||candidates[candidates.length-1];
+ target.click();return true;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11960EnhanceButtons();
+ new MutationObserver(m=>{for(const x of m)for(const n of x.addedNodes)if(n.nodeType===1)v11960EnhanceButtons(n.matches?.('button')?n.parentElement:n)}).observe(document.body,{childList:true,subtree:true});
+ document.addEventListener('keydown',e=>{
+  if(!((e.metaKey||e.ctrlKey)&&e.altKey)||e.shiftKey)return;
+  const key=String(e.key||'').toLowerCase();
+  if(v11960RunShortcut(key)){e.preventDefault();e.stopPropagation()}
+ },true);
+});

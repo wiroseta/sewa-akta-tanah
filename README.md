@@ -77,3 +77,19 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Mencegah installer collapsible Akta lama membungkus ulang form yang sudah diproses, untuk menghindari struktur halaman ganda/aneh.
 - Membuat header, pencarian, Buka/Tutup Semua, summary dan section Akta lebih compact pada mobile tanpa mengecilkan keterbacaan data.
 - Tidak ada perubahan database pada build ini.
+
+
+## v1.19.60 RC — Compact Akta Command Bar & Shortcuts
+- Menghilangkan tombol Kembali ganda pada header Detail Akta.
+- Navigasi Kembali dan Simpan Akta dipadatkan ke command bar atas dengan ikon, label singkat, tooltip saat hover/focus, dan aksesibilitas aria-label.
+- Shortcut: Cmd+Option+K untuk Kembali dan Cmd+Option+S untuk Simpan Akta (Ctrl+Alt juga didukung).
+- Huruf shortcut digarisbawahi pada label desktop; pada iPhone label disembunyikan sehingga hanya ikon compact yang tampil.
+- Tidak ada perubahan database/Supabase.
+
+## v1.19.60 RC — Global Compact Command System
+- Menerapkan pola command bar v1.19.59 ke seluruh aplikasi: tombol lebih compact dan layout action konsisten.
+- Tombol fungsi utama diberi ikon, tooltip saat hover, dan shortcut Cmd+Option (Mac) / Ctrl+Alt.
+- Huruf shortcut digarisbawahi pada label desktop.
+- Pada iPhone, tombol navigasi sederhana menjadi icon-first untuk menghemat ruang; fungsi tetap tersedia melalui aria-label/title.
+- Tidak mengubah ID tombol atau event listener lama.
+- Tidak ada perubahan database pada build ini.
