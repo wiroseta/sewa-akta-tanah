@@ -154,3 +154,10 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Buka Semua/Tutup Semua keep the chosen double-door SVG pair.
 - Collapsible section headers are readable text again with summary and single-section chevron; they are excluded from icon-only conversion.
 - No database migration.
+
+
+## v1.19.71 RC — Master Navigation Click Fix
+- Memperbaiki tiga ikon Master Properti, Master PBB, dan Master Akta Sewa yang tidak dapat diklik pada v1.19.69.
+- Penyebab: MutationObserver terus menulis ulang innerHTML ikon sehingga memicu loop mutasi DOM.
+- Ikon sekarang dirender satu kali dan event navigasi asli tetap aktif.
+- Tidak ada perubahan database / SQL.

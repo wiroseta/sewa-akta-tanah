@@ -544,3 +544,13 @@ button.collapsible-header.v11968-readable-collapse .collapsible-chevron{display:
 #assetsBtn,#pbbBtn,#leaseBtn{background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:#202124!important}#assetsBtn:hover,#pbbBtn:hover,#leaseBtn:hover{background:rgba(10,102,194,.06)!important;border-color:rgba(10,102,194,.12)!important}
 #assetsBtn.v11969-active,#pbbBtn.v11969-active,#leaseBtn.v11969-active{box-shadow:inset 0 -3px 0 #0a66c2!important;border-radius:8px!important}
 @media(max-width:760px){.lease-top-actions{gap:4px!important}.lease-top-actions #leaseDataSearchBtn,.lease-top-actions #continuationBtn{width:36px!important;min-width:36px!important;padding:5px!important}.lease-top-actions #verifyBadge{display:none!important}.lease-save-top{width:38px!important;padding:5px!important}.lease-save-top span{display:none}.drive-extract.drive-compact{grid-template-columns:1fr auto auto!important}.drive-compact .drive-label{grid-column:1/-1}.drive-compact #driveUrl{grid-column:1/-1}.drive-compact #driveExtractBtn{grid-column:1/-1;width:100%}.drive-compact .drive-state{grid-column:1/-1}.collapsible-section>.collapsible-header{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
+
+/* v1.19.71 RC — compact readable utility menu and clearer search actions */
+.utility-menu-panel{width:250px!important;padding:8px!important;gap:4px!important}
+.utility-menu-panel .v11971-menu-row{display:flex!important;align-items:center!important;gap:12px!important;min-height:46px!important;padding:8px 12px!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important;text-align:left!important}
+.utility-menu-panel .v11971-menu-row:hover{background:rgba(0,122,255,.07)!important}
+.v11971-menu-icon{width:30px;min-width:30px;text-align:center;font-size:23px;line-height:1.1}
+.v11971-menu-label{display:block!important;font-size:14px;font-weight:650;white-space:nowrap;color:#1d1d1f}
+.utility-menu-panel .danger-menu .v11971-menu-label{color:#b42318}
+.v11971-search-command .v11961-icon{font-size:24px!important;line-height:1!important;transform:none!important}
+button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{font-size:24px!important}

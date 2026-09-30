@@ -1564,7 +1564,42 @@ function v11969WrapMasterNav(){
 }
 function v11969ColorMasterIcons(){
  const specs={assetsBtn:['🏢','Master Properti'],pbbBtn:['🧾','Master PBB'],leaseBtn:['📝','Master Akta Sewa']};
- Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.setAttribute('aria-label',label);b.title=label;b.innerHTML=`<span aria-hidden="true" style="font-size:24px;line-height:1">${icon}</span><span class="v11961-sr">${label}</span>`});
+ Object.entries(specs).forEach(([id,[icon,label]])=>{
+  const b=document.getElementById(id);if(!b)return;
+  b.setAttribute('aria-label',label);b.title=label;
+  // v1.19.70: only rewrite once. Rewriting innerHTML from a MutationObserver
+  // continuously retriggered the observer and could make these buttons unclickable.
+  if(b.dataset.v11970ColorIcon==='1')return;
+  b.innerHTML=`<span aria-hidden="true" style="font-size:24px;line-height:1">${icon}</span><span class="v11961-sr">${label}</span>`;
+  b.dataset.v11970ColorIcon='1';
+ });
 }
 function v11969DriveOpen(){const u=document.getElementById('driveUrl')?.value?.trim();if(u)window.open(u,'_blank','noopener');else alert('Link Google Drive belum tersedia.');}
-document.addEventListener('DOMContentLoaded',()=>{v11969WrapMasterNav();setTimeout(v11969ColorMasterIcons,50);document.getElementById('driveOpenCompactBtn')?.addEventListener('click',v11969DriveOpen);new MutationObserver(()=>setTimeout(v11969ColorMasterIcons,0)).observe(document.querySelector('.primary-actions')||document.body,{childList:true,subtree:true});});
+document.addEventListener('DOMContentLoaded',()=>{v11969WrapMasterNav();setTimeout(v11969ColorMasterIcons,50);document.getElementById('driveOpenCompactBtn')?.addEventListener('click',v11969DriveOpen);});
+
+// ============================================================
+// v1.19.71 RC — readable utility dropdown + global search icon.
+// ============================================================
+const V11971_SEARCH_ICON='🔍';
+function v11971ReadableUtilityMenu(){
+ const specs={
+  usersBtn:['👥','Kelola Users'],
+  historySearchBtn:[V11971_SEARCH_ICON,'Cari Klausul & Riwayat'],
+  backupBtn:['🗄️','Backup & Restore'],
+  logoutBtn:['🚪','Keluar']
+ };
+ Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.classList.add('v11971-menu-row');b.setAttribute('aria-label',label);b.title=label;b.innerHTML=`<span class="v11971-menu-icon" aria-hidden="true">${icon}</span><span class="v11971-menu-label">${label}</span>`;});
+}
+function v11971SearchIcons(root=document){
+ const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
+ buttons.forEach(b=>{
+  if(b.closest('.collapsible-header'))return;
+  const label=String(b.dataset.v11961Label||b.getAttribute('aria-label')||b.title||b.textContent||'').replace(/\s+/g,' ').trim();
+  if(!/cari|search/i.test(label))return;
+  const icon=b.querySelector('.v11961-icon');
+  if(icon){icon.textContent=V11971_SEARCH_ICON;b.classList.add('v11971-search-command');return;}
+  // Preserve readable text buttons; replace only a leading search glyph.
+  const first=b.firstChild;if(first?.nodeType===3&&/[🔎⌕]/u.test(first.textContent||'')){first.textContent=(first.textContent||'').replace(/[🔎⌕]/gu,V11971_SEARCH_ICON);b.classList.add('v11971-search-command')}
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{v11971ReadableUtilityMenu();v11971SearchIcons(document)},120);});
