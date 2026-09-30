@@ -44,3 +44,21 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Berlaku pada Akta, Properti, PBB, dan dialog/popup.
 - Mobile/iPhone menggunakan layout lebih ringkas; menu utama memprioritaskan ikon dan kontrol penting.
 - Tidak ada perubahan schema SQL.
+
+
+## v1.19.55 RC — True Global Fixed Navigation
+- Header/menu utama sekarang fixed ke viewport, bukan sticky terhadap container.
+- Menu Properti/Lokasi, PBB, Akta Sewa dan Menu tetap terlihat saat scroll panjang.
+- Detail Properti dan Detail Akta memakai offset di bawah global header sehingga tidak bertumpuk.
+- Search bar/master action bar ikut menyesuaikan offset sticky.
+- Layout mobile/iPhone menggunakan tinggi header lebih ringkas.
+- Tidak ada perubahan SQL/database.
+
+
+## v1.19.56 RC — Clear Button Theme & Compact Property Actions
+- Secondary buttons now use a white surface, visible border and dark text so they no longer look disabled.
+- Disabled buttons have a separate muted visual state.
+- Destructive actions use a restrained red outline.
+- Property Back / title / context / Cancel / Save are kept in one compact sticky row on desktop.
+- On narrow iPhone layouts, Cancel is omitted from the row (Back provides the cancel/exit path) while Save remains immediately accessible.
+- No database or SQL change.

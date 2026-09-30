@@ -284,3 +284,64 @@ dialog .compact-form-actions{top:0}.asset-detail-topbar .compact-form-actions,.l
  .asset-detail-topbar,.lease-detail-topbar{grid-template-columns:auto minmax(0,1fr) auto;gap:7px;padding:7px 10px}.asset-detail-topbar>div,.lease-detail-topbar>div{grid-row:auto;grid-column:auto}.asset-detail-topbar h2,.lease-detail-topbar h2{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-detail-topbar .pill,.lease-detail-topbar .pill{display:none}.asset-detail-topbar .compact-form-actions,.lease-detail-topbar .compact-form-actions{gap:5px}.asset-detail-topbar .compact-form-actions button,.lease-detail-topbar .compact-form-actions button{font-size:12px;padding:8px 9px;white-space:nowrap}
  .lease-top-actions{display:none}.pbb-page-head{top:48px;align-items:center;gap:8px}.pbb-page-head>div{display:flex;align-items:center;gap:7px}.pbb-page-head h2{font-size:17px;margin:0}.pbb-page-head #pbbBack{font-size:0;padding:8px}.pbb-page-head #pbbBack::after{content:'←';font-size:16px}.pbb-page-actions{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px}.pbb-page-actions button{flex:0 0 auto!important;white-space:nowrap;font-size:12px;padding:8px 9px}
 }
+
+/* ============================================================
+   v1.19.55 RC — True global fixed navigation
+   The app navigation is viewport-fixed (not container-sticky), so it
+   remains available while full-page detail sections are scrolled.
+   ============================================================ */
+:root{--global-nav-h:58px;--detail-nav-h:58px}
+#appShell>header{position:fixed!important;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:1000!important;min-height:var(--global-nav-h)}
+#appShell>main{padding-top:var(--global-nav-h)}
+.asset-detail-page,.lease-detail-page{padding-top:var(--global-nav-h)!important}
+.asset-detail-topbar,.lease-detail-topbar{top:var(--global-nav-h)!important;z-index:900!important}
+.asset-detail-search{top:calc(var(--global-nav-h) + var(--detail-nav-h) + 8px)!important}
+.pbb-page,.lease-master-page,.asset-master-page{padding-top:var(--global-nav-h)!important}
+.pbb-page-head{top:var(--global-nav-h)!important;z-index:900!important}
+.pbb-searchbar,.lease-master-search,.asset-searchbar{top:calc(var(--global-nav-h) + 54px)!important;z-index:850!important}
+.utility-menu-panel{z-index:1100}
+@media(max-width:760px){
+ :root{--global-nav-h:48px;--detail-nav-h:48px}
+ #appShell>header{min-height:48px;max-height:48px}
+ #appShell>header>div:first-child{min-width:0}
+ #appShell>header h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:155px}
+ .asset-detail-page,.lease-detail-page{padding-top:var(--global-nav-h)!important}
+ .asset-detail-search{top:calc(var(--global-nav-h) + var(--detail-nav-h) + 6px)!important}
+ .pbb-searchbar,.lease-master-search,.asset-searchbar{top:calc(var(--global-nav-h) + 48px)!important}
+}
+
+
+/* ============================================================
+   v1.19.56 RC — Clear interactive button theme + single-row actions
+   Secondary controls are visibly clickable; disabled is visually distinct.
+   ============================================================ */
+:root{--btn-primary:#0a66c2;--btn-primary-hover:#084f96;--btn-border:#b8bec8;--btn-text:#202124;--btn-surface:#fff;--btn-hover:#f1f4f8;--btn-danger:#b42318}
+button{transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .05s ease}
+button:not(:disabled):active{transform:translateY(1px)}
+button:not(.secondary):not(.danger-menu){background:var(--btn-primary);border:1px solid var(--btn-primary);color:#fff;box-shadow:0 1px 2px #00000014}
+button:not(.secondary):not(.danger-menu):hover{background:var(--btn-primary-hover);border-color:var(--btn-primary-hover)}
+button.secondary{background:var(--btn-surface)!important;color:var(--btn-text)!important;border:1px solid var(--btn-border)!important;box-shadow:0 1px 2px #0000000d}
+button.secondary:hover:not(:disabled){background:var(--btn-hover)!important;border-color:#8e96a3!important}
+button:disabled{background:#eceef1!important;color:#9aa0a8!important;border-color:#d9dde3!important;box-shadow:none!important;cursor:not-allowed!important;opacity:.72}
+button.danger-menu,.repeat-row.land>button:last-child,.repeat-row.landdoc>button:last-child,.repeat-row.pbb>button:last-child,.repeat-row.facility>button:last-child,.repeat-row.landtitle>button:last-child,.repeat-row.clause>button{background:#fff!important;color:var(--btn-danger)!important;border:1px solid #e6aaa5!important}
+button.danger-menu:hover,.repeat-row.land>button:last-child:hover,.repeat-row.landdoc>button:last-child:hover,.repeat-row.pbb>button:last-child:hover,.repeat-row.facility>button:last-child:hover,.repeat-row.landtitle>button:last-child:hover,.repeat-row.clause>button:hover{background:#fff1f0!important}
+
+/* Property detail: back, title, context and save/cancel share one compact row. */
+.asset-detail-topbar{grid-template-columns:auto minmax(0,1fr) auto auto!important;gap:10px!important;min-height:52px!important;padding-top:6px!important;padding-bottom:6px!important}
+.asset-detail-topbar .compact-form-actions{display:flex!important;flex-wrap:nowrap!important;gap:7px!important;justify-content:flex-end!important}
+.asset-detail-topbar .compact-form-actions button{white-space:nowrap!important;padding:8px 12px!important}
+.asset-detail-topbar .pill{white-space:nowrap}
+.asset-detail-topbar h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+:root{--detail-nav-h:52px}
+@media(max-width:760px){
+ :root{--detail-nav-h:46px}
+ .asset-detail-topbar{grid-template-columns:auto minmax(0,1fr) auto!important;gap:6px!important;min-height:46px!important;padding:5px 8px!important}
+ .asset-detail-topbar>div{grid-row:auto!important;grid-column:auto!important;min-width:0}
+ .asset-detail-topbar #assetDetailBack{font-size:0!important;width:38px;padding:8px!important}
+ .asset-detail-topbar #assetDetailBack::after{content:'‹';font-size:24px;line-height:16px}
+ .asset-detail-topbar .pill{display:none!important}
+ .asset-detail-topbar .compact-form-actions{gap:5px!important}
+ .asset-detail-topbar .compact-form-actions #assetCancel{display:none!important}
+ .asset-detail-topbar .compact-form-actions button[type="submit"]{padding:8px 10px!important;font-size:12px!important}
+ .asset-detail-topbar h2{font-size:14px!important}
+}
