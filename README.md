@@ -70,3 +70,10 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Compact AI controls dan label Hapus yang eksplisit menggantikan tombol minus ambigu.
 - `supabase_latest.sql` hanya migration v1.19.57; history ditambahkan ke `supabase_schema_history.sql`.
 - Pembacaan AI file dan Google Drive memakai documentType permit dan agent_agreement melalui Universal Document Reader yang sama; hasil tetap wajib diverifikasi sebelum disimpan.
+
+## v1.19.58 RC — iPhone Responsive & Page Structure Fix
+- Memperbaiki global/fixed navigation dan detail topbar agar tidak menutupi konten atau muncul kembali di tengah halaman saat scroll.
+- Memperbaiki overflow horizontal pada Data Sertifikat, file picker, tombol AI/Google Drive, card, form, dan nested grid di iPhone.
+- Mencegah installer collapsible Akta lama membungkus ulang form yang sudah diproses, untuk menghindari struktur halaman ganda/aneh.
+- Membuat header, pencarian, Buka/Tutup Semua, summary dan section Akta lebih compact pada mobile tanpa mengecilkan keterbacaan data.
+- Tidak ada perubahan database pada build ini.

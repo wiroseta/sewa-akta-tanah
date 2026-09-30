@@ -357,3 +357,78 @@ button.danger-menu:hover,.repeat-row.land>button:last-child:hover,.repeat-row.la
 .permit-head,.agent-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.permit-status{font-size:12px;color:#6e6e73}
 .permit-grid,.agent-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;align-items:end}.permit-grid label,.agent-grid label{display:grid;gap:5px;font-weight:650}.permit-wide,.agent-wide{grid-column:1/-1}.permit-ai-toolbar,.agent-ai-toolbar{grid-column:1/-1;display:flex;gap:7px;align-items:center;padding-top:10px;border-top:1px solid #e5e5ea}.permit-ai-toolbar input,.agent-ai-toolbar input{flex:1}.permit-ai-toolbar button,.agent-ai-toolbar button{padding:7px 10px;font-size:12px;white-space:nowrap}.permit-ai-status,.agent-ai-status{grid-column:1/-1;min-height:0}
 @media(max-width:760px){.permit-grid,.agent-grid{grid-template-columns:1fr}.permit-wide,.agent-wide,.permit-ai-toolbar,.agent-ai-toolbar,.permit-ai-status,.agent-ai-status{grid-column:1}.permit-ai-toolbar,.agent-ai-toolbar{display:grid;grid-template-columns:1fr 1fr}.permit-ai-toolbar input,.agent-ai-toolbar input{grid-column:1/-1;width:100%}}
+
+/* ============================================================
+   v1.19.58 RC — iPhone/mobile layout stabilization
+   - fixed stacked navigation (no content overlap / mid-page sticky re-entry)
+   - no horizontal overflow in forms, cards, AI toolbars or buttons
+   - compact Akta controls and collapsible headers
+   ============================================================ */
+html,body{max-width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+.asset-detail-page,.lease-detail-page,.pbb-page,.asset-master-page,.lease-master-page{max-width:100vw;overflow-x:clip}
+.asset-detail-page form,.lease-detail-page form,#assetForm,#form{min-width:0;max-width:100%}
+.asset-detail-page input,.asset-detail-page select,.asset-detail-page textarea,.asset-detail-page button,
+.lease-detail-page input,.lease-detail-page select,.lease-detail-page textarea,.lease-detail-page button,
+.pbb-page input,.pbb-page select,.pbb-page textarea,.pbb-page button{max-width:100%}
+.repeat-row,.master-section,.collapsible-section,.collapsible-content,.ai-extract,.ai-extract-actions,.drive-extract,
+.landtitle,.building,.permit,.agent,.grid,.pbb-grid,label{min-width:0;max-width:100%}
+
+/* Detail bars must stay at the top of the viewport, never re-enter mid-page. */
+.asset-detail-topbar,.lease-detail-topbar{position:fixed!important;left:0;right:0;width:100%;top:var(--global-nav-h)!important}
+.asset-detail-page,.lease-detail-page{padding-top:calc(var(--global-nav-h) + var(--detail-nav-h) + 8px)!important}
+
+@media(max-width:760px){
+ :root{--global-nav-h:56px;--detail-nav-h:46px}
+ #appShell>header{height:56px!important;min-height:56px!important;max-height:56px!important;padding-top:max(6px,env(safe-area-inset-top));padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+ #appShell>header h1{max-width:190px}
+ .asset-detail-page,.lease-detail-page{padding-top:calc(var(--global-nav-h) + var(--detail-nav-h) + 6px)!important}
+ .asset-detail-topbar,.lease-detail-topbar{height:46px!important;min-height:46px!important;max-height:46px!important;padding:4px 8px!important;overflow:hidden}
+ .asset-detail-search{position:relative!important;top:auto!important;width:calc(100% - 24px)!important;margin:8px 12px!important;padding:8px!important;gap:5px!important}
+ .asset-detail-search input{padding:10px 12px!important}
+ .asset-detail-search span{font-size:12px!important}
+ .asset-detail-related{width:calc(100% - 24px)!important;margin:8px 12px!important}
+
+ /* Mobile form containment: solve right-side clipping at the source. */
+ .asset-detail-page form,.lease-detail-page form{width:100%!important;padding:10px 12px 28px!important;margin:0!important}
+ .asset-detail-page input,.asset-detail-page select,.asset-detail-page textarea,
+ .lease-detail-page input,.lease-detail-page select,.lease-detail-page textarea{width:100%!important;min-width:0!important}
+ .repeat-row.landtitle,.repeat-row.land,.repeat-row.landdoc,.repeat-row.building,.repeat-row.permit,.repeat-row.agent,
+ .master-section,.collapsible-content{width:100%!important;min-width:0!important;max-width:100%!important}
+ .grid,.permit-grid,.agent-grid,.building-edit-view{grid-template-columns:minmax(0,1fr)!important}
+ .grid>* ,.permit-grid>* ,.agent-grid>* ,.building-edit-view>*{grid-column:1!important;min-width:0!important;max-width:100%!important}
+ .repeat-row.landtitle .land-file,.building-file{min-width:0!important;width:100%!important}
+ .ai-extract-actions,.drive-extract,.permit-ai-toolbar,.agent-ai-toolbar{width:100%!important;min-width:0!important;max-width:100%!important}
+ .ai-extract-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important}
+ .ai-extract-actions>*{width:100%!important;min-width:0!important;white-space:normal!important;overflow-wrap:anywhere}
+ .drive-extract button,.land-ai-btn,.land-drive-ai-btn,.building-edit-view>button:not(.mini-open){width:100%!important;white-space:normal!important;line-height:1.2!important}
+ button{overflow-wrap:anywhere}
+
+ /* Akta: reduce navigation/search/control vertical cost without shrinking readability. */
+ .lease-detail-topbar{grid-template-columns:40px minmax(0,1fr) auto!important;gap:5px!important}
+ .lease-detail-topbar #leaseBackBtn{font-size:0!important;width:40px!important;height:36px!important;padding:5px!important}
+ .lease-detail-topbar #leaseBackBtn::after{content:'‹';font-size:27px;line-height:20px}
+ .lease-detail-topbar h2{font-size:14px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+ .lease-detail-topbar .compact-form-actions{display:flex!important;gap:4px!important;min-width:0!important}
+ .lease-detail-topbar .compact-form-actions #cancel{display:none!important}
+ .lease-detail-topbar .compact-form-actions button[type="submit"]{font-size:12px!important;padding:7px 9px!important;width:auto!important;white-space:nowrap!important}
+ .lease-detail-summary{width:calc(100% - 24px)!important;margin:7px 12px!important;padding:8px 10px!important;font-size:14px!important;line-height:1.25!important;max-height:62px;overflow:hidden}
+ .lease-local-search{grid-template-columns:minmax(0,1fr) auto!important;gap:5px!important;margin:6px 0 8px!important}
+ .lease-local-search input{padding:10px 11px!important;min-height:42px!important}
+ .lease-local-search .muted{grid-column:1!important;font-size:12px!important;line-height:1.15!important;padding-left:2px}
+ .lease-local-search #leaseSearchPrev,.lease-local-search #leaseSearchNext{display:none!important}
+ .collapse-page-controls{position:static!important;margin:4px 0 7px!important;padding:0!important;gap:5px!important;background:transparent!important;flex-wrap:nowrap!important}
+ .collapse-page-controls button{padding:6px 10px!important;font-size:12px!important;min-height:34px!important;width:auto!important;flex:0 0 auto!important}
+ .collapsible-section{margin:7px 0!important;border-radius:13px!important}
+ .collapsible-header{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;align-items:center!important;gap:7px!important;padding:9px 11px!important;min-height:54px!important}
+ .collapsible-title{font-size:16px!important;line-height:1.18!important;min-width:0}
+ .collapsible-summary{margin:0!important;max-width:96px!important;font-size:10px!important;line-height:1.15!important;text-align:right!important;white-space:normal!important}
+ .collapsible-chevron{font-size:13px!important;min-width:14px!important}
+ .collapsible-content{padding:9px!important}
+
+ /* PBB/list headers: keep beneath global nav and avoid horizontal action clipping. */
+ .pbb-page{padding-top:var(--global-nav-h)!important}
+ .pbb-page-head{top:var(--global-nav-h)!important}
+ .pbb-searchbar,.lease-master-search,.asset-searchbar{top:calc(var(--global-nav-h) + 46px)!important}
+ .pbb-page-actions{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
