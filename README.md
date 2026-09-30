@@ -108,3 +108,11 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Cmd+Option+A sekarang secara eksplisit membuka Akta Sewa dari Dashboard; P=Properti, B=PBB, M=Menu, D=Dashboard jika tombol Dashboard aktif.
 - Shortcut tetap context-aware pada dialog/detail/page aktif.
 - Tooltip diposisikan di bawah tombol agar terlihat pada header paling atas. Setelah shortcut keyboard dijalankan, tooltip fungsi/shortcut muncul singkat sebagai feedback.
+
+
+## v1.19.63 RC — Physical-key Shortcuts + Dashboard Home Icon Fix
+- Shortcut Mac sekarang membaca `KeyboardEvent.code` (KeyA/KeyP/dll), sehingga Option tidak mengubah huruf menjadi karakter khusus sebelum dispatcher membaca shortcut.
+- Dashboard pada Master Properti, Master Akta, dan Master PBB memakai ikon `⌂`, bukan fallback titik.
+- Mapping tombol navigasi utama memakai ID eksplisit agar tidak rusak setelah tombol sudah diubah menjadi icon-only.
+- Cache-buster CSS/JS/config/manifest dinaikkan ke 1.19.63.
+- Tidak ada perubahan database.
