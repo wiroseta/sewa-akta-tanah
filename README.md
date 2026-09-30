@@ -79,14 +79,14 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Tidak ada perubahan database pada build ini.
 
 
-## v1.19.61 RC — Compact Akta Command Bar & Shortcuts
+## v1.19.62 RC — Compact Akta Command Bar & Shortcuts
 - Menghilangkan tombol Kembali ganda pada header Detail Akta.
 - Navigasi Kembali dan Simpan Akta dipadatkan ke command bar atas dengan ikon, label singkat, tooltip saat hover/focus, dan aksesibilitas aria-label.
 - Shortcut: Cmd+Option+K untuk Kembali dan Cmd+Option+S untuk Simpan Akta (Ctrl+Alt juga didukung).
 - Huruf shortcut digarisbawahi pada label desktop; pada iPhone label disembunyikan sehingga hanya ikon compact yang tampil.
 - Tidak ada perubahan database/Supabase.
 
-## v1.19.61 RC — Global Compact Command System
+## v1.19.62 RC — Global Compact Command System
 - Menerapkan pola command bar v1.19.59 ke seluruh aplikasi: tombol lebih compact dan layout action konsisten.
 - Tombol fungsi utama diberi ikon, tooltip saat hover, dan shortcut Cmd+Option (Mac) / Ctrl+Alt.
 - Huruf shortcut digarisbawahi pada label desktop.
@@ -95,8 +95,16 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Tidak ada perubahan database pada build ini.
 
 
-## v1.19.61 RC — Global Icon Command System
+## v1.19.62 RC — Global Icon Command System
 - Seluruh tombol program memakai icon-only yang compact dengan aria-label dan tooltip fungsi.
 - Semua tombol memperoleh shortcut Cmd+Option+huruf (Ctrl+Alt pada non-Mac), dipilih secara context-aware.
 - Tombol dengan fungsi umum memakai ikon konsisten: simpan, kembali, tambah, cari, hapus, AI, Drive, print, export, riwayat, Maps, dan lain-lain.
 - Existing button ID dan event listener dipertahankan. Tidak ada perubahan database.
+
+
+## v1.19.62 RC — Shortcut Reliability & Dashboard Home Icon
+- Tombol kembali ke Dashboard memakai ikon `⌂` (Home), bukan titik/menu.
+- Dispatcher shortcut lama v1.19.59/v1.19.60 dinonaktifkan agar tidak berebut shortcut dengan sistem global.
+- Cmd+Option+A sekarang secara eksplisit membuka Akta Sewa dari Dashboard; P=Properti, B=PBB, M=Menu, D=Dashboard jika tombol Dashboard aktif.
+- Shortcut tetap context-aware pada dialog/detail/page aktif.
+- Tooltip diposisikan di bawah tombol agar terlihat pada header paling atas. Setelah shortcut keyboard dijalankan, tooltip fungsi/shortcut muncul singkat sebagai feedback.

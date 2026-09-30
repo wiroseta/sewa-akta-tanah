@@ -480,15 +480,18 @@ button.v11960-command[data-tooltip]{position:relative}
 }
 
 /* ============================================================
-   v1.19.61 RC — Global icon-only command system
+   v1.19.62 RC — Global icon-only command system
    ============================================================ */
 button.v11961-command{position:relative!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:42px!important;min-width:42px!important;max-width:42px!important;height:38px!important;min-height:38px!important;padding:0!important;gap:0!important;white-space:nowrap!important;overflow:visible!important}
 button.v11961-command .v11960-icon,button.v11961-command .v11960-label,button.v11961-command .action-label{display:none!important}
 button.v11961-command .v11961-icon{display:inline-flex;align-items:center;justify-content:center;font-size:18px;line-height:1;width:100%;height:100%}
 .v11961-sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media (hover:hover) and (pointer:fine){
- button.v11961-command:hover::after{content:attr(data-tooltip)!important;position:absolute!important;z-index:20000!important;left:50%!important;bottom:calc(100% + 8px)!important;transform:translateX(-50%)!important;background:#1d1d1f!important;color:#fff!important;font-size:12px!important;font-weight:650!important;line-height:1.25!important;padding:7px 9px!important;border-radius:8px!important;white-space:nowrap!important;box-shadow:0 5px 18px #0003!important;pointer-events:none!important}
+ button.v11961-command:hover::after{content:attr(data-tooltip)!important;position:absolute!important;z-index:20000!important;left:50%!important;top:calc(100% + 8px)!important;bottom:auto!important;transform:translateX(-50%)!important;background:#1d1d1f!important;color:#fff!important;font-size:12px!important;font-weight:650!important;line-height:1.25!important;padding:7px 9px!important;border-radius:8px!important;white-space:nowrap!important;box-shadow:0 5px 18px #0003!important;pointer-events:none!important}
 }
 /* command groups consume one compact row instead of wide text controls */
 .head-actions,.primary-actions,.actions,.compact-form-actions,.ai-extract-actions,.history-compare-controls,.historical-saved-head,.property-link-footer{gap:6px!important;align-items:center!important}
 @media(max-width:640px){button.v11961-command{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important}}
+
+/* v1.19.62 — reliable shortcut feedback and header-safe tooltip */
+button.v11961-command.v11962-shortcut-flash::after{content:attr(data-tooltip)!important;position:absolute!important;z-index:30000!important;left:50%!important;top:calc(100% + 8px)!important;transform:translateX(-50%)!important;background:#1d1d1f!important;color:#fff!important;font-size:12px!important;font-weight:650!important;line-height:1.25!important;padding:7px 9px!important;border-radius:8px!important;white-space:nowrap!important;box-shadow:0 5px 18px #0003!important;pointer-events:none!important}

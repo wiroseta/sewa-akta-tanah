@@ -1104,7 +1104,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  v11959LeaseCommandBar();
  new MutationObserver(v11959LeaseCommandBar).observe(document.body,{childList:true,subtree:true});
  document.addEventListener('keydown',e=>{
-  const modifier=(e.metaKey||e.ctrlKey)&&e.altKey;
+  const modifier=false; // v1.19.62: legacy shortcut handler disabled; global dispatcher owns shortcuts
   if(!modifier)return;
   const lease=document.querySelector('#dlg');
   if(!lease||lease.hidden)return;
@@ -1182,19 +1182,20 @@ document.addEventListener('DOMContentLoaded',()=>{
  v11960EnhanceButtons();
  new MutationObserver(m=>{for(const x of m)for(const n of x.addedNodes)if(n.nodeType===1)v11960EnhanceButtons(n.matches?.('button')?n.parentElement:n)}).observe(document.body,{childList:true,subtree:true});
  document.addEventListener('keydown',e=>{
-  if(!((e.metaKey||e.ctrlKey)&&e.altKey)||e.shiftKey)return;
+  if(true)return; // v1.19.62: legacy v1.19.60 shortcut handler disabled
   const key=String(e.key||'').toLowerCase();
   if(v11960RunShortcut(key)){e.preventDefault();e.stopPropagation()}
  },true);
 });
 
 // ============================================================
-// v1.19.61 RC — Global Icon Command System
+// v1.19.62 RC — Global Icon Command System
 // Every actionable button is icon-first/icon-only, with an accessible label,
 // hover tooltip and context-aware Cmd+Option / Ctrl+Alt shortcut.
 // Existing IDs and click handlers are preserved.
 // ============================================================
 const V11961_ICON_RULES=[
+ {re:/dashboard/i,icon:'⌂',key:'d'},
  {re:/properti\s*\/\s*lokasi|master properti|detail lokasi/i,icon:'🏠',key:'p'},
  {re:/\bpbb\b/i,icon:'🧾',key:'b'},
  {re:/akta sewa/i,icon:'📄',key:'a'},
@@ -1260,9 +1261,19 @@ function v11961Shortcut(key){
  const all=[...document.querySelectorAll('button[data-v11961-shortcut="'+CSS.escape(key)+'"]')].filter(v11961Visible);
  if(!all.length)return false;
  const dialog=document.querySelector('dialog[open]');
- const detail=[...document.querySelectorAll('#propertyDetailPage:not([hidden]),#dlg:not([hidden]),.modal:not([hidden])')].pop();
- const target=(dialog&&all.find(x=>dialog.contains(x)))||(detail&&all.find(x=>detail.contains(x)))||all[all.length-1];
- target.click();return true;
+ const detail=[...document.querySelectorAll('#propertyDetailPage:not([hidden]),#dlg:not([hidden]),#assetPage:not([hidden]),#leasePage:not([hidden]),#pbbPage:not([hidden]),.modal:not([hidden])')].pop();
+ // Prefer the active dialog/page. On Dashboard use the actual top navigation command.
+ let target=(dialog&&all.find(x=>dialog.contains(x)))||(detail&&all.find(x=>detail.contains(x)));
+ if(!target){
+   const preferred={a:'#leaseBtn',p:'#assetsBtn',b:'#pbbBtn',m:'#mobileMenuBtn',d:'button[aria-label*="Dashboard"]'}[key];
+   if(preferred){const x=document.querySelector(preferred);if(v11961Visible(x)&&x.dataset.v11961Shortcut===key)target=x;}
+ }
+ target=target||all[0];
+ target.click();
+ target.focus({preventScroll:true});
+ target.classList.add('v11962-shortcut-flash');
+ setTimeout(()=>target.classList.remove('v11962-shortcut-flash'),900);
+ return true;
 }
 document.addEventListener('DOMContentLoaded',()=>{
  v11961Enhance(document);
