@@ -1422,7 +1422,7 @@ function v11965Enhance(root=document){
 }
 document.addEventListener('DOMContentLoaded',()=>{
  v11965Enhance(document);
- new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11965Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
+ /* v1.19.74: legacy observer removed; unified observer below */
 });
 
 
@@ -1492,7 +1492,7 @@ function v11967Enhance(root=document){
 }
 document.addEventListener('DOMContentLoaded',()=>{
  v11967Enhance(document);
- new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)v11967Enhance(n)}))).observe(document.body,{childList:true,subtree:true});
+ /* v1.19.74: legacy observer removed; unified observer below */
 });
 
 
@@ -1542,7 +1542,7 @@ function v11968Audit(root=document){
 document.addEventListener('DOMContentLoaded',()=>{
  v11968Audit(document);
  // Run after older observers have finished their pass.
- new MutationObserver(ms=>{const roots=[];ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)roots.push(n)}));if(roots.length)setTimeout(()=>roots.forEach(v11968Audit),0)}).observe(document.body,{childList:true,subtree:true});
+ /* v1.19.74: legacy observer removed; unified observer below */
  document.addEventListener('click',e=>{const h=e.target.closest?.('.collapsible-header');if(h)setTimeout(()=>v11968RepairHeader(h),0)},true);
 });
 
@@ -1632,3 +1632,26 @@ function v11972ColorObjectButtons(){
 }
 function v11972Audit(root=document){v11972SectionIcons(root);v11972ColorObjectButtons()}
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11972Audit(document),180));
+
+
+// v1.19.74 RC — iPhone performance cleanup.
+// Consolidates three historical subtree MutationObservers into one debounced observer.
+// Only newly-added roots are processed; no full-document rescan on each mutation.
+(function v11974UnifiedUIObserver(){
+ let queued=new Set(), raf=0;
+ function flush(){
+   raf=0; const roots=[...queued]; queued.clear();
+   for(const root of roots){
+     try{v11967Enhance(root)}catch(e){}
+     try{v11968Audit(root)}catch(e){}
+     try{v11972SectionIcons(root)}catch(e){}
+     try{v11971SearchIcons(root)}catch(e){}
+   }
+ }
+ const obs=new MutationObserver(ms=>{
+   for(const m of ms) for(const n of m.addedNodes) if(n.nodeType===1) queued.add(n);
+   if(queued.size&&!raf) raf=requestAnimationFrame(flush);
+ });
+ obs.observe(document.body,{childList:true,subtree:true});
+ window.__v11974UIObserver=obs;
+})();
