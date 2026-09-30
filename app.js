@@ -1,4 +1,4 @@
-const APP_BUILD="1.19.51-RC";
+const APP_BUILD="1.19.52-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[];const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -955,3 +955,79 @@ async function applyPropertyLinkDraft(){let a=assets[assetEdit],rows=propertyLin
 // Do not save immediately from checkbox changes in v1.19.51.
 setPropertyLink=function(id,on){stagePropertyLink(id,on)}; window.setPropertyLink=setPropertyLink;
 
+
+// ============================================================
+// v1.19.52 RC — PBB property relations are NOP-based, not year-based
+// One selector/card per NOP; applying/unlinking affects every yearly PBB row for that NOP.
+// ============================================================
+function propertyPbbNopGroups(rows=pbbData){
+ const groups=new Map();
+ for(const r of rows||[]){
+  const key=normalizeNop(r.nop||'')||String(r.id||'');
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(r);
+ }
+ return [...groups.entries()].map(([key,items])=>{
+  items.sort((a,b)=>Number(b.tax_year||0)-Number(a.tax_year||0));
+  return {key,items,representative:items[0]};
+ });
+}
+
+refreshPropertyLinkedData=async function(){
+ let a=assetEdit>=0?assets[assetEdit]:null;if(!a?.id)return;
+ let [pr,cr]=await Promise.all([
+  sb.from('pbb_records').select('*').eq('asset_id',a.id).order('tax_year',{ascending:false}),
+  sb.from('contracts').select('*').eq('asset_id',a.id).order('created_at',{ascending:false})
+ ]);
+ let ps=pr.data||[],cs=cr.data||[],pg=propertyPbbNopGroups(ps);
+ $('#assetPbbSummary').innerHTML=pg.length?pg.map(g=>{let r=g.representative,alias=String(r.property_alias||'').trim();return `<div class="property-linked-card"><span><b>🧾 ${historySearchEscape(alias||('NOP '+(r.nop||'-')))}</b><small>NOP ${historySearchEscape(r.nop||'-')}${r.object_address?' · '+historySearchEscape(r.object_address):''}</small></span><button type="button" class="secondary" onclick="openPbbById('${r.id}')">Buka</button><button type="button" class="secondary" onclick="unlinkPropertyPbbNop('${historySearchEscape(g.key)}')">Lepas</button></div>`}).join(''):'<div class="muted">Belum ada PBB yang dihubungkan ke properti ini.</div>';
+ $('#assetLeaseSummary').innerHTML=cs.length?cs.map(r=>`<div class="property-linked-card"><span><b>📝 ${historySearchEscape(r.tenant||'-')}</b><small>Akta ${historySearchEscape(r.deed_no||'-')} · ${isoToID(r.start_date)||'-'} s/d ${isoToID(r.end_date)||'-'}</small></span><button type="button" class="secondary" onclick="openLeaseById('${r.id}')">Buka</button><button type="button" class="secondary" onclick="unlinkPropertyLease('${r.id}')">Lepas</button></div>`).join(''):'<div class="muted">Belum ada Akta Sewa yang dihubungkan ke properti ini.</div>';
+}; window.refreshPropertyLinkedData=refreshPropertyLinkedData;
+
+async function unlinkPropertyPbbNop(nopKey){
+ if(!confirm('Lepas hubungan NOP ini dari properti? Seluruh histori tahun PBB tetap tersimpan dan tidak akan dihapus.'))return;
+ let ids=pbbData.filter(r=>(normalizeNop(r.nop||'')||String(r.id||''))===String(nopKey)).map(r=>r.id);
+ if(!ids.length)return;
+ let q=await sb.from('pbb_records').update({asset_id:null}).in('id',ids);if(q.error)return alert(q.error.message);
+ pbbData.forEach(r=>{if(ids.some(id=>String(id)===String(r.id)))r.asset_id=null});
+ await refreshPropertyLinkedData();runAssetDetailSearch();
+} window.unlinkPropertyPbbNop=unlinkPropertyPbbNop;
+
+const __v11952OpenPropertyLinkPicker=openPropertyLinkPicker;
+openPropertyLinkPicker=async function(mode){
+ let a=assetEdit>=0?assets[assetEdit]:null;if(!a?.id)return alert('Simpan Properti terlebih dahulu.');
+ propertyLinkMode=mode;propertyLinkDraft=new Map();
+ if(mode==='pbb'){
+  propertyPbbNopGroups().forEach(g=>propertyLinkDraft.set(g.key,g.items.some(r=>String(r.asset_id||'')===String(a.id))));
+ }else data.forEach(r=>propertyLinkDraft.set(String(r.id),String(r.asset_id||r.assetId||'')===String(a.id)));
+ $('#propertyLinkTitle').textContent=mode==='pbb'?'🔗 Hubungkan PBB ke Properti':'🔗 Hubungkan Akta Sewa ke Properti';
+ $('#propertyLinkHelp').textContent=mode==='pbb'?'Centang satu atau beberapa NOP. Setiap NOP hanya ditampilkan satu kali; histori tahun tetap tersimpan. Perubahan baru disimpan setelah menekan Terapkan.':'Centang satu atau beberapa data. Perubahan baru disimpan setelah menekan Terapkan.';
+ $('#propertyLinkSearch').value='';await renderPropertyLinkPicker();
+ let dlg=$('#propertyLinkDlg');if(!dlg.querySelector('#propertyLinkApply')){let foot=document.createElement('div');foot.className='property-link-footer';foot.innerHTML='<span id="propertyLinkSelectedCount" class="muted"></span><div><button type="button" class="secondary" id="propertyLinkCancel">Batal</button><button type="button" id="propertyLinkApply">Terapkan</button></div>';dlg.appendChild(foot);foot.querySelector('#propertyLinkCancel').onclick=()=>dlg.close();foot.querySelector('#propertyLinkApply').onclick=applyPropertyLinkDraft}updatePropertyLinkCount();dlg.showModal();
+}; window.openPropertyLinkPicker=openPropertyLinkPicker;
+
+renderPropertyLinkPicker=async function(){
+ let q=$('#propertyLinkSearch').value.trim().toLowerCase(),html='';
+ if(propertyLinkMode==='pbb'){
+  let groups=propertyPbbNopGroups().filter(g=>{let r=g.representative;return !q||[r.property_alias,r.nop,r.taxpayer_name,r.object_address,r.notes].join(' ').toLowerCase().includes(q)});
+  html=groups.map(g=>{let r=g.representative,checked=propertyLinkDraft.get(g.key)??false,alias=String(r.property_alias||'').trim(),title=alias||`NOP ${r.nop||'-'}`,sub=`NOP ${r.nop||'-'}${r.object_address?' · '+r.object_address:''}`;return `<label class="property-link-row staged"><input type="checkbox" ${checked?'checked':''} onchange="stagePropertyLink('${historySearchEscape(g.key)}',this.checked)"><span><b>${historySearchEscape(title)}</b><small>${historySearchEscape(sub)}</small></span></label>`}).join('');
+ }else{
+  html=data.filter(r=>!q||propertyLinkText(r,'lease').includes(q)).map(r=>{let checked=propertyLinkDraft.get(String(r.id))??false,alias=String(r.property_alias||r.asset_alias||r.asset||'').trim(),title=alias?`${alias} · ${r.tenant||'-'}`:`${r.tenant||'-'} · Akta ${r.deedNo||'-'}`,sub=`Akta ${r.deedNo||'-'} · ${r.start||'-'} s/d ${r.end||'-'}${r.propertyAddress?' · '+r.propertyAddress:''}`;return `<label class="property-link-row staged"><input type="checkbox" ${checked?'checked':''} onchange="stagePropertyLink('${r.id}',this.checked)"><span><b>${historySearchEscape(title)}</b><small>${historySearchEscape(sub)}</small></span></label>`}).join('');
+ }
+ $('#propertyLinkResults').innerHTML=html||'<div class="muted">Tidak ada data yang cocok.</div>';updatePropertyLinkCount();
+}; window.renderPropertyLinkPicker=renderPropertyLinkPicker;
+
+applyPropertyLinkDraft=async function(){
+ let a=assets[assetEdit],btn=$('#propertyLinkApply');btn.disabled=true;
+ try{
+  if(propertyLinkMode==='pbb'){
+   for(const g of propertyPbbNopGroups()){
+    let want=!!propertyLinkDraft.get(g.key),ids=g.items.map(r=>r.id),needs=g.items.some(r=>(String(r.asset_id||'')===String(a.id))!==want);
+    if(!needs)continue;let q=await sb.from('pbb_records').update({asset_id:want?a.id:null}).in('id',ids);if(q.error)throw q.error;g.items.forEach(r=>r.asset_id=want?a.id:null);
+   }
+  }else{
+   for(let r of data){let want=!!propertyLinkDraft.get(String(r.id)),has=String(r.asset_id||r.assetId||'')===String(a.id);if(want===has)continue;let q=await sb.from('contracts').update({asset_id:want?a.id:null}).eq('id',r.id);if(q.error)throw q.error;r.assetId=want?a.id:''}
+  }
+  $('#propertyLinkDlg').close();await refreshPropertyLinkedData();runAssetDetailSearch();
+ }catch(e){alert('Gagal menerapkan relasi: '+e.message)}finally{btn.disabled=false}
+}; window.applyPropertyLinkDraft=applyPropertyLinkDraft;

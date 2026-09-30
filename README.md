@@ -1,3 +1,14 @@
+# Sewa & Akta Tanah v1.19.52 RC — PBB Relation by NOP
+
+Perubahan v1.19.52:
+- Selector Hubungkan PBB ke Properti menampilkan satu baris per NOP, bukan per tahun.
+- Tahun PBB tidak ditampilkan pada selector relasi.
+- Alias/nama, NOP, dan alamat tetap searchable.
+- Terapkan relasi NOP menghubungkan/melepas seluruh histori tahun dengan NOP yang sama.
+- Ringkasan PBB pada Properti menampilkan satu kartu per NOP.
+- Histori tahunan PBB tetap tersimpan dan tidak dihapus.
+- Tidak ada perubahan schema SQL pada v1.19.52.
+
 # Sewa & Akta Tanah v1.19.51 RC — Property Relations + In-Deed Search
 
 Koreksi packaging: badge versi aplikasi, cache-buster index.html, dan start_url manifest sekarang seluruhnya menunjuk ke v1.19.51.
