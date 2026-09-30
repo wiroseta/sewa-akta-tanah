@@ -1230,7 +1230,7 @@ function v11961Key(label,preferred){if(preferred)return preferred;const letters=
 function v11961Enhance(root=document){
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
  buttons.forEach(b=>{
-  // v1.19.68: collapsible headers are navigation containers, never convert them to icon-only commands.
+  // v1.19.69: collapsible headers are navigation containers, never convert them to icon-only commands.
   if(b.classList.contains('collapsible-header'))return;
   const explicit=V11963_EXPLICIT[b.id];
   if(b.classList.contains('v11963-ready')&&!explicit)return;
@@ -1497,7 +1497,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 // ============================================================
-// v1.19.68 RC — Global readable collapsible-header repair.
+// v1.19.69 RC — Global readable collapsible-header repair.
 // Audit safeguard for every page/dialog/window: section headers must always
 // retain a visible text title and chevron; icon-command enhancers must not
 // turn them into icon-only buttons.
@@ -1545,3 +1545,26 @@ document.addEventListener('DOMContentLoaded',()=>{
  new MutationObserver(ms=>{const roots=[];ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)roots.push(n)}));if(roots.length)setTimeout(()=>roots.forEach(v11968Audit),0)}).observe(document.body,{childList:true,subtree:true});
  document.addEventListener('click',e=>{const h=e.target.closest?.('.collapsible-header');if(h)setTimeout(()=>v11968RepairHeader(h),0)},true);
 });
+
+// ============================================================
+// v1.19.69 RC — navigation correctness + colorful icon presentation.
+// ============================================================
+function v11969CloseDetailLayers(){
+ const asset=document.querySelector('#assetDlg'),lease=document.querySelector('#dlg');
+ if(asset)asset.hidden=true;if(lease)lease.hidden=true;
+ document.body.classList.remove('asset-detail-open','lease-detail-open');
+ try{document.querySelector('#pbbEditDlg')?.close?.()}catch(_e){}
+}
+function v11969SetMasterActive(id){
+ ['assetsBtn','pbbBtn','leaseBtn'].forEach(x=>document.getElementById(x)?.classList.toggle('v11969-active',x===id));
+}
+function v11969WrapMasterNav(){
+ const map={assetsBtn:'assetPage',pbbBtn:'pbbPage',leaseBtn:'leasePage'};
+ Object.entries(map).forEach(([id,page])=>{const b=document.getElementById(id);if(!b||b.dataset.v11969Nav)return;b.dataset.v11969Nav='1';b.addEventListener('click',()=>{v11969CloseDetailLayers();v11969SetMasterActive(id);setTimeout(()=>window.scrollTo(0,0),0)},true)});
+}
+function v11969ColorMasterIcons(){
+ const specs={assetsBtn:['🏢','Master Properti'],pbbBtn:['🧾','Master PBB'],leaseBtn:['📝','Master Akta Sewa']};
+ Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.setAttribute('aria-label',label);b.title=label;b.innerHTML=`<span aria-hidden="true" style="font-size:24px;line-height:1">${icon}</span><span class="v11961-sr">${label}</span>`});
+}
+function v11969DriveOpen(){const u=document.getElementById('driveUrl')?.value?.trim();if(u)window.open(u,'_blank','noopener');else alert('Link Google Drive belum tersedia.');}
+document.addEventListener('DOMContentLoaded',()=>{v11969WrapMasterNav();setTimeout(v11969ColorMasterIcons,50);document.getElementById('driveOpenCompactBtn')?.addEventListener('click',v11969DriveOpen);new MutationObserver(()=>setTimeout(v11969ColorMasterIcons,0)).observe(document.querySelector('.primary-actions')||document.body,{childList:true,subtree:true});});

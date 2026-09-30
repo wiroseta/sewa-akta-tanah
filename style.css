@@ -519,9 +519,28 @@ button.v11967-readable-collapse::after{display:none!important;content:none!impor
 @media(max-width:640px){button.v11967-readable-collapse{min-height:48px!important;padding:9px 11px!important}.v11967-ui-svg{width:22px;height:22px}}
 
 
-/* v1.19.68 — global readable section headers */
+/* v1.19.69 — global readable section headers */
 button.collapsible-header.v11968-readable-collapse{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,auto) 22px!important;align-items:center!important;width:100%!important;min-height:50px!important;text-align:left!important}
 button.collapsible-header.v11968-readable-collapse .collapsible-title{display:block!important;visibility:visible!important;opacity:1!important;width:auto!important;height:auto!important;clip:auto!important;position:static!important;font-size:16px!important;font-weight:800!important;white-space:normal!important;color:inherit!important}
 button.collapsible-header.v11968-readable-collapse .collapsible-summary{display:block!important;visibility:visible!important;opacity:1!important}
 button.collapsible-header.v11968-readable-collapse .collapsible-chevron{display:block!important;visibility:visible!important;opacity:1!important;text-align:center!important}
 @media(max-width:640px){button.collapsible-header.v11968-readable-collapse{grid-template-columns:minmax(0,1fr) auto 18px!important;min-height:48px!important}.collapsible-summary{max-width:88px!important}}
+
+/* ============================================================
+   v1.19.69 RC — approved visual/navigation polish
+   - translucent modern blue-gradient collapsible headers
+   - colorful icons without blue icon tiles
+   - one-line Akta command bar with Save
+   - compact Google Drive row
+   - fixed detail header masks scrolled content cleanly
+   ============================================================ */
+:root{--v11969-blue:#0a66c2;--v11969-blue2:#2b8ce6;--v11969-blueGlass1:rgba(10,102,194,.88);--v11969-blueGlass2:rgba(43,140,230,.76)}
+.collapsible-section>.collapsible-header.v11968-readable-collapse,.collapsible-section>.collapsible-header.v11967-readable-collapse{background:linear-gradient(115deg,var(--v11969-blueGlass1),var(--v11969-blueGlass2))!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 7px rgba(10,102,194,.10)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.collapsible-section>.collapsible-header:hover{background:linear-gradient(115deg,rgba(8,85,165,.92),rgba(35,126,211,.80))!important}.collapsible-header .collapsible-summary{color:rgba(255,255,255,.76)!important}.collapsible-header .collapsible-chevron{color:#fff!important}
+.lease-detail-topbar,.asset-detail-topbar{background:rgba(250,250,252,.985)!important;box-shadow:0 5px 18px rgba(0,0,0,.08)!important;isolation:isolate}.lease-detail-topbar::before,.asset-detail-topbar::before{content:"";position:absolute;inset:-2px 0 0;background:inherit;z-index:-1}
+.lease-top-actions{display:flex!important;align-items:center;gap:7px;flex-wrap:nowrap}.lease-save-top{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.lease-sticky-actions button[type="submit"]{display:none!important}
+.drive-extract.drive-compact{display:grid;grid-template-columns:auto minmax(170px,1fr) auto auto auto;align-items:center;gap:8px;padding-top:12px}.drive-compact .drive-label{font-weight:750;white-space:nowrap}.drive-compact #driveUrl{min-width:0;text-overflow:ellipsis}.drive-compact .drive-state{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap}.drive-compact .drive-state .muted{font-size:12px}
+/* colorful navigation icons: no blue square/tile behind the icon */
+#assetsBtn,#pbbBtn,#leaseBtn{background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:#202124!important}#assetsBtn:hover,#pbbBtn:hover,#leaseBtn:hover{background:rgba(10,102,194,.06)!important;border-color:rgba(10,102,194,.12)!important}
+#assetsBtn.v11969-active,#pbbBtn.v11969-active,#leaseBtn.v11969-active{box-shadow:inset 0 -3px 0 #0a66c2!important;border-radius:8px!important}
+@media(max-width:760px){.lease-top-actions{gap:4px!important}.lease-top-actions #leaseDataSearchBtn,.lease-top-actions #continuationBtn{width:36px!important;min-width:36px!important;padding:5px!important}.lease-top-actions #verifyBadge{display:none!important}.lease-save-top{width:38px!important;padding:5px!important}.lease-save-top span{display:none}.drive-extract.drive-compact{grid-template-columns:1fr auto auto!important}.drive-compact .drive-label{grid-column:1/-1}.drive-compact #driveUrl{grid-column:1/-1}.drive-compact #driveExtractBtn{grid-column:1/-1;width:100%}.drive-compact .drive-state{grid-column:1/-1}.collapsible-section>.collapsible-header{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}

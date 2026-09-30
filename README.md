@@ -127,7 +127,7 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Tidak ada perubahan database/Supabase.
 
 
-## v1.19.68 RC — Global Semantic Button Correction
+## v1.19.69 RC — Global Semantic Button Correction
 - Audit ulang tombol di seluruh halaman: fungsi/action sekarang selalu lebih prioritas daripada nama objek.
 - `Print Semua PBB` memakai ikon printer, bukan ikon SPPT/PBB.
 - Export Excel memakai ikon spreadsheet; simpan/buka ke Google Drive memakai logo Google Drive.
@@ -137,7 +137,7 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Tidak ada perubahan database.
 
 
-## v1.19.68 RC — Global Double Door Expand/Collapse Icons
+## v1.19.69 RC — Global Double Door Expand/Collapse Icons
 - Buka Semua memakai SVG dua daun pintu terbuka.
 - Tutup Semua memakai SVG dua daun pintu tertutup.
 - Diterapkan global pada seluruh halaman/komponen yang memiliki Buka Semua/Tutup Semua.
@@ -145,7 +145,7 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Tidak ada perubahan database.
 
 
-## v1.19.68 RC — Chosen Global Navigation & Open/Collapse Icons
+## v1.19.69 RC — Chosen Global Navigation & Open/Collapse Icons
 - Properti/Lokasi: commercial building SVG (chosen option 4).
 - Google Maps: map + property SVG (chosen option 6).
 - PBB/SPPT: simplified SPPT-style document SVG.
