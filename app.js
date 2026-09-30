@@ -1422,7 +1422,7 @@ function v11965Enhance(root=document){
 }
 document.addEventListener('DOMContentLoaded',()=>{
  v11965Enhance(document);
- /* v1.19.74: legacy observer removed; unified observer below */
+ /* v1.19.75: legacy observer removed; unified observer below */
 });
 
 
@@ -1492,7 +1492,7 @@ function v11967Enhance(root=document){
 }
 document.addEventListener('DOMContentLoaded',()=>{
  v11967Enhance(document);
- /* v1.19.74: legacy observer removed; unified observer below */
+ /* v1.19.75: legacy observer removed; unified observer below */
 });
 
 
@@ -1542,7 +1542,7 @@ function v11968Audit(root=document){
 document.addEventListener('DOMContentLoaded',()=>{
  v11968Audit(document);
  // Run after older observers have finished their pass.
- /* v1.19.74: legacy observer removed; unified observer below */
+ /* v1.19.75: legacy observer removed; unified observer below */
  document.addEventListener('click',e=>{const h=e.target.closest?.('.collapsible-header');if(h)setTimeout(()=>v11968RepairHeader(h),0)},true);
 });
 
@@ -1634,7 +1634,7 @@ function v11972Audit(root=document){v11972SectionIcons(root);v11972ColorObjectBu
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11972Audit(document),180));
 
 
-// v1.19.74 RC — iPhone performance cleanup.
+// v1.19.75 RC — iPhone performance cleanup.
 // Consolidates three historical subtree MutationObservers into one debounced observer.
 // Only newly-added roots are processed; no full-document rescan on each mutation.
 (function v11974UnifiedUIObserver(){
@@ -1655,3 +1655,26 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11972Audit(docu
  obs.observe(document.body,{childList:true,subtree:true});
  window.__v11974UIObserver=obs;
 })();
+
+// ============================================================
+// v1.19.75 RC — final canonical icon audit.
+// Purpose: every action owns exactly one approved colored icon. Legacy icon
+// enhancers must never prepend a second monochrome/colored glyph.
+// ============================================================
+function v11975StripDuplicateIcons(button){
+ if(!button)return;
+ button.dataset.v11975Canonical='1';
+ // Remove enhancer-injected icon spans only. Keep semantic markup we authored.
+ button.querySelectorAll(':scope > .v11961-icon,:scope > .v11972-color-icon').forEach(n=>n.remove());
+}
+function v11975CanonicalAudit(root=document){
+ const ids=['assetDetailBack','assetBack','leaseListBack','pbbBack','assetTopSaveBtn','assetOpenMaps'];
+ ids.forEach(id=>{const b=document.getElementById(id);if(b)v11975StripDuplicateIcons(b)});
+ const cards=root.matches?.('.asset-master-card')?[root]:[...root.querySelectorAll?.('.asset-master-card')||[]];
+ cards.forEach(card=>card.querySelectorAll('.asset-open-approved,.asset-map-approved,.asset-delete-approved').forEach(v11975StripDuplicateIcons));
+ // Tooltip policy: canonical controls use aria-label only, avoiding browser title + custom tooltip duplication.
+ document.querySelectorAll('[data-v11975-canonical="1"]').forEach(b=>{if(b.hasAttribute('title'))b.removeAttribute('title');if(b.hasAttribute('data-tooltip'))b.removeAttribute('data-tooltip')});
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975CanonicalAudit(document),240)});
+// Extend the unified observer cheaply: audit only newly added roots.
+(function(){const o=window.__v11974UIObserver;const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)v11975CanonicalAudit(n)});obs.observe(document.body,{childList:true,subtree:true});window.__v11975CanonicalObserver=obs})();

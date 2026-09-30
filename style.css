@@ -573,5 +573,26 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 .asset-master-card .property-counts .approved-land::before{content:'📜';margin-right:6px}.asset-master-card .property-counts .approved-building::before{content:'🏢';margin-right:6px}
 @media(max-width:700px){.asset-page-head{top:var(--global-nav-h,56px)!important;flex-direction:row!important}.asset-page-head>div{grid-template-columns:auto minmax(0,1fr)}.asset-page-head p{display:none}.asset-page-head #assetBack{grid-row:1}.asset-page-head h2{font-size:19px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-searchbar{top:calc(var(--global-nav-h,56px) + 64px)!important}}
 
-/* v1.19.74 — mobile GPU cleanup: same blue-glass look without costly live blur */
+/* v1.19.75 — mobile GPU cleanup: same blue-glass look without costly live blur */
 @media(max-width:760px){.collapsible-section>.collapsible-header,.asset-page-head,.lease-detail-topbar,.asset-detail-topbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.asset-page-head{background:rgba(245,245,247,.985)!important}}
+
+/* v1.19.75 RC — canonical icon system: one colored icon per action, no stacked legacy glyphs. */
+.canonical-icon-button{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;min-height:44px;white-space:nowrap}
+.canonical-icon-button .v11961-icon,.canonical-icon-button .v11972-color-icon,.canonical-icon-button .action-icon{display:none!important}
+.master-return-button{position:relative;padding:6px 12px 6px 8px!important;background:#fff!important;color:#1d1d1f!important;border:1px solid #c7ccd4!important}
+.master-return-icon{position:relative;display:inline-flex;width:36px;height:34px;align-items:center;justify-content:center;flex:0 0 36px}
+.master-main-icon{font-size:25px;line-height:1}
+.master-home-badge{position:absolute;right:-2px;bottom:-2px;font-size:12px;line-height:17px;width:18px;height:18px;text-align:center;border-radius:50%;background:#fff;border:1px solid #d7dce4;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.master-return-label{font-weight:700}
+.dashboard-return-button{padding:6px 12px!important}.dashboard-return-icon{font-size:24px}
+.asset-detail-actions{display:flex;align-items:center;gap:10px;margin-left:auto}.asset-top-save{background:#0a6ed1!important;color:#fff!important;border-color:#0a6ed1!important;font-weight:700}.asset-top-save>span:first-child{font-size:23px}
+/* Canonical property card controls: exactly one colored icon, standard 48px control. */
+.asset-master-actions button{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;font-size:0!important}
+.asset-master-actions button .v11961-icon,.asset-master-actions button .v11972-color-icon,.asset-master-actions button .v11961-sr{display:none!important}
+.asset-open-approved::after{content:'🏢';font-size:26px}.asset-map-approved::after{content:'🗺️';font-size:27px}.asset-delete-approved::after{content:'🗑️';font-size:25px}
+.asset-open-approved{background:#0a6ed1!important;border-color:#0a6ed1!important}.asset-delete-approved{background:#fff!important;border-color:#efb1b1!important}
+/* Colored map action in property detail; never show a legacy black icon beside it. */
+#assetOpenMaps{font-size:0!important;width:48px;min-width:48px;padding:0!important}#assetOpenMaps::after{content:'🗺️';font-size:26px}#assetOpenMaps .v11961-icon,#assetOpenMaps .v11972-color-icon{display:none!important}
+/* Do not let legacy icon enhancers inflate canonical controls. */
+[data-v11975-canonical="1"] .v11961-icon,[data-v11975-canonical="1"] .v11972-color-icon{display:none!important}
+@media(max-width:700px){.master-return-label,.v11975-action-label{display:none}.master-return-button{padding:5px 8px!important}.asset-detail-actions{gap:6px}.asset-detail-topbar{gap:8px}}
