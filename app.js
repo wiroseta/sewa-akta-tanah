@@ -1689,3 +1689,26 @@ function v11975CanonicalAudit(root=document){
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975CanonicalAudit(document),240)});
 // Extend the unified observer cheaply: audit only newly added roots.
 (function(){const o=window.__v11974UIObserver;const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)v11975CanonicalAudit(n)});obs.observe(document.body,{childList:true,subtree:true});window.__v11975CanonicalObserver=obs})();
+
+// ============================================================
+// v1.19.77 RC — approved minimal icon system.
+// Decorative icons are removed from data/list rows and collapsible headers.
+// Add actions use one plain +. Action buttons stay compact and semantic.
+// ============================================================
+function v11977StripLeadingDecorativeIcon(text){
+ return String(text||'').replace(/^\s*[\p{Extended_Pictographic}\uFE0F]+\s*/u,'').trim();
+}
+function v11977CleanUI(root=document){
+ // Collapsible headers: text + summary + chevron only.
+ const heads=root.matches?.('.collapsible-header')?[root]:[...root.querySelectorAll?.('.collapsible-header')||[]];
+ heads.forEach(h=>{const t=h.querySelector('.collapsible-title');if(t){t.textContent=v11977StripLeadingDecorativeIcon(t.textContent);t.removeAttribute('data-v11972-icon')}});
+ // Inner section titles: remove decorative leading emoji while retaining wording.
+ const sectionTitles=root.matches?.('.master-section h3,.relation-grid h4')?[root]:[...root.querySelectorAll?.('.master-section h3,.relation-grid h4')||[]];
+ sectionTitles.forEach(h=>{h.textContent=v11977StripLeadingDecorativeIcon(h.textContent)});
+ // Canonical compact actions: never allow legacy injected duplicate spans.
+ const actionSelector='.asset-master-actions button,.lease-card-actions button,.pbb-card-actions button,#newAssetBtn,#addBtn,#newPbbBtn,.v11971-search-command';
+ const actions=root.matches?.(actionSelector)?[root]:[...root.querySelectorAll?.(actionSelector)||[]];
+ actions.forEach(b=>{b.dataset.v11977Clean='1';b.querySelectorAll(':scope > .v11961-icon,:scope > .v11972-color-icon,:scope > .action-icon').forEach(n=>n.remove());if(b.hasAttribute('title'))b.removeAttribute('title')});
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11977CleanUI(document),280));
+(function(){let raf=0,roots=new Set();const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)roots.add(n);if(roots.size&&!raf)raf=requestAnimationFrame(()=>{raf=0;for(const r of roots)v11977CleanUI(r);roots.clear()})});obs.observe(document.body,{childList:true,subtree:true});window.__v11977CleanObserver=obs})();
