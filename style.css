@@ -554,3 +554,9 @@ button.collapsible-header.v11968-readable-collapse .collapsible-chevron{display:
 .utility-menu-panel .danger-menu .v11971-menu-label{color:#b42318}
 .v11971-search-command .v11961-icon{font-size:24px!important;line-height:1!important;transform:none!important}
 button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{font-size:24px!important}
+
+/* v1.19.72 — approved colorful icon family */
+.v11972-color-icon{font-size:25px;line-height:1;display:inline-flex;align-items:center;justify-content:center;filter:saturate(1.08)}
+.v11972-color-command .v11961-icon{font-size:24px!important}
+.collapsible-title{display:flex!important;align-items:center!important;gap:4px!important}
+.master-section h3,.relation-grid h4{display:flex;align-items:center;gap:5px}

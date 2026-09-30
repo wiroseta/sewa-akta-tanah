@@ -1603,3 +1603,32 @@ function v11971SearchIcons(root=document){
  });
 }
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{v11971ReadableUtilityMenu();v11971SearchIcons(document)},120);});
+
+// ============================================================
+// v1.19.72 RC — approved colorful icon language, global audit.
+// Keeps the approved blue-glass headers while replacing legacy monochrome
+// object/section glyphs with the agreed colorful semantic icon family.
+// ============================================================
+const V11972_ICON_RULES=[
+ [/identitas.*masa sewa/i,'🏠'],[/jadwal pembayaran/i,'📅'],[/pajak|pph/i,'🪙'],[/klausul penting/i,'📘'],[/dokumen.*riwayat|riwayat.*dokumen/i,'📄'],[/fasilitas/i,'🏢'],[/perawatan/i,'🛠️'],[/utilitas/i,'⚡'],[/asuransi/i,'🛡️'],[/perizinan|legalitas/i,'📋'],[/agen|broker/i,'🤝'],[/catatan/i,'📝'],[/riwayat.*banding|banding.*riwayat/i,'🕘'],[/pengaturan/i,'⚙️'],
+ [/bidang|sertifikat|akta tanah/i,'📜'],[/bangunan|gudang|gedung/i,'🏭'],[/pbb|sppt/i,'🧾'],[/akta sewa/i,'📝'],[/properti|lokasi/i,'🏢'],[/peta|maps/i,'🗺️'],[/dokumen|arsip/i,'🗂️']
+];
+function v11972CleanLabel(s){return String(s||'').replace(/^\s*[🏠📅🪙📘📄🏢🛠️⚡🛡️📋🤝📝🕘⚙️📜🏭🧾🗺️🗂️📍✓●•]+\s*/u,'').trim()}
+function v11972IconFor(label){const clean=v11972CleanLabel(label);for(const [re,icon] of V11972_ICON_RULES)if(re.test(clean))return icon;return ''}
+function v11972SectionIcons(root=document){
+ const heads=root.matches?.('.collapsible-header')?[root]:[...root.querySelectorAll?.('.collapsible-header')||[]];
+ heads.forEach(h=>{const t=h.querySelector('.collapsible-title');if(!t)return;const clean=v11972CleanLabel(t.textContent),icon=v11972IconFor(clean);if(icon){t.textContent=icon+'  '+clean;t.dataset.v11972Icon='1'}});
+ const hs=root.matches?.('h3,h4')?[root]:[...root.querySelectorAll?.('.master-section h3,.relation-grid h4')||[]];
+ hs.forEach(h=>{const clean=v11972CleanLabel(h.textContent),icon=v11972IconFor(clean);if(icon)h.textContent=icon+'  '+clean});
+}
+function v11972ColorObjectButtons(){
+ const specs={assetsBtn:['🏢','Master Properti'],pbbBtn:['🧾','Master PBB'],leaseBtn:['📝','Master Akta Sewa']};
+ Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.innerHTML=`<span class="v11972-color-icon" aria-hidden="true">${icon}</span><span class="v11961-sr">${label}</span>`;b.setAttribute('aria-label',label);b.title=label;b.dataset.v11970ColorIcon='1'});
+ // Detail-property leading object icon and all map/location commands should be colorful too.
+ document.querySelectorAll('button').forEach(b=>{if(b.classList.contains('collapsible-header'))return;const label=String(b.dataset.v11961Label||b.getAttribute('aria-label')||b.title||b.textContent||'');
+   if(/google maps|\bmaps?\b|\bpeta\b|lokasi/i.test(label)&&b.querySelector('.v11961-icon')){b.querySelector('.v11961-icon').textContent='🗺️';b.classList.add('v11972-color-command')}
+   if(/properti|detail lokasi/i.test(label)&&b.querySelector('.v11961-icon')){b.querySelector('.v11961-icon').textContent='🏢';b.classList.add('v11972-color-command')}
+ });
+}
+function v11972Audit(root=document){v11972SectionIcons(root);v11972ColorObjectButtons()}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11972Audit(document),180));
