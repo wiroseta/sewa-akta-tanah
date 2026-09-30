@@ -560,3 +560,15 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 .v11972-color-command .v11961-icon{font-size:24px!important}
 .collapsible-title{display:flex!important;align-items:center!important;gap:4px!important}
 .master-section h3,.relation-grid h4{display:flex;align-items:center;gap:5px}
+
+/* ============================================================
+   v1.19.73 RC — approved icon audit + sticky Master Properti toolbar
+   ============================================================ */
+.asset-page-head{position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:35!important;background:rgba(245,245,247,.94)!important;backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);padding:10px 0 9px!important;margin:0 0 8px!important;align-items:center!important;border-bottom:1px solid rgba(0,0,0,.07)}
+.asset-page-head>div{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;flex:1;min-width:0}.asset-page-head h2{grid-column:2;margin:0!important}.asset-page-head p{grid-column:2;margin:2px 0 0!important}.asset-page-head #assetBack{grid-column:1;grid-row:1/3}
+#assetBack,#newAssetBtn{width:auto!important;min-width:44px!important;height:44px!important;min-height:44px!important;padding:0 13px!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:13px!important}
+#assetBack::before{content:'🏠';font-size:24px}#newAssetBtn::before{content:'＋';font-size:30px;font-weight:800;color:#fff}#newAssetBtn{background:#16a34a!important;border-color:#16a34a!important}
+.asset-searchbar{top:calc(var(--global-nav-h,64px) + 64px)!important}
+.asset-master-actions button{font-size:0!important;width:46px!important;min-width:46px!important;height:44px!important;padding:0!important;border-radius:13px!important}.asset-master-actions button::before{font-size:24px;line-height:1}.asset-master-actions .asset-open-approved::before{content:'🏢'}.asset-master-actions .asset-map-approved::before{content:'🗺️'}.asset-master-actions .asset-delete-approved::before{content:'🗑️'}.asset-master-actions .asset-delete-approved{background:#fff!important;border-color:#f1b4b4!important}
+.asset-master-card .property-counts .approved-land::before{content:'📜';margin-right:6px}.asset-master-card .property-counts .approved-building::before{content:'🏢';margin-right:6px}
+@media(max-width:700px){.asset-page-head{top:var(--global-nav-h,56px)!important;flex-direction:row!important}.asset-page-head>div{grid-template-columns:auto minmax(0,1fr)}.asset-page-head p{display:none}.asset-page-head #assetBack{grid-row:1}.asset-page-head h2{font-size:19px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-searchbar{top:calc(var(--global-nav-h,56px) + 64px)!important}}
