@@ -890,7 +890,7 @@ function focusLeaseLocalHit(){leaseLocalHits.forEach(x=>x.classList.remove('leas
 function moveLeaseLocalHit(dir){if(!leaseLocalHits.length)return runLeaseLocalSearch(dir);leaseLocalHitIndex=(leaseLocalHitIndex+dir+leaseLocalHits.length)%leaseLocalHits.length;focusLeaseLocalHit()}
 $('#leaseLocalSearch')?.addEventListener('input',()=>runLeaseLocalSearch());$('#leaseSearchPrev')?.addEventListener('click',()=>moveLeaseLocalHit(-1));$('#leaseSearchNext')?.addEventListener('click',()=>moveLeaseLocalHit(1));
 
-async function refreshPropertyLinkedData(){let a=assetEdit>=0?assets[assetEdit]:null;if(!a?.id)return;let [pr,cr]=await Promise.all([sb.from('pbb_records').select('*').eq('asset_id',a.id).order('tax_year',{ascending:false}),sb.from('contracts').select('*').eq('asset_id',a.id).order('created_at',{ascending:false})]);let ps=pr.data||[],cs=cr.data||[];$('#assetPbbSummary').innerHTML=ps.length?ps.map(r=>`<div class="property-linked-card"><span><b>🧾 NOP ${historySearchEscape(r.nop||'-')}</b><small>Tahun ${r.tax_year||'-'} · ${r.payment_status==='lunas'?'Sudah Bayar':'Belum Bayar'}</small></span><button type="button" class="secondary" onclick="openPbbById('${r.id}')">Buka</button><button type="button" class="secondary" onclick="unlinkPropertyPbb('${r.id}')">Lepas</button></div>`).join(''):'<div class="muted">Belum ada PBB yang dihubungkan ke properti ini.</div>';$('#assetLeaseSummary').innerHTML=cs.length?cs.map(r=>`<div class="property-linked-card"><span><b>📝 ${historySearchEscape(r.tenant||'-')}</b><small>Akta ${historySearchEscape(r.deed_no||'-')} · ${isoToID(r.start_date)||'-'} s/d ${isoToID(r.end_date)||'-'}</small></span><button type="button" class="secondary" onclick="openLeaseById('${r.id}')">Buka</button><button type="button" class="secondary" onclick="unlinkPropertyLease('${r.id}')">Lepas</button></div>`).join(''):'<div class="muted">Belum ada Akta Sewa yang dihubungkan ke properti ini.</div>'}
+async function refreshPropertyLinkedData(){let a=assetEdit>=0?assets[assetEdit]:null;if(!a?.id)return;let [pr,cr]=await Promise.all([sb.from('pbb_records').select('*').eq('asset_id',a.id).order('tax_year',{ascending:false}),sb.from('contracts').select('*').eq('asset_id',a.id).order('created_at',{ascending:false})]);let allPs=pr.data||[],cs=cr.data||[];let byNop=new Map();allPs.forEach(r=>{let k=normalizeNop(r.nop)||String(r.id);let prev=byNop.get(k);if(!prev||Number(r.tax_year||0)>Number(prev.tax_year||0))byNop.set(k,r)});let ps=[...byNop.values()];$('#assetPbbSummary').innerHTML=ps.length?ps.map(r=>{let alias=(r.property_alias||'').trim();let title=alias?`🧾 ${historySearchEscape(alias)}`:`🧾 NOP ${historySearchEscape(r.nop||'-')}`;let nopLine=alias?`NOP ${historySearchEscape(r.nop||'-')} · `:'';return `<div class="property-linked-card"><span><b>${title}</b><small>${nopLine}Tahun ${r.tax_year||'-'} · ${r.payment_status==='lunas'?'Sudah Bayar':'Belum Bayar'}</small></span><button type="button" class="secondary" onclick="openPbbById('${r.id}')">Buka</button><button type="button" class="secondary" onclick="unlinkPropertyPbb('${r.id}')">Lepas</button></div>`}).join(''):'<div class="muted">Belum ada PBB yang dihubungkan ke properti ini.</div>';$('#assetLeaseSummary').innerHTML=cs.length?cs.map(r=>`<div class="property-linked-card"><span><b>📝 ${historySearchEscape(r.tenant||'-')}</b><small>Akta ${historySearchEscape(r.deed_no||'-')} · ${isoToID(r.start_date)||'-'} s/d ${isoToID(r.end_date)||'-'}</small></span><button type="button" class="secondary" onclick="openLeaseById('${r.id}')">Buka</button><button type="button" class="secondary" onclick="unlinkPropertyLease('${r.id}')">Lepas</button></div>`).join(''):'<div class="muted">Belum ada Akta Sewa yang dihubungkan ke properti ini.</div>'}
 async function openPbbById(id){let i=pbbData.findIndex(x=>String(x.id)===String(id));if(i<0){await loadPbbData();i=pbbData.findIndex(x=>String(x.id)===String(id))}if(i>=0)openPbbEdit(i)}window.openPbbById=openPbbById;
 async function openLeaseById(id){let i=data.findIndex(x=>String(x.id)===String(id));if(i>=0)openEdit(i)}window.openLeaseById=openLeaseById;
 async function unlinkPropertyPbb(id){if(!confirm('Lepas hubungan PBB dari properti ini? Data PBB tidak akan dihapus.'))return;let r=await sb.from('pbb_records').update({asset_id:null}).eq('id',id);if(r.error)return alert(r.error.message);await loadPbbData();await refreshPropertyLinkedData();runAssetDetailSearch()}window.unlinkPropertyPbb=unlinkPropertyPbb;
@@ -1031,3 +1031,33 @@ applyPropertyLinkDraft=async function(){
   $('#propertyLinkDlg').close();await refreshPropertyLinkedData();runAssetDetailSearch();
  }catch(e){alert('Gagal menerapkan relasi: '+e.message)}finally{btn.disabled=false}
 }; window.applyPropertyLinkDraft=applyPropertyLinkDraft;
+
+// ============================================================
+// v1.19.53 RC — move Save/Cancel/Apply action bars to the top.
+// Existing buttons are MOVED (not cloned), so all listeners remain intact.
+// ============================================================
+function v11953CompactActions(){
+ const moveIntoTopbar=(formSel,barSel)=>{
+  const form=document.querySelector(formSel),top=document.querySelector(barSel);if(!form||!top)return;
+  const a=[...form.querySelectorAll('.actions')].find(x=>x.closest('form')===form);if(!a||a.classList.contains('v11953-moved'))return;
+  a.classList.add('compact-form-actions','v11953-moved');
+  a.querySelectorAll('button[type="submit"]').forEach(b=>b.setAttribute('form',form.id));
+  top.appendChild(a);
+ };
+ moveIntoTopbar('#form','.lease-detail-topbar');
+ moveIntoTopbar('#assetForm','.asset-detail-topbar');
+ document.querySelectorAll('dialog').forEach(dlg=>{
+  if(dlg.id==='propertyLinkDlg')return;
+  const form=dlg.querySelector('form');
+  let a=form?[...form.querySelectorAll('.actions')].find(x=>x.closest('form')===form):[...dlg.querySelectorAll('.actions')].find(x=>x.closest('dialog')===dlg&&!x.closest('form'));
+  if(!a||a.classList.contains('v11953-moved'))return;
+  a.classList.add('compact-form-actions','v11953-moved');
+  const title=dlg.querySelector('.dialog-title');
+  if(form){a.querySelectorAll('button[type="submit"]').forEach(b=>b.setAttribute('form',form.id));if(title&&title.closest('form')===form)title.after(a);else form.prepend(a)}
+  else if(title)title.after(a);else dlg.prepend(a);
+ });
+ // Relation picker: keep selection count + Batal/Terapkan immediately below its heading/search area.
+ const pd=document.querySelector('#propertyLinkDlg'),pf=pd?.querySelector('.property-link-footer');
+ if(pd&&pf&&!pf.classList.contains('v11953-moved')){pf.classList.add('compact-form-actions','v11953-moved');const s=pd.querySelector('#propertyLinkSearch');if(s)s.after(pf);else pd.prepend(pf)}
+}
+document.addEventListener('DOMContentLoaded',()=>{v11953CompactActions();new MutationObserver(v11953CompactActions).observe(document.body,{childList:true,subtree:true})});

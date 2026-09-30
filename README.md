@@ -36,3 +36,11 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Pencarian selector tetap mencakup alias.
 - Pola alias-first diterapkan juga pada selector Akta/relasi yang memiliki alias.
 - Tidak ada perubahan schema SQL.
+
+
+## v1.19.54 RC — Compact Sticky Actions
+- Navigasi utama dibuat compact dan sticky agar tidak hilang saat scroll.
+- Batal/Simpan/Terapkan dipindahkan ke area atas dan tetap mudah diakses.
+- Berlaku pada Akta, Properti, PBB, dan dialog/popup.
+- Mobile/iPhone menggunakan layout lebih ringkas; menu utama memprioritaskan ikon dan kontrol penting.
+- Tidak ada perubahan schema SQL.
