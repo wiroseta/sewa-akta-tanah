@@ -821,3 +821,7 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #propertyLinkDlg>.actions{display:none!important}
 #propertyLinkResults{padding-bottom:4px}
 @media(max-width:700px){.v11996-pbb-row{padding:10px 11px!important}.v11996-pbb-copy>b{font-size:14px!important}}
+/* v1.19.98 — compact dynamic certificate text fields */
+#assetLandTitles .landtitle textarea.land-dynamic-text{min-height:58px;height:58px;overflow:hidden;resize:none;line-height:1.35;transition:height .12s ease}
+#assetLandTitles .landtitle textarea.land-dynamic-text:focus{overflow:auto;resize:vertical}
+#assetLandTitles .landtitle .land-dynamic-label{align-self:start}

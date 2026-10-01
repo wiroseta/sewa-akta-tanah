@@ -254,3 +254,10 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Final consolidation memprioritaskan luas Surat Ukur dibanding angka lain dari halaman lain.
 - Toolbar reader sertifikat dirapikan: File, Baca, ikon koneksi Drive, dan Baca dari Google Drive berada dalam satu baris proporsional pada desktop dan wrap teratur di layar kecil.
 - Tidak ada perubahan database/SQL pada versi ini.
+
+
+## v1.19.98 RC — Rebuilt Land Certificate UX + Current Holder AI
+- Rebuilt from v1.19.96 because v1.19.97 artifact was unavailable.
+- Dynamic compact/expand fields for address and certificate notes.
+- NIB separated from certificate notes in UI while remaining backward-compatible with existing notes storage.
+- AI output separates NIB and notes and reinforces full-document chronology for current holder.
