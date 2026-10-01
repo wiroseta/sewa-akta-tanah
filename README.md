@@ -346,3 +346,11 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - `OPENAI_API_KEY` tetap dipakai hanya server-side untuk pembacaan AI dokumen.
 - Seluruh perbaikan v1.20.12 Lease AI Stability tetap dipertahankan.
 - Tidak ada perubahan database/SQL.
+
+## v1.20.16 RC — Payment Type Separation
+- Jadwal kewajiban dan pembayaran aktual kini memiliki jenis: Sewa, Security Deposit, Penggantian PBB, Lainnya.
+- Security Deposit/PBB tidak masuk rekonsiliasi harga sewa dan tidak otomatis dikenai PPh sewa.
+- Pembayaran aktual dialokasikan FIFO hanya ke kewajiban dengan jenis yang sama; kelebihan pembayaran dicatat apa adanya.
+- Dashboard memberi peringatan sesuai jenis kewajiban, bukan menyebut semua sebagai pembayaran sewa.
+- Mempertahankan alias dropdown aset dan textarea dinamis v1.20.15.
+- Tidak memerlukan perubahan database/SQL baru.
