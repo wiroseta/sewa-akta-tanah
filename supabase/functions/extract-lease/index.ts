@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.20.07] request received");
+ console.log("[extract-lease v1.20.10] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
  if(!base64&&driveFileId){
@@ -63,6 +63,10 @@ ATURAN KETAT:
 18. Jika pembacaan nama meragukan, JANGAN memperbaiki ejaan dengan dugaan. Salin karakter yang terlihat. Bila tidak cukup jelas, kosongkan nama dan jelaskan ketidakpastian di notes daripada menciptakan nama baru.
 19. Nomor Surat Ukur harus literal. Jangan menambahkan nol di depan, nama kelurahan, atau komponen yang tidak terbaca. Jika hasil halaman pendaftaran dan halaman SURAT UKUR berbeda, jangan otomatis memakai salah satunya; field surveyNo/surveyDate harus kosong kecuali bukti lintas halaman benar-benar konsisten atau salah satu kandidat memiliki transkripsi literal yang jelas dan kandidat lain dinyatakan tidak terbaca, bukan sekadar berbeda.
 20. notes adalah CATATAN DOKUMEN, bukan log keputusan AI. Jangan menulis kalimat seperti "data halaman X digunakan", "halaman lebih spesifik dipilih", atau reasoning internal. Catat hanya fakta dokumen, riwayat hukum yang terbaca, dan konflik kandidat yang perlu diverifikasi.
+21. CANONICAL VERIFIED DATA: field final dan notes HARUS berasal dari fakta/kandidat yang sama. DILARANG mengisi field final dengan nilai yang tidak disebut sebagai kandidat/evidence pada hasil halaman. Jika notes menyatakan dua kandidat konflik, field final terkait WAJIB kosong sampai salah satu kandidat benar-benar terverifikasi. Jangan menghasilkan kandidat ketiga.
+22. HOLDER SAFETY: bila ada peralihan kepemilikan setelah pemegang awal tetapi nama penerima tidak terbaca/terverifikasi, holderName WAJIB kosong. DILARANG mengisi holderName dengan pemegang awal karena itu akan salah menggambarkan pemegang terkini. Catat pemegang awal dan peralihan yang belum terbaca di notes.
+23. NIB SAFETY: NIB harus didukung transkripsi literal yang konsisten. Jika kandidat NIB berbeda antar halaman atau tidak jelas, nib WAJIB kosong dan konflik dicatat.
+24. Field surveyNo/surveyDate/nib/holderName yang kosong karena konflik adalah hasil yang BENAR dan lebih baik daripada tebakan.
 
 Kembalikan HANYA JSON valid persis:
 {"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","nib":"","notes":""}
@@ -95,6 +99,23 @@ ${JSON.stringify(pageResults)}`;
    if(transfers.length){
      const latest=transfers[transfers.length-1];
      data.holderName=String(latest.to).trim();
+   } else {
+     // If the document records an ownership-changing event but its recipient is not literally verified,
+     // never fall back to the initial holder as though it were current.
+     const unresolvedTransfer=allEvents.some(ev=>ev?.ownershipChanged===true);
+     if(unresolvedTransfer)data.holderName="";
+   }
+   const distinct=(key:string)=>[...new Set(pageResults.map((pr:any)=>String(pr?.data?.[key]||'').trim()).filter(Boolean).map((v:string)=>v.toUpperCase()))];
+   for(const keyName of ['surveyNo','surveyDate','nib']){
+     const vals=distinct(keyName);
+     if(vals.length>1){
+       // A conflicting canonical identifier must remain blank. The final model may describe candidates in notes,
+       // but it may not invent or choose a third value.
+       data[keyName]="";
+     } else if(vals.length===1){
+       const proposed=String(data?.[keyName]||'').trim().toUpperCase();
+       if(proposed && proposed!==vals[0])data[keyName]="";
+     }
    }
    // Notes must preserve the factual chain that explains the current holder. Build it from
    // extracted events when the final model omitted it; never invent missing names/dates.
@@ -192,9 +213,9 @@ Untuk rightType, prioritaskan judul/jenis hak yang tercetak pada sertifikat: tul
  }; const prompt=prompts[documentType]||prompts.lease
  const isImage=String(mimeType||'').startsWith('image/');
  const batchNote=Array.isArray(images)&&images.length?`\n\nDokumen besar sedang dibaca per batch. Ini halaman ${pageStart||'?'} sampai ${pageEnd||'?'} dari total ${totalPages||'?'}. Ekstrak HANYA data yang benar-benar terlihat pada halaman batch ini. Field yang tidak terlihat harus kosong/0/array kosong. Jangan menebak dari batch lain.`:'';
- const visualNote=(documentType==='land_title'||documentType==='lease')?`\n\nFIELD CROP VISUAL VERIFICATION v1.20.09: Jika gambar dengan variant field-crop-top, field-crop-middle, atau field-crop-bottom tersedia, itu adalah POTONGAN FISIK resolusi tinggi dari halaman yang sama untuk memperbesar teks kecil. Gunakan crop tersebut untuk mentranskripsi nama, NIB, nomor Surat Ukur, tanggal, luas, dan identifier karakter demi karakter. Crop bukan dokumen berbeda dan tidak boleh menciptakan fakta baru. Jika crop dan halaman penuh berbeda, lakukan verifikasi literal; jika tetap tidak pasti, kosongkan field dan tandai PERLU VERIFIKASI.
+ const visualNote=(documentType==='land_title'||documentType==='lease')?`\n\nFIELD CROP VISUAL VERIFICATION v1.20.10: Jika gambar dengan variant field-crop-top, field-crop-middle, atau field-crop-bottom tersedia, itu adalah POTONGAN FISIK resolusi tinggi dari halaman yang sama untuk memperbesar teks kecil. Gunakan crop tersebut untuk mentranskripsi nama, NIB, nomor Surat Ukur, tanggal, luas, dan identifier karakter demi karakter. Crop bukan dokumen berbeda dan tidak boleh menciptakan fakta baru. Jika crop dan halaman penuh berbeda, lakukan verifikasi literal; jika tetap tidak pasti, kosongkan field dan tandai PERLU VERIFIKASI.
 
-ADAPTIVE VISUAL VERIFICATION v1.20.09: Jika tersedia lebih dari satu gambar untuk halaman yang sama, gambar pertama adalah warna resolusi tinggi dan gambar berikutnya adalah versi grayscale/high-contrast dari SUMBER YANG SAMA. Bandingkan keduanya. Untuk SETIAP nama orang/perusahaan, nomor dokumen, nomor sertifikat, NIB, nomor Surat Ukur, tanggal, luas, dan angka penting: zoom/periksa karakter demi karakter secara visual. Jangan autocorrect nama dan jangan menebak digit. Bila satu versi samar, gunakan versi yang lebih jelas. Bila kedua versi tetap tidak meyakinkan atau bertentangan, kosongkan field yang meragukan atau nyatakan perlu verifikasi di notes; jangan menciptakan nilai. Khusus Sertifikat Tanah, kumpulkan kandidat nomor/tanggal/luas dari bagian SURAT UKUR DAN halaman pendaftaran. Tidak ada halaman yang otomatis menang. Bila kandidat bertentangan, tandai PERLU VERIFIKASI dan jangan isi field final hanya berdasarkan prioritas halaman.`:'';
+ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untuk halaman yang sama, gambar pertama adalah warna resolusi tinggi dan gambar berikutnya adalah versi grayscale/high-contrast dari SUMBER YANG SAMA. Bandingkan keduanya. Untuk SETIAP nama orang/perusahaan, nomor dokumen, nomor sertifikat, NIB, nomor Surat Ukur, tanggal, luas, dan angka penting: zoom/periksa karakter demi karakter secara visual. Jangan autocorrect nama dan jangan menebak digit. Bila satu versi samar, gunakan versi yang lebih jelas. Bila kedua versi tetap tidak meyakinkan atau bertentangan, kosongkan field yang meragukan atau nyatakan perlu verifikasi di notes; jangan menciptakan nilai. Khusus Sertifikat Tanah, kumpulkan kandidat nomor/tanggal/luas dari bagian SURAT UKUR DAN halaman pendaftaran. Tidak ada halaman yang otomatis menang. Bila kandidat bertentangan, tandai PERLU VERIFIKASI dan jangan isi field final hanya berdasarkan prioritas halaman.`:'';
  const content:any[]=[{type:"input_text",text:prompt+batchNote+visualNote}];
  const imageDetail=documentType==='land_title'?'high':'auto';
  if(Array.isArray(images)&&images.length){for(const im of images){if(im.variant)content.push({type:"input_text",text:`Versi visual halaman ${im.page||pageStart||'?'}: ${im.variant}. Ini bukan halaman tambahan; gunakan untuk verifikasi pembacaan halaman yang sama.`});content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:imageDetail})}}

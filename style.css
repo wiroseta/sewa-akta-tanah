@@ -843,3 +843,7 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #assetLandTitles .landtitle .land-address-half,#assetLandTitles .landtitle .land-holder-half{grid-column:span 2!important;width:100%!important;align-self:start}
 #assetLandTitles .landtitle .land-address-half textarea,#assetLandTitles .landtitle .land-holder-half textarea{width:100%!important;min-height:58px;height:58px}
 @media(max-width:720px){#assetLandTitles .landtitle .land-address-half,#assetLandTitles .landtitle .land-holder-half{grid-column:1!important}}
+
+/* v1.20.10 monochrome Google Maps location pin */
+.location-pin-icon{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.2em;color:currentColor}
+button .location-pin-icon{margin-right:.28em}

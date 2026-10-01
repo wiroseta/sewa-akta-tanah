@@ -311,3 +311,11 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Google Maps/open-location commands use a monochrome location-pin SVG globally (black on white; currentColor permits white on active blue buttons).
 - Local certificate AI button label changed from “Baca” to “Baca File”.
 - No database migration is required.
+
+
+## v1.20.10 RC — Canonical Verified Data + Global Monochrome Map Pin
+- Sertifikat: hasil final menggunakan canonical verified data; field konflik tidak boleh diisi dengan kandidat ketiga/hasil lama.
+- Pemegang awal tidak boleh menjadi pemegang terkini bila ada peralihan yang penerimanya belum terverifikasi.
+- Keterangan luas properti yang berbentuk ringkasan otomatis `Luas tanah ... m²` direkonsiliasi dari luas sertifikat terverifikasi; catatan manual lain tidak ditimpa.
+- Semua tombol Google Maps memakai SVG location pin monokrom, tanpa emoji merah/peta/panah eksternal.
+- Tombol baca file tetap `Baca File`.
