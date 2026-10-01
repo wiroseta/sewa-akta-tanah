@@ -721,3 +721,21 @@ button.v11960-command::after,button.v11961-command::after,button.v11961-command.
 .v11978-add::before,.v11978-add::after,.v11978-add-small::before,.v11978-add-small::after,.v11978-back::before,.v11978-back::after,.v11978-save::before,.v11978-save::after,.v11978-edit::before,.v11978-edit::after,.v11978-delete::before,.v11978-delete::after,.v11978-open::before,.v11978-open::after{content:none!important;display:none!important}
 /* Old card pseudo-icons must never participate in layout. */
 .asset-master-actions button::before,.asset-master-actions button::after,.pbb-card-actions button::before,.pbb-card-actions button::after,.lease-card-actions button::before,.lease-card-actions button::after{content:none!important;display:none!important}
+
+/* ============================================================
+   v1.19.79 RC — icon visibility hotfix
+   Fixes blank action controls caused by historical font-size:0 rules.
+   Icons are authored as child spans; pseudo-icons stay disabled.
+   ============================================================ */
+button.v11978-add,button.v11978-add-small,button.v11978-back,button.v11978-save,button.v11978-edit,button.v11978-delete,button.v11978-open{font-size:0!important}
+button.v11978-add>span{display:inline-flex!important;font-size:29px!important;line-height:1!important;color:inherit!important;align-items:center;justify-content:center}
+button.v11978-add-small>span{display:inline-flex!important;font-size:25px!important;line-height:1!important;color:inherit!important;align-items:center;justify-content:center}
+button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v11978-delete>span,button.v11978-open>span{display:inline-flex!important;font-size:21px!important;line-height:1!important;color:inherit!important;align-items:center;justify-content:center}
+/* ID-specific historical font-size:0 must not hide the authored child glyph. */
+#assetBack>span,#pbbBack>span,#leaseListBack>span,#assetDetailBack>span{font-size:22px!important}
+#newAssetBtn>span,#newPbbBtn>span,#addBtn>span{font-size:29px!important}
+#assetTopSaveBtn>span{font-size:21px!important}
+/* Card controls: exactly one visible authored glyph. */
+.asset-master-actions button.v11978-edit>span,.asset-master-actions button.v11978-delete>span,.asset-master-actions button.v11978-open>span,
+.pbb-card-actions button.v11978-edit>span,.pbb-card-actions button.v11978-delete>span,.pbb-card-actions button.v11978-open>span,
+.lease-card-actions button.v11978-edit>span,.lease-card-actions button.v11978-delete>span,.lease-card-actions button.v11978-open>span{display:inline-flex!important;font-size:21px!important;line-height:1!important}

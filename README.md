@@ -200,3 +200,9 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 
 ## v1.19.78 RC
 Rebuilt minimal icon/action layer at source level. Removed legacy runtime icon rewriting and all hover tooltip attributes.
+
+
+## v1.19.79 RC
+- Fixed blank action icons caused by legacy `font-size:0` rules overriding child glyphs.
+- Preserves approved minimal icon system: one icon per action, + only for add, no decorative icons on collapsible headers, no tooltips.
+- No database schema change.
