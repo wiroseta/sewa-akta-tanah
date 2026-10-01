@@ -641,14 +641,16 @@ async function consolidateWholeDocument(pageResults,documentType,filename,totalP
 async function canvasJpegBase64(canvas,quality=.58){return new Promise((resolve,reject)=>canvas.toBlob(async b=>{if(!b)return reject(new Error('Gagal membuat gambar halaman PDF.'));try{resolve(await blobToBase64(b))}catch(e){reject(e)}},'image/jpeg',quality))}
 async function renderPdfPageForAI(page,documentType=''){
  const base=page.getViewport({scale:1});
- // v1.20.10 Canonical Verified Data: land titles and leases are rendered larger so small names/numbers remain legible.
- const critical=(documentType==='land_title'||documentType==='lease');
- const maxSide=critical?2400:1400,scale=Math.min(critical?2.6:1.45,maxSide/Math.max(base.width,base.height));
+ // v1.20.12: only land-title pages use the heavy high-resolution visual pipeline.
+ // Lease deeds use one balanced page image per request; targeted verification can be added after consolidation.
+ const landCritical=(documentType==='land_title');
+ const leasePage=(documentType==='lease');
+ const maxSide=landCritical?2400:(leasePage?1800:1400),scale=Math.min(landCritical?2.6:(leasePage?1.9:1.45),maxSide/Math.max(base.width,base.height));
  const vp=page.getViewport({scale});const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
  const ctx=c.getContext('2d',{alpha:false});await page.render({canvasContext:ctx,viewport:vp,background:'white'}).promise;
- let base64=await canvasJpegBase64(c,critical?.76:.58);
+ let base64=await canvasJpegBase64(c,landCritical?.76:(leasePage?.64:.58));
  // Extra guard for unusually dense scans. Re-render smaller rather than sending a large request to Supabase.
- if(base64.length>(critical?2600000:1400000)){const smallScale=scale*.78,svp=page.getViewport({scale:smallScale});c.width=Math.ceil(svp.width);c.height=Math.ceil(svp.height);await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:svp,background:'white'}).promise;base64=await canvasJpegBase64(c,critical?.68:.5)}
+ if(base64.length>(landCritical?2600000:(leasePage?1750000:1400000))){const smallScale=scale*.78,svp=page.getViewport({scale:smallScale});c.width=Math.ceil(svp.width);c.height=Math.ceil(svp.height);await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:svp,background:'white'}).promise;base64=await canvasJpegBase64(c,landCritical?.68:(leasePage?.58:.5))}
  c.width=c.height=1;return base64
 }
 async function makeGrayContrastVariant(base64){
@@ -665,8 +667,11 @@ async function makeFieldCropVariants(base64){
  try{bmp.close()}catch(_){}return out
 }
 async function renderPdfPageVariantsForAI(page,documentType){
- const original=await renderPdfPageForAI(page,documentType);if(documentType!=='land_title'&&documentType!=='lease')return [{base64:original,mimeType:'image/jpeg',variant:'original'}];
- const enhanced=await makeGrayContrastVariant(original),crops=documentType==='land_title'?await makeFieldCropVariants(original):[];
+ const original=await renderPdfPageForAI(page,documentType);
+ // Lease: exactly ONE image per page. This prevents long deeds from multiplying request payload/memory.
+ if(documentType==='lease')return [{base64:original,mimeType:'image/jpeg',variant:'lease-page-balanced'}];
+ if(documentType!=='land_title')return [{base64:original,mimeType:'image/jpeg',variant:'original'}];
+ const enhanced=await makeGrayContrastVariant(original),crops=await makeFieldCropVariants(original);
  return [{base64:original,mimeType:'image/jpeg',variant:'original-color-highres'},{base64:enhanced,mimeType:'image/jpeg',variant:'grayscale-high-contrast'},...crops]
 }
 async function invokeLargePdfAI(file,documentType,onProgress=()=>{}){

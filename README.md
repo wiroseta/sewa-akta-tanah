@@ -319,3 +319,11 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Keterangan luas properti yang berbentuk ringkasan otomatis `Luas tanah ... m²` direkonsiliasi dari luas sertifikat terverifikasi; catatan manual lain tidak ditimpa.
 - Semua tombol Google Maps memakai SVG location pin monokrom, tanpa emoji merah/peta/panah eksternal.
 - Tombol baca file tetap `Baca File`.
+
+
+## v1.20.12 RC — Lease AI Stability / Single-Image Page Pipeline
+- Akta Sewa now sends exactly one balanced-resolution image per PDF page instead of color + grayscale variants.
+- Heavy high-resolution + grayscale + physical field crops remain exclusive to Sertifikat Tanah.
+- Whole-document lease consolidation remains enabled.
+- Edge Function adds explicit OpenAI start/HTTP-response/completion logs and a 50-second per-request timeout so failures are diagnosable instead of silent shutdowns.
+- No database migration.

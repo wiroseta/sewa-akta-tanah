@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.20.10] request received");
+ console.log("[extract-lease v1.20.12] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
  if(!base64&&driveFileId){
@@ -133,7 +133,7 @@ ${JSON.stringify(pageResults)}`;
      }
      data.notes=lines.join('\n');
    }
-   return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.20.12] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
 
  if(documentType==='whole_document_consolidate'){
@@ -168,7 +168,7 @@ HASIL SEMUA HALAMAN (${pageResults.length} halaman/batch):\n${JSON.stringify(pag
    }
    const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
    if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
-   return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.20.12] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(documentType==='history_compare'){
    stage="openai-compare";
@@ -184,7 +184,7 @@ ${JSON.stringify(comparisonData.new)}`;
    const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:comparePrompt})});
    const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan perbandingan yang bukan JSON valid")}
-   return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.20.12] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
@@ -213,7 +213,7 @@ Untuk rightType, prioritaskan judul/jenis hak yang tercetak pada sertifikat: tul
  }; const prompt=prompts[documentType]||prompts.lease
  const isImage=String(mimeType||'').startsWith('image/');
  const batchNote=Array.isArray(images)&&images.length?`\n\nDokumen besar sedang dibaca per batch. Ini halaman ${pageStart||'?'} sampai ${pageEnd||'?'} dari total ${totalPages||'?'}. Ekstrak HANYA data yang benar-benar terlihat pada halaman batch ini. Field yang tidak terlihat harus kosong/0/array kosong. Jangan menebak dari batch lain.`:'';
- const visualNote=(documentType==='land_title'||documentType==='lease')?`\n\nFIELD CROP VISUAL VERIFICATION v1.20.10: Jika gambar dengan variant field-crop-top, field-crop-middle, atau field-crop-bottom tersedia, itu adalah POTONGAN FISIK resolusi tinggi dari halaman yang sama untuk memperbesar teks kecil. Gunakan crop tersebut untuk mentranskripsi nama, NIB, nomor Surat Ukur, tanggal, luas, dan identifier karakter demi karakter. Crop bukan dokumen berbeda dan tidak boleh menciptakan fakta baru. Jika crop dan halaman penuh berbeda, lakukan verifikasi literal; jika tetap tidak pasti, kosongkan field dan tandai PERLU VERIFIKASI.
+ const visualNote=(documentType==='land_title')?`\n\nFIELD CROP VISUAL VERIFICATION v1.20.10: Jika gambar dengan variant field-crop-top, field-crop-middle, atau field-crop-bottom tersedia, itu adalah POTONGAN FISIK resolusi tinggi dari halaman yang sama untuk memperbesar teks kecil. Gunakan crop tersebut untuk mentranskripsi nama, NIB, nomor Surat Ukur, tanggal, luas, dan identifier karakter demi karakter. Crop bukan dokumen berbeda dan tidak boleh menciptakan fakta baru. Jika crop dan halaman penuh berbeda, lakukan verifikasi literal; jika tetap tidak pasti, kosongkan field dan tandai PERLU VERIFIKASI.
 
 ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untuk halaman yang sama, gambar pertama adalah warna resolusi tinggi dan gambar berikutnya adalah versi grayscale/high-contrast dari SUMBER YANG SAMA. Bandingkan keduanya. Untuk SETIAP nama orang/perusahaan, nomor dokumen, nomor sertifikat, NIB, nomor Surat Ukur, tanggal, luas, dan angka penting: zoom/periksa karakter demi karakter secara visual. Jangan autocorrect nama dan jangan menebak digit. Bila satu versi samar, gunakan versi yang lebih jelas. Bila kedua versi tetap tidak meyakinkan atau bertentangan, kosongkan field yang meragukan atau nyatakan perlu verifikasi di notes; jangan menciptakan nilai. Khusus Sertifikat Tanah, kumpulkan kandidat nomor/tanggal/luas dari bagian SURAT UKUR DAN halaman pendaftaran. Tidak ada halaman yang otomatis menang. Bila kandidat bertentangan, tandai PERLU VERIFIKASI dan jangan isi field final hanya berdasarkan prioritas halaman.`:'';
  const content:any[]=[{type:"input_text",text:prompt+batchNote+visualNote}];
@@ -221,12 +221,16 @@ ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untu
  if(Array.isArray(images)&&images.length){for(const im of images){if(im.variant)content.push({type:"input_text",text:`Versi visual halaman ${im.page||pageStart||'?'}: ${im.variant}. Ini bukan halaman tambahan; gunakan untuk verifikasi pembacaan halaman yang sama.`});content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:imageDetail})}}
  else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:imageDetail});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
- stage="openai"; console.log("[extract-lease] sending document to OpenAI", {filename,mimeType,documentType,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
- const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]})});
+ stage="openai"; console.log("[extract-lease v1.20.12] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
+ const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),50000);let r;
+ try{r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]}),signal:controller.signal})}
+ catch(err){if(err?.name==='AbortError')throw new Error('OpenAI request timeout setelah 50 detik');throw err}
+ finally{clearTimeout(timeout)}
+ console.log("[extract-lease v1.20.12] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
  const raw=await r.json();if(!r.ok)throw new Error(raw?.error?.message||`OpenAI error ${r.status}`);
  const text=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
  let clean=String(text).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan hasil yang bukan JSON valid")}
  const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
  if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
- return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+ console.log("[extract-lease v1.20.12] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
 }catch(e){const message=e?.message||String(e);console.error("[extract-lease] failed",{stage,message});return new Response(JSON.stringify({error:message,stage}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});
