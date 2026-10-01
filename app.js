@@ -1572,14 +1572,11 @@ function v11969WrapMasterNav(){
  Object.entries(map).forEach(([id,page])=>{const b=document.getElementById(id);if(!b||b.dataset.v11969Nav)return;b.dataset.v11969Nav='1';b.addEventListener('click',()=>{v11969CloseDetailLayers();v11969SetMasterActive(id);setTimeout(()=>window.scrollTo(0,0),0)},true)});
 }
 function v11969ColorMasterIcons(){
- const specs={assetsBtn:['🏢','Master Properti'],pbbBtn:['🧾','Master PBB'],leaseBtn:['📝','Master Akta Sewa']};
- Object.entries(specs).forEach(([id,[icon,label]])=>{
+ // v1.19.83: legacy emoji rewriter disabled. Dashboard navigation icons are
+ // canonical inline SVG authored in index.html and must never be replaced.
+ ['assetsBtn','pbbBtn','leaseBtn'].forEach(id=>{
   const b=document.getElementById(id);if(!b)return;
-  b.setAttribute('aria-label',label);b.title=label;
-  // v1.19.70: only rewrite once. Rewriting innerHTML from a MutationObserver
-  // continuously retriggered the observer and could make these buttons unclickable.
-  if(b.dataset.v11970ColorIcon==='1')return;
-  b.innerHTML=`<span aria-hidden="true" style="font-size:24px;line-height:1">${icon}</span><span class="v11961-sr">${label}</span>`;
+  b.removeAttribute('title');
   b.dataset.v11970ColorIcon='1';
  });
 }
@@ -1727,7 +1724,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
 })();
 
 // ============================================================
-// v1.19.82 RC — Dashboard source-level menu safeguard.
+// v1.19.83 RC — Dashboard source-level menu safeguard.
 // Deliberately scoped to the dashboard header utility dropdown only.
 // ============================================================
 function v11980RestoreDashboardUtilityLabels(){

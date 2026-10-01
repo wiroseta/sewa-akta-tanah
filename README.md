@@ -208,8 +208,15 @@ Rebuilt minimal icon/action layer at source level. Removed legacy runtime icon r
 - No database schema change.
 
 
-## v1.19.82 RC — Dashboard source-level repair
-- Akar masalah cache ditemukan: index masih memanggil style.css/app.js dengan query v1.19.77 sehingga browser dapat mempertahankan aset lama walaupun badge versi sudah berubah. Semua cache-buster dinaikkan ke v1.19.82.
+## v1.19.83 RC — Dashboard source-level repair
+- Akar masalah cache ditemukan: index masih memanggil style.css/app.js dengan query v1.19.77 sehingga browser dapat mempertahankan aset lama walaupun badge versi sudah berubah. Semua cache-buster dinaikkan ke v1.19.83.
 - Tiga navigasi Dashboard ditulis langsung sebagai SVG canonical: Properti/Lokasi, PBB/SPPT, dan Akta Sewa; tidak bergantung pada emoji atau legacy icon enhancer.
 - Menu ••• ditulis langsung di HTML sebagai ikon + label permanen: Kelola Users, Cari Klausul & Riwayat, Backup & Restore, Keluar.
 - CSS scoped hanya pada header Dashboard.
+
+
+## v1.19.83 RC
+- Fixed root cause of Dashboard top navigation reverting to emoji: legacy v1.19.69 runtime rewriter is disabled.
+- Properti, PBB/SPPT, and Akta Sewa remain canonical inline SVG.
+- Dashboard utility menu retains permanent icon + text labels.
+- No tooltip title is added to the three Dashboard navigation buttons.
