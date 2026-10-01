@@ -228,6 +228,6 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Tidak ada perubahan schema/SQL. Header SVG v1.19.85 dan Property Delete Fix v1.19.86 dipertahankan.
 
 
-## v1.19.90 RC
+## v1.19.91 RC
 - Menyederhanakan tombol ekspansi relasi Sertifikat dan PBB pada Detail Akta menjadi tombol + / − compact.
 - Fungsi pemilihan/relasi dari v1.19.88 tetap sama; hanya tampilan kontrol yang disederhanakan.

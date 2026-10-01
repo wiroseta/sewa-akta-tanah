@@ -778,3 +778,11 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 /* v1.19.89 — compact + / − relation toggles */
 .lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle{width:46px!important;min-width:46px!important;max-width:46px!important;height:42px!important;min-height:42px!important;padding:0!important;margin:10px 0!important;white-space:nowrap!important;font-size:24px!important;line-height:1!important;font-weight:600!important;border-radius:12px!important}
 @media(max-width:700px){.lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle{width:46px!important;min-width:46px!important;max-width:46px!important}}
+
+/* v1.19.91 — Property/Land-title readability cleanup */
+#assetForm textarea[name="area"]{min-height:76px;resize:vertical;line-height:1.35}
+#assetLandTitles .landtitle textarea.address{min-height:76px;resize:vertical;line-height:1.35}
+#assetLandTitles .landtitle textarea.holderName{min-height:58px;resize:vertical;line-height:1.35}
+#assetLandTitles .landtitle textarea{width:100%;box-sizing:border-box}
+/* The top bar is the canonical save/cancel navigation on full-page Property detail. */
+#assetDlg #assetForm>.actions{display:none!important}
