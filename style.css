@@ -838,3 +838,8 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #assetLandTitles .landtitle .land-drive-ai-btn{width:230px!important;min-width:0!important}
 @media(max-width:800px){#assetLandTitles .landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 96px!important}#assetLandTitles .landtitle .land-drive-ai-btn{grid-column:1/-1;width:230px!important;justify-self:start}}
 @media(max-width:520px){#assetLandTitles .landtitle .land-ai-controls{grid-template-columns:1fr!important}#assetLandTitles .landtitle .land-file,#assetLandTitles .landtitle .land-ai-btn,#assetLandTitles .landtitle .land-drive-ai-btn{grid-column:1!important;width:100%!important}}
+
+/* v1.20.03 — address and current holder side-by-side, equal width/height */
+#assetLandTitles .landtitle .land-address-half,#assetLandTitles .landtitle .land-holder-half{grid-column:span 2!important;width:100%!important;align-self:start}
+#assetLandTitles .landtitle .land-address-half textarea,#assetLandTitles .landtitle .land-holder-half textarea{width:100%!important;min-height:58px;height:58px}
+@media(max-width:720px){#assetLandTitles .landtitle .land-address-half,#assetLandTitles .landtitle .land-holder-half{grid-column:1!important}}

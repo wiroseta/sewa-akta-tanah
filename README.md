@@ -275,3 +275,9 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Final whole-document consolidation sorts the complete chronology and uses the recipient of the latest true ownership transfer as `holderName`.
 - Extensions, mortgage/roya, and administrative entries cannot overwrite or revert the latest holder.
 - Keeps v1.20.00 automatic Google Drive read/reconnect behavior and UI changes.
+
+
+## v1.20.03 RC — Transfer-table holder fix + aligned holder layout
+- Hardened land-title AI to interpret Indonesian transfer-registration tables by column: for JUAL BELI/ownership transfer, the recipient in `Nama yang berhak` is the current holder unless a later ownership transfer exists.
+- Later HGB extension/renewal changes validity only and must not revert the holder.
+- Address and Nama Pemegang Hak are again side-by-side at equal initial height; both remain dynamically expandable.
