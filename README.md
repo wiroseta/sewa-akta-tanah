@@ -256,8 +256,22 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Tidak ada perubahan database/SQL pada versi ini.
 
 
-## v1.19.98 RC — Rebuilt Land Certificate UX + Current Holder AI
+## v1.19.99 RC — Rebuilt Land Certificate UX + Current Holder AI
 - Rebuilt from v1.19.96 because v1.19.97 artifact was unavailable.
 - Dynamic compact/expand fields for address and certificate notes.
 - NIB separated from certificate notes in UI while remaining backward-compatible with existing notes storage.
 - AI output separates NIB and notes and reinforces full-document chronology for current holder.
+
+## v1.20.00 RC — Automatic Google Drive Read/Reconnect
+- Tombol koneksi Google Drive terpisah dihapus dari reader Akta Sewa, Sertifikat Tanah, PBB/SPPT, dokumen tambahan, dan dokumen historis.
+- Tombol Baca dari Google Drive kini memeriksa sesi secara otomatis: sesi valid langsung membaca; sesi tidak ada/kedaluwarsa meminta OAuth lalu otomatis melanjutkan pembacaan.
+- Jika API mengembalikan kegagalan autentikasi/401 saat membaca, token lama dibersihkan, koneksi diminta ulang, lalu pembacaan dicoba kembali satu kali secara otomatis.
+- Reader Bangunan, Perizinan, Agen, dan Verifikasi Ulang Akta juga memakai helper auto-auth yang sama.
+- Tidak ada perubahan database/SQL dan tidak ada perubahan Edge Function.
+
+
+## v1.20.01 RC — Latest Land-Title Holder Chronology Fix
+- AI land-title reading now extracts ownership events from every page (initial holder, sale/purchase, gift, inheritance, auction, name change, other transfers, extension, mortgage, roya, administrative notes).
+- Final whole-document consolidation sorts the complete chronology and uses the recipient of the latest true ownership transfer as `holderName`.
+- Extensions, mortgage/roya, and administrative entries cannot overwrite or revert the latest holder.
+- Keeps v1.20.00 automatic Google Drive read/reconnect behavior and UI changes.

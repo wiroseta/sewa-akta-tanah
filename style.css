@@ -821,7 +821,20 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #propertyLinkDlg>.actions{display:none!important}
 #propertyLinkResults{padding-bottom:4px}
 @media(max-width:700px){.v11996-pbb-row{padding:10px 11px!important}.v11996-pbb-copy>b{font-size:14px!important}}
-/* v1.19.98 — compact dynamic certificate text fields */
+/* v1.19.99 — compact dynamic certificate text fields */
 #assetLandTitles .landtitle textarea.land-dynamic-text{min-height:58px;height:58px;overflow:hidden;resize:none;line-height:1.35;transition:height .12s ease}
 #assetLandTitles .landtitle textarea.land-dynamic-text:focus{overflow:auto;resize:vertical}
 #assetLandTitles .landtitle .land-dynamic-label{align-self:start}
+
+/* v1.19.99 — certificate reader final UI cleanup */
+#assetLandTitles .landtitle label.land-wide.land-dynamic-label{grid-column:1/-1!important;width:100%!important}
+#assetLandTitles .landtitle label.land-wide.land-dynamic-label textarea{width:100%!important}
+#assetLandTitles .landtitle .land-drive-connect-btn{font-size:0!important;line-height:1!important;overflow:hidden!important;white-space:nowrap!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#assetLandTitles .landtitle .land-drive-connect-btn::before{content:'🔗';font-size:24px;line-height:1}
+#assetLandTitles .landtitle .land-ai-status.drive-connected{background:#eefaf1!important;border-color:#b8e5c2!important;color:#176b32!important}
+
+/* v1.20.00 — Google Drive read button owns connection/reconnection; no separate link button */
+#assetLandTitles .landtitle .land-ai-controls{grid-template-columns:minmax(260px,1fr) 124px 230px!important}
+#assetLandTitles .landtitle .land-drive-ai-btn{width:230px!important;min-width:0!important}
+@media(max-width:800px){#assetLandTitles .landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 96px!important}#assetLandTitles .landtitle .land-drive-ai-btn{grid-column:1/-1;width:230px!important;justify-self:start}}
+@media(max-width:520px){#assetLandTitles .landtitle .land-ai-controls{grid-template-columns:1fr!important}#assetLandTitles .landtitle .land-file,#assetLandTitles .landtitle .land-ai-btn,#assetLandTitles .landtitle .land-drive-ai-btn{grid-column:1!important;width:100%!important}}
