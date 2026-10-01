@@ -366,3 +366,11 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Memperjelas tiga tombol di bawah Klausul Penting: `+ Klausul`, `Riwayat & Bandingkan Akta`, dan `+ Akta Lama / Dokumen Historis`.
 - Ketiga tombol tidak lagi diringkas menjadi ikon § / jam / centang dan tidak memakai tooltip.
 - Tidak ada perubahan SQL.
+
+
+## v1.20.19 RC — Lease Object Address & Area Consolidation
+- Memperketat whole-document AI agar alamat objek sewa dicari dan digabung lintas halaman.
+- Luas tanah sertifikat tidak boleh otomatis menjadi luas tanah menurut Akta Sewa.
+- Rincian luas bangunan wajib dipertahankan; total hanya dihitung bila komponen lengkap dan jelas dapat dijumlahkan.
+- Bila total luas belum pasti, field luas ditampilkan kosong (bukan 0) dan kandidat luas masuk catatan/peringatan verifikasi.
+- Tidak ada perubahan database/SQL pada versi ini.
