@@ -298,9 +298,16 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Field yang tetap ambigu harus ditandai perlu verifikasi, bukan dihalusinasikan.
 
 
-## v1.20.08 RC — Conflict-Safe Visual Verification
+## v1.20.09 RC — Conflict-Safe Visual Verification
 - Menghapus aturan bahwa halaman SURAT UKUR otomatis mengalahkan halaman lain saat transkripsi nomor/tanggal/luas bertentangan.
 - Konflik karakter pada nama, nomor, tanggal, luas dan NIB sekarang harus ditandai PERLU VERIFIKASI; field final tidak boleh dipilih hanya berdasarkan source hierarchy.
 - Catatan Sertifikat tidak boleh menyimpan reasoning internal seperti “data halaman X digunakan”.
 - Adaptive color + grayscale/high-contrast verification v1.20.07 tetap dipertahankan.
 - Tidak ada perubahan database/SQL.
+
+
+## v1.20.09 RC — Field Crop Verification + Monochrome Location Pin
+- Sertifikat Tanah: physical overlapping high-resolution field crops are sent with original color and grayscale/high-contrast pages to improve literal reading of names, NIB, Surat Ukur, dates, and small identifiers.
+- Google Maps/open-location commands use a monochrome location-pin SVG globally (black on white; currentColor permits white on active blue buttons).
+- Local certificate AI button label changed from “Baca” to “Baca File”.
+- No database migration is required.
