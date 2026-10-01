@@ -226,3 +226,8 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Detail Akta menampilkan peringatan relasi lama yang tidak sesuai Properti/Lokasi terpilih. Menyimpan Akta setelah memilih sertifikat yang benar akan memperbarui relasi melalui mekanisme relasi yang sudah ada.
 - Kembali dari Detail Akta ke Master Akta memulihkan `appShell` sehingga header global tidak hilang.
 - Tidak ada perubahan schema/SQL. Header SVG v1.19.85 dan Property Delete Fix v1.19.86 dipertahankan.
+
+
+## v1.19.90 RC
+- Menyederhanakan tombol ekspansi relasi Sertifikat dan PBB pada Detail Akta menjadi tombol + / − compact.
+- Fungsi pemilihan/relasi dari v1.19.88 tetap sama; hanya tampilan kontrol yang disederhanakan.

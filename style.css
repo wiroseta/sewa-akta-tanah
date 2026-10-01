@@ -774,3 +774,7 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 .lease-relations .lease-pbb-item{display:flex!important;flex-direction:row!important}.lease-relations .lease-pbb-label{display:grid;gap:3px}
 .lease-relations .lease-relation-empty{padding:12px;border:1px dashed #c7c7cc;border-radius:12px;color:#6e6e73;background:#fafafd}
 @media(max-width:700px){.lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle,#addLeaseFacility{width:100%!important}}
+
+/* v1.19.89 — compact + / − relation toggles */
+.lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle{width:46px!important;min-width:46px!important;max-width:46px!important;height:42px!important;min-height:42px!important;padding:0!important;margin:10px 0!important;white-space:nowrap!important;font-size:24px!important;line-height:1!important;font-weight:600!important;border-radius:12px!important}
+@media(max-width:700px){.lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle{width:46px!important;min-width:46px!important;max-width:46px!important}}
