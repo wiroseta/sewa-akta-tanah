@@ -1730,3 +1730,17 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
  obs.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['title','data-tooltip','data-tip','data-original-title']});
  window.v11977ApprovedMinimalUI=run;
 })();
+
+// v1.19.77 RC hotfix — hard cleanup after all historical icon/tooltip enhancers.
+(function v11977HeaderTooltipHotfix(){
+ function clean(){
+  document.querySelectorAll('[title],[data-tooltip],[data-tip],[data-original-title]').forEach(n=>{
+   n.removeAttribute('title');n.removeAttribute('data-tooltip');n.removeAttribute('data-tip');n.removeAttribute('data-original-title');
+  });
+  const specs={assetsBtn:'🏢',pbbBtn:'🧾',leaseBtn:'📝'};
+  Object.entries(specs).forEach(([id,icon])=>{const b=document.getElementById(id);if(!b)return;b.replaceChildren();const s=document.createElement('span');s.className='v11977-header-shortcut-icon';s.setAttribute('aria-hidden','true');s.textContent=icon;b.appendChild(s);});
+ }
+ document.addEventListener('DOMContentLoaded',()=>{setTimeout(clean,420)});
+ const mo=new MutationObserver(()=>{clearTimeout(window.__v11977cleanTimer);window.__v11977cleanTimer=setTimeout(clean,20)});
+ document.addEventListener('DOMContentLoaded',()=>mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['title','data-tooltip','data-tip','data-original-title']}));
+})();

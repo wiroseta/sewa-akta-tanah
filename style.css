@@ -701,3 +701,9 @@ button.v11977-edit::before,button.v11977-edit::after,button.v11977-delete::befor
 .asset-master-actions button.v11977-edit,.asset-master-actions button.v11977-delete,
 .pbb-card-actions button.v11977-edit,.pbb-card-actions button.v11977-delete,
 .lease-card-actions button.v11977-edit,.lease-card-actions button.v11977-delete{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;font-size:21px!important}
+
+/* v1.19.77 RC hotfix — remove all legacy tooltip/pseudo artifacts and keep header shortcuts clean */
+[data-tooltip]::before,[data-tooltip]::after,[data-tip]::before,[data-tip]::after,[data-original-title]::before,[data-original-title]::after{content:none!important;display:none!important;opacity:0!important;visibility:hidden!important}
+button.v11960-command::after,button.v11961-command::after,button.v11961-command.v11962-shortcut-flash::after,.lease-nav-action::after,.lease-save-action::after{content:none!important;display:none!important}
+#assetsBtn::before,#assetsBtn::after,#pbbBtn::before,#pbbBtn::after,#leaseBtn::before,#leaseBtn::after{content:none!important;display:none!important}
+#assetsBtn,#pbbBtn,#leaseBtn{overflow:hidden!important}
