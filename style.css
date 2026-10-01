@@ -804,9 +804,20 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 @media(max-width:520px){.repeat-row.landtitle .land-ai-controls{grid-template-columns:1fr 54px}.repeat-row.landtitle .land-ai-controls .land-file{grid-column:1/-1}.repeat-row.landtitle .land-ai-controls .land-ai-btn{grid-column:1}.repeat-row.landtitle .land-ai-controls .land-drive-connect-btn{grid-column:2}.repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{grid-column:1/-1}}
 
 
-/* v1.19.95 — certificate reader final compact alignment */
+/* v1.19.96 — certificate reader final compact alignment */
 .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(320px,1fr) 112px 54px 184px;gap:10px;align-items:end}
 .repeat-row.landtitle .land-ai-controls .land-ai-btn{min-width:0!important;width:112px!important}
 .repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{min-width:0!important;width:184px!important}
 @media(max-width:800px){.repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 96px 54px}.repeat-row.landtitle .land-ai-controls .land-ai-btn{width:96px!important}.repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{grid-column:1/-1;width:184px!important;justify-self:start}}
 @media(max-width:520px){.repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 54px}.repeat-row.landtitle .land-ai-controls .land-file{grid-column:1/-1}.repeat-row.landtitle .land-ai-controls .land-ai-btn{grid-column:1;width:100%!important}.repeat-row.landtitle .land-ai-controls .land-drive-connect-btn{grid-column:2}.repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{grid-column:1/-1;width:100%!important}}
+
+/* v1.19.96 — readable canonical NOP selector */
+.v11996-pbb-row{align-items:center!important;padding:12px 14px!important}
+.v11996-pbb-copy{display:grid!important;gap:2px!important;min-width:0!important}
+.v11996-pbb-copy>b{font-size:15px!important;line-height:1.25!important;letter-spacing:0!important;text-transform:none!important}
+.v11996-pbb-copy small{display:block!important;line-height:1.35!important;letter-spacing:0!important;text-transform:none!important;white-space:normal!important}
+.v11996-nop{font-weight:650!important;color:#555!important}
+.v11996-address{color:#6e6e73!important}
+#propertyLinkDlg>.actions{display:none!important}
+#propertyLinkResults{padding-bottom:4px}
+@media(max-width:700px){.v11996-pbb-row{padding:10px 11px!important}.v11996-pbb-copy>b{font-size:14px!important}}

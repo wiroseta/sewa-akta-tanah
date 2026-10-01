@@ -248,7 +248,7 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Tidak mengubah data model, SQL, atau pipeline AI v1.19.93.
 
 
-## v1.19.95 RC — Land Area Source Lock + Reader Compact Fix
+## v1.19.96 RC — Land Area Source Lock + Reader Compact Fix
 - Ekstraksi luas sertifikat dikunci ke label `Luas` pada bagian Surat Ukur/data fisik sertifikat yang sama.
 - Format luas Indonesia dengan titik sebagai pemisah ribuan ditegaskan: `6.159 m²` = `6159`.
 - Final consolidation memprioritaskan luas Surat Ukur dibanding angka lain dari halaman lain.

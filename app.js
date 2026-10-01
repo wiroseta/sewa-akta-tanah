@@ -1791,3 +1791,49 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
  document.addEventListener('DOMContentLoaded',()=>obs.observe(document.body,{childList:true,subtree:true}));
  window.v11978MinimalActions=run;
 })();
+
+// ============================================================
+// v1.19.96 RC — canonical NOP relation selector + readable rows.
+// One normalized NOP is one selectable item. All SPPT years stay stored.
+// ============================================================
+(function v11996PbbRelationCanonical(){
+ const nopKey=r=>normalizeNop(r?.nop||'')||`ID-${r?.id||''}`;
+ const groups=(rows=pbbData)=>{
+   const m=new Map();
+   (rows||[]).forEach(r=>{const k=nopKey(r);if(!m.has(k))m.set(k,[]);m.get(k).push(r)});
+   return [...m.entries()].map(([key,items])=>{
+     items.sort((a,b)=>(Number(b.tax_year)||0)-(Number(a.tax_year)||0)||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+     return {key,items,representative:items[0]};
+   });
+ };
+ window.propertyPbbNopGroups=groups;
+
+ window.renderPropertyLinkPicker=async function(){
+   const q=($('#propertyLinkSearch')?.value||'').trim().toLowerCase(); let html='';
+   if(propertyLinkMode==='pbb'){
+     const gs=groups().filter(g=>!q||g.items.some(r=>[r.property_alias,r.nop,r.taxpayer_name,r.object_address,r.notes,r.tax_year].filter(Boolean).join(' ').toLowerCase().includes(q)));
+     html=gs.map(g=>{
+       const r=g.representative, checked=!!propertyLinkDraft.get(g.key);
+       const alias=String(r.property_alias||relationAssetName(r.asset_id)||'PBB').trim();
+       const addr=String(r.object_address||'').trim();
+       return `<label class="property-link-row staged v11996-pbb-row"><input type="checkbox" ${checked?'checked':''} onchange="stagePropertyLink('${historySearchEscape(g.key)}',this.checked)"><span class="v11996-pbb-copy"><b>${historySearchEscape(alias)}</b><small class="v11996-nop">NOP ${historySearchEscape(r.nop||'-')}</small>${addr?`<small class="v11996-address">${historySearchEscape(addr)}</small>`:''}</span></label>`;
+     }).join('');
+   }else{
+     html=data.filter(r=>!q||propertyLinkText(r,'lease').includes(q)).map(r=>{const checked=propertyLinkDraft.get(String(r.id))??false,alias=String(r.property_alias||r.asset_alias||r.asset||'').trim(),title=alias?`${alias} · ${r.tenant||'-'}`:`${r.tenant||'-'} · Akta ${r.deedNo||'-'}`,sub=`Akta ${r.deedNo||'-'} · ${r.start||'-'} s/d ${r.end||'-'}${r.propertyAddress?' · '+r.propertyAddress:''}`;return `<label class="property-link-row staged"><input type="checkbox" ${checked?'checked':''} onchange="stagePropertyLink('${r.id}',this.checked)"><span><b>${historySearchEscape(title)}</b><small>${historySearchEscape(sub)}</small></span></label>`}).join('');
+   }
+   $('#propertyLinkResults').innerHTML=html||'<div class="muted">Tidak ada data yang cocok.</div>';updatePropertyLinkCount();
+ };
+
+ // Lease PBB selector also works by canonical NOP, not SPPT-year row.
+ window.renderLeasePbbPicker=function(){
+   const gs=groups(leasePbbRows); const chosen=gs.filter(g=>g.items.some(r=>r._selected)), other=gs.filter(g=>!g.items.some(r=>r._selected));
+   const card=(g,on)=>{const r=g.representative,alias=historySearchEscape(String(r.property_alias||relationAssetName(r.asset_id)||'PBB').trim()),addr=historySearchEscape(r.object_address||'');return `<label class="check-item lease-pbb-item v11996-pbb-row"><input type="checkbox" ${on?'checked':''} onchange="toggleLeasePbbNop('${historySearchEscape(g.key)}',this.checked)"><span class="lease-pbb-label v11996-pbb-copy"><b class="lease-pbb-alias">${alias}</b><small class="v11996-nop">NOP ${historySearchEscape(r.nop||'-')}</small>${addr?`<small class="v11996-address">${addr}</small>`:''}</span></label>`};
+   $('#leasePbbSelected').innerHTML=chosen.length?chosen.map(g=>card(g,true)).join(''):'<div class="lease-pbb-empty">Belum ada PBB yang dipilih.</div>';
+   $('#leasePbbOther').innerHTML=other.length?other.map(g=>card(g,false)).join(''):'<div class="lease-pbb-empty">Tidak ada PBB lainnya pada Properti/Lokasi ini.</div>';
+   $('#leasePbbOtherWrap').hidden=!leasePbbOthersVisible;$('#leasePbbToggle').textContent=leasePbbOthersVisible?'−':'＋';$('#leasePbbToggle').hidden=!other.length;
+   $('#leasePbbChoices').innerHTML=gs.flatMap(g=>g.items.filter(r=>r._selected).map(r=>`<input type="checkbox" value="${historySearchEscape(r.id)}" checked>`)).join('');
+ };
+ window.toggleLeasePbbNop=function(key,on){groups(leasePbbRows).find(g=>g.key===key)?.items.forEach(r=>r._selected=!!on);window.renderLeasePbbPicker()};
+
+ document.addEventListener('DOMContentLoaded',()=>{const close=$('#propertyLinkClose');if(close)close.hidden=true});
+})();
