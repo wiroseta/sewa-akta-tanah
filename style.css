@@ -847,3 +847,5 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 /* v1.20.10 monochrome Google Maps location pin */
 .location-pin-icon{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.2em;color:currentColor}
 button .location-pin-icon{margin-right:.28em}
+/* v1.20.13 OpenAI billing dashboard */
+.openai-status .linklike{border:0;background:transparent;padding:0;margin-left:.35rem;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}

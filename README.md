@@ -327,3 +327,22 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Whole-document lease consolidation remains enabled.
 - Edge Function adds explicit OpenAI start/HTTP-response/completion logs and a 50-second per-request timeout so failures are diagnosable instead of silent shutdowns.
 - No database migration.
+
+
+## v1.20.13 — OpenAI API cost / credit estimate
+Dashboard dapat membaca biaya OpenAI organisasi bulan berjalan melalui OpenAI Costs API secara server-side.
+
+Supabase Secrets opsional:
+- `OPENAI_ADMIN_KEY`: Admin API key OpenAI (Organization Owner), diperlukan oleh Costs API. Jangan taruh key ini di browser/config.js.
+- `OPENAI_CREDIT_BUDGET_USD`: angka USD yang ingin dipakai sebagai basis estimasi sisa kredit, contoh `10`. Karena OpenAI tidak menyediakan endpoint publik saldo prepaid aktual pada API Reference, nilai sisa yang tampil diberi label **Estimasi sisa kredit**.
+
+Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboard menampilkan petunjuk konfigurasi serta link Billing OpenAI. Tidak ada perubahan database/SQL.
+
+
+## v1.20.14 — OpenAI API status tanpa estimasi saldo
+- Menghapus ketergantungan `OPENAI_ADMIN_KEY` dan `OPENAI_CREDIT_BUDGET_USD` dari Dashboard.
+- Menghapus estimasi saldo/kredit agar aplikasi tidak menampilkan angka yang dapat berbeda dari saldo prepaid aktual OpenAI.
+- Dashboard menampilkan jumlah scan AI lokal, status OpenAI API, dan tombol **Lihat saldo OpenAI** menuju halaman Billing resmi OpenAI.
+- `OPENAI_API_KEY` tetap dipakai hanya server-side untuk pembacaan AI dokumen.
+- Seluruh perbaikan v1.20.12 Lease AI Stability tetap dipertahankan.
+- Tidak ada perubahan database/SQL.
