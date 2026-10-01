@@ -849,3 +849,6 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 button .location-pin-icon{margin-right:.28em}
 /* v1.20.13 OpenAI billing dashboard */
 .openai-status .linklike{border:0;background:transparent;padding:0;margin-left:.35rem;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}
+
+/* v1.20.15 — multiline fields show their full content instead of internal scrolling. */
+textarea.auto-grow-textarea{overflow-y:hidden!important;resize:none!important;min-height:58px;height:auto;line-height:1.4}

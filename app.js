@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.14-RC";
+const APP_BUILD="1.20.15-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -87,7 +87,8 @@ async function loadLeaseRelationAudit(){
 }
 async function loadData(){try{await loadAssets();await loadPbbData();const {data:r,error}=await withTimeout(sb.from('contracts').select('*').order('created_at',{ascending:false}),12000,'Database tidak merespons.');if(error)throw error;data=(r||[]).map(rowToApp);await loadLeaseRelationAudit();render()}catch(e){data=[];leaseRelationAudit={};render();alert('Data gagal dibaca: '+e.message)}}
 async function saveContract(x){let r=x.id?await sb.from('contracts').update(appToRow(x)).eq('id',x.id).select().single():await sb.from('contracts').insert(appToRow(x)).select().single();if(r.error)throw r.error;await loadData()}
-function refreshAssetSelect(){let sel=$('#contractAssetSelect');if(!sel)return;let old=sel.value;sel.innerHTML='<option value="">Pilih aset / tanah...</option>'+assets.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');if(assets.some(a=>a.id===old))sel.value=old}
+function assetSelectLabel(a){const alias=String(a?.alias||'').trim(),name=String(a?.name||'').trim(),rights=(a?.landRights||[]).map(r=>[r.type,r.number].filter(Boolean).join(' ')).filter(Boolean).join(', ');if(alias)return [alias,rights||name].filter(Boolean).join(' — ');return [name||a?.address||'Properti',rights].filter(Boolean).join(' — ')}
+function refreshAssetSelect(){let sel=$('#contractAssetSelect');if(!sel)return;let old=sel.value;sel.innerHTML='<option value="">Pilih aset / tanah...</option>'+assets.map(a=>`<option value="${a.id}">${historySearchEscape(assetSelectLabel(a))}</option>`).join('');if(assets.some(a=>a.id===old))sel.value=old}
 function applySelectedAsset(){let a=assets.find(v=>v.id===$('#contractAssetSelect').value);if(!a)return;document.querySelector('[name="propertyAddress"]').value=a.address||'';document.querySelector('[name="googleMapsUrl"]').value=a.googleMapsUrl||'';syncOpenMapsButton()}
 async function loadAccessProfile(){
  currentRole='viewer';dataOwnerId=currentUser?.id||null;
@@ -1886,3 +1887,12 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
 
  document.addEventListener('DOMContentLoaded',()=>{const close=$('#propertyLinkClose');if(close)close.hidden=true});
 })();
+
+
+// v1.20.15: all multiline text fields grow with their content.
+function autoGrowTextarea(el){if(!el||el.tagName!=="TEXTAREA")return;el.style.height="auto";el.style.height=Math.max(el.scrollHeight,58)+"px"}
+function bindDynamicTextareas(root=document){root.querySelectorAll("textarea").forEach(el=>{if(el.dataset.autoGrow==="1")return;el.dataset.autoGrow="1";el.classList.add("auto-grow-textarea");el.addEventListener("input",()=>autoGrowTextarea(el));autoGrowTextarea(el)})}
+document.addEventListener("DOMContentLoaded",()=>{bindDynamicTextareas();requestAnimationFrame(()=>bindDynamicTextareas())});
+const dynamicTextareaObserver=new MutationObserver(muts=>{muts.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1){if(n.matches?.("textarea"))bindDynamicTextareas(n.parentElement||document);else bindDynamicTextareas(n)}}))});
+dynamicTextareaObserver.observe(document.documentElement,{childList:true,subtree:true});
+document.addEventListener("focusin",e=>{if(e.target?.tagName==="TEXTAREA")autoGrowTextarea(e.target)});
