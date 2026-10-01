@@ -296,3 +296,11 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Setiap halaman diverifikasi memakai versi warna asli dan grayscale/high-contrast.
 - Nama, nomor, tanggal, luas, NIB dan Surat Ukur wajib dibaca karakter demi karakter tanpa autocorrect/tebakan.
 - Field yang tetap ambigu harus ditandai perlu verifikasi, bukan dihalusinasikan.
+
+
+## v1.20.08 RC — Conflict-Safe Visual Verification
+- Menghapus aturan bahwa halaman SURAT UKUR otomatis mengalahkan halaman lain saat transkripsi nomor/tanggal/luas bertentangan.
+- Konflik karakter pada nama, nomor, tanggal, luas dan NIB sekarang harus ditandai PERLU VERIFIKASI; field final tidak boleh dipilih hanya berdasarkan source hierarchy.
+- Catatan Sertifikat tidak boleh menyimpan reasoning internal seperti “data halaman X digunakan”.
+- Adaptive color + grayscale/high-contrast verification v1.20.07 tetap dipertahankan.
+- Tidak ada perubahan database/SQL.

@@ -640,7 +640,7 @@ async function consolidateWholeDocument(pageResults,documentType,filename,totalP
 async function canvasJpegBase64(canvas,quality=.58){return new Promise((resolve,reject)=>canvas.toBlob(async b=>{if(!b)return reject(new Error('Gagal membuat gambar halaman PDF.'));try{resolve(await blobToBase64(b))}catch(e){reject(e)}},'image/jpeg',quality))}
 async function renderPdfPageForAI(page,documentType=''){
  const base=page.getViewport({scale:1});
- // v1.20.07 Adaptive Visual Verification: land titles and leases are rendered larger so small names/numbers remain legible.
+ // v1.20.08 Conflict-Safe Visual Verification: land titles and leases are rendered larger so small names/numbers remain legible.
  const critical=(documentType==='land_title'||documentType==='lease');
  const maxSide=critical?2400:1400,scale=Math.min(critical?2.6:1.45,maxSide/Math.max(base.width,base.height));
  const vp=page.getViewport({scale});const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
