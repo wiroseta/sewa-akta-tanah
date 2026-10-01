@@ -202,21 +202,11 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 Rebuilt minimal icon/action layer at source level. Removed legacy runtime icon rewriting and all hover tooltip attributes.
 
 
-## v1.19.79 RC
+## v1.19.85 RC
 - Fixed blank action icons caused by legacy `font-size:0` rules overriding child glyphs.
 - Preserves approved minimal icon system: one icon per action, + only for add, no decorative icons on collapsible headers, no tooltips.
 - No database schema change.
 
 
-## v1.19.84 RC — Dashboard source-level repair
-- Akar masalah cache ditemukan: index masih memanggil style.css/app.js dengan query v1.19.77 sehingga browser dapat mempertahankan aset lama walaupun badge versi sudah berubah. Semua cache-buster dinaikkan ke v1.19.84.
-- Tiga navigasi Dashboard ditulis langsung sebagai SVG canonical: Properti/Lokasi, PBB/SPPT, dan Akta Sewa; tidak bergantung pada emoji atau legacy icon enhancer.
-- Menu ••• ditulis langsung di HTML sebagai ikon + label permanen: Kelola Users, Cari Klausul & Riwayat, Backup & Restore, Keluar.
-- CSS scoped hanya pada header Dashboard.
-
-
-## v1.19.84 RC
-- Fixed root cause of Dashboard top navigation reverting to emoji: legacy v1.19.69 runtime rewriter is disabled.
-- Properti, PBB/SPPT, and Akta Sewa remain canonical inline SVG.
-- Dashboard utility menu retains permanent icon + text labels.
-- No tooltip title is added to the three Dashboard navigation buttons.
+## v1.19.85 RC
+Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utility menu labels; removes conflicting legacy icon-only classes for these header controls.

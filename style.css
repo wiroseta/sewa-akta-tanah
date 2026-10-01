@@ -740,62 +740,24 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 .pbb-card-actions button.v11978-edit>span,.pbb-card-actions button.v11978-delete>span,.pbb-card-actions button.v11978-open>span,
 .lease-card-actions button.v11978-edit>span,.lease-card-actions button.v11978-delete>span,.lease-card-actions button.v11978-open>span{display:inline-flex!important;font-size:21px!important;line-height:1!important}
 
-/* ============================================================
-   v1.19.81 RC — Dashboard utility menu readable labels hotfix
-   Dashboard header only: restore permanent text beside each utility icon.
-   ============================================================ */
-#appShell>header .utility-menu-panel .v11980-dashboard-menu-row{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;min-height:46px!important;padding:8px 12px!important;text-align:left!important;font-size:14px!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important;color:#1d1d1f!important;overflow:visible!important}
-#appShell>header .utility-menu-panel .v11980-dashboard-menu-row:hover{background:rgba(0,122,255,.07)!important}
-#appShell>header .utility-menu-panel .v11980-dashboard-menu-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:30px!important;min-width:30px!important;font-size:23px!important;line-height:1!important;color:inherit!important}
-#appShell>header .utility-menu-panel .v11980-dashboard-menu-label{display:inline-block!important;visibility:visible!important;opacity:1!important;width:auto!important;height:auto!important;position:static!important;clip:auto!important;overflow:visible!important;white-space:nowrap!important;font-size:14px!important;line-height:1.25!important;font-weight:650!important;color:#1d1d1f!important}
-#appShell>header .utility-menu-panel #logoutBtn.v11980-dashboard-menu-row,#appShell>header .utility-menu-panel #logoutBtn .v11980-dashboard-menu-label{color:#b42318!important}
 
-/* v1.19.81 RC — utility rows must not inherit legacy icon-only command geometry. */
-#appShell>header .utility-menu-panel button.v11980-dashboard-menu-row{width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:46px!important;padding:8px 12px!important;gap:12px!important;overflow:visible!important;font-size:14px!important;display:flex!important;justify-content:flex-start!important}
-#appShell>header .utility-menu-panel button.v11980-dashboard-menu-row .v11980-dashboard-menu-label{display:inline-block!important;position:static!important;transform:none!important;clip:auto!important;clip-path:none!important;margin:0!important;padding:0!important;max-width:none!important;font-size:14px!important;color:#1d1d1f!important}
-#appShell>header .utility-menu-panel button#logoutBtn.v11980-dashboard-menu-row .v11980-dashboard-menu-label{color:#b42318!important}
-
-/* v1.19.82 RC — source-level Dashboard navigation + readable utility menu. */
-#appShell>header .primary-actions .dashboard-nav-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:46px!important;min-width:46px!important;max-width:46px!important;height:42px!important;min-height:42px!important;padding:7px!important;overflow:visible!important;color:#1d1d1f!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important}
-#appShell>header .dashboard-nav-svg{display:block!important;width:27px!important;height:27px!important;min-width:27px!important;visibility:visible!important;opacity:1!important;color:currentColor!important}
-#appShell>header .utility-menu-panel.dashboard-utility-readable{width:270px!important;padding:8px!important}
-#appShell>header .utility-menu-panel .dashboard-menu-row{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:46px!important;padding:8px 12px!important;text-align:left!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important;overflow:visible!important;color:#1d1d1f!important;font-size:14px!important}
-#appShell>header .utility-menu-panel .dashboard-menu-row[hidden]{display:none!important}
-#appShell>header .utility-menu-panel .dashboard-menu-row:hover{background:rgba(0,122,255,.07)!important}
-#appShell>header .utility-menu-panel .dashboard-menu-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 32px!important;width:32px!important;min-width:32px!important;height:30px!important;visibility:visible!important;opacity:1!important;font-size:22px!important;line-height:1!important}
-#appShell>header .utility-menu-panel .dashboard-menu-text{display:block!important;flex:1 1 auto!important;position:static!important;width:auto!important;max-width:none!important;height:auto!important;margin:0!important;padding:0!important;clip:auto!important;clip-path:none!important;overflow:visible!important;visibility:visible!important;opacity:1!important;white-space:nowrap!important;color:#1d1d1f!important;font-size:14px!important;font-weight:650!important;line-height:1.25!important;text-indent:0!important}
-#appShell>header .utility-menu-panel #logoutBtn .dashboard-menu-text,#appShell>header .utility-menu-panel #logoutBtn{color:#b42318!important}
-@media(max-width:760px){#appShell>header .primary-actions .dashboard-nav-button{width:42px!important;min-width:42px!important;max-width:42px!important;height:40px!important;min-height:40px!important;padding:6px!important}#appShell>header .dashboard-nav-svg{width:25px!important;height:25px!important}}
-
-
-/* v1.19.84 RC — Dashboard canonical header icons, render-proof.
-   Icons live in CSS pseudo-elements so legacy JS cannot replace them. */
+/* v1.19.85 — dashboard header canonical render. Scope intentionally limited to #appShell header. */
 #appShell>header .primary-actions #assetsBtn,
 #appShell>header .primary-actions #pbbBtn,
 #appShell>header .primary-actions #leaseBtn{
-  font-size:0!important; position:relative!important; overflow:visible!important;
-  width:46px!important; min-width:46px!important; height:42px!important;
-  display:inline-flex!important; align-items:center!important; justify-content:center!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:48px!important;min-width:48px!important;max-width:48px!important;height:44px!important;min-height:44px!important;
+  padding:0!important;margin:0!important;overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important;
+  color:#202124!important;font-size:0!important;position:relative!important;
 }
-#appShell>header .primary-actions #assetsBtn>* ,
-#appShell>header .primary-actions #pbbBtn>* ,
-#appShell>header .primary-actions #leaseBtn>* {display:none!important}
-#appShell>header .primary-actions #assetsBtn::after,
-#appShell>header .primary-actions #pbbBtn::after,
-#appShell>header .primary-actions #leaseBtn::after{
-  content:""!important; display:block!important; width:29px!important; height:29px!important;
-  background-position:center!important; background-repeat:no-repeat!important; background-size:contain!important;
+#appShell>header .primary-actions .dashboard-master-svg{display:inline-flex!important;width:30px!important;height:30px!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important}
+#appShell>header .primary-actions .dashboard-master-svg .v11967-ui-svg{display:block!important;width:30px!important;height:30px!important;color:#202124!important;overflow:visible!important}
+#appShell>header .primary-actions .dashboard-master-label{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important}
+#appShell>header .utility-menu-panel .v11971-menu-row{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;
+ width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:46px!important;
+ padding:9px 12px!important;overflow:visible!important;font-size:14px!important;text-align:left!important;
 }
-#appShell>header .primary-actions #assetsBtn::after{
- background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 21h18M5 21V9.5l6-2.5V21M11 21V4l8 3v14' fill='none' stroke='%231d1d1f' stroke-width='1.8' stroke-linejoin='round'/%3E%3Cpath d='M7.5 12h1M7.5 15h1M14 9h1M17 10h1M14 13h1M17 14h1M14 17h1M17 18h1' stroke='%231d1d1f' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E")!important;
-}
-#appShell>header .primary-actions #pbbBtn::after{
- background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='4.5' y='2.5' width='15' height='19' rx='1.4' fill='none' stroke='%231d1d1f' stroke-width='1.6'/%3E%3Cpath d='M7 7h10M7 9.5h10M7 12h10M7 14.5h6.2M7 17h6.2M10.3 9.5v5M13.6 9.5v5' fill='none' stroke='%231d1d1f' stroke-width='1'/%3E%3Crect x='14.7' y='16.1' width='2.8' height='2.8' fill='none' stroke='%231d1d1f' stroke-width='1'/%3E%3Cpath d='M15.3 16.7h.6v.6h-.6zM16.3 17.7h.6v.6h-.6z' fill='%231d1d1f'/%3E%3C/svg%3E")!important;
-}
-#appShell>header .primary-actions #leaseBtn::after{
- background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='4.2' y='2.2' width='15.6' height='19.6' rx='1.5' fill='none' stroke='%231d1d1f' stroke-width='1.5'/%3E%3Cpath d='M9.2 5.2 12 3.8l2.8 1.4-.7 3H9.9zM12 4v4M10.1 6.2h3.8M7.2 11h9.6M7.2 13.5h9.6M7.2 16h7.4M8.7 18.5h6.6' fill='none' stroke='%231d1d1f' stroke-width='1' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E")!important;
-}
-/* Dashboard utility menu: labels are real, visible rows; no tooltip dependency. */
-#appShell>header #utilityMenuPanel{width:270px!important;min-width:270px!important}
-#appShell>header #utilityMenuPanel .dashboard-menu-row{font-size:14px!important;width:100%!important;display:flex!important;justify-content:flex-start!important;gap:12px!important}
-#appShell>header #utilityMenuPanel .dashboard-menu-text{display:inline-block!important;visibility:visible!important;opacity:1!important;color:%231d1d1f!important;font-size:14px!important}
+#appShell>header .utility-menu-panel .v11971-menu-icon{display:inline-flex!important;flex:0 0 28px!important;width:28px!important;justify-content:center!important;font-size:20px!important;visibility:visible!important;opacity:1!important}
+#appShell>header .utility-menu-panel .v11971-menu-label{display:block!important;position:static!important;width:auto!important;height:auto!important;clip:auto!important;overflow:visible!important;white-space:nowrap!important;font-size:14px!important;font-weight:650!important;color:#202124!important;visibility:visible!important;opacity:1!important}
+#appShell>header .utility-menu-panel .danger-menu .v11971-menu-label{color:#b42318!important}

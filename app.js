@@ -1572,11 +1572,13 @@ function v11969WrapMasterNav(){
  Object.entries(map).forEach(([id,page])=>{const b=document.getElementById(id);if(!b||b.dataset.v11969Nav)return;b.dataset.v11969Nav='1';b.addEventListener('click',()=>{v11969CloseDetailLayers();v11969SetMasterActive(id);setTimeout(()=>window.scrollTo(0,0),0)},true)});
 }
 function v11969ColorMasterIcons(){
- // v1.19.83: legacy emoji rewriter disabled. Dashboard navigation icons are
- // canonical inline SVG authored in index.html and must never be replaced.
- ['assetsBtn','pbbBtn','leaseBtn'].forEach(id=>{
+ const specs={assetsBtn:[V11967_PROPERTY_ICON,'Properti / Lokasi'],pbbBtn:[V11967_PBB_ICON,'PBB / SPPT'],leaseBtn:[V11967_LEASE_ICON,'Akta Sewa']};
+ Object.entries(specs).forEach(([id,[svg,label]])=>{
   const b=document.getElementById(id);if(!b)return;
-  b.removeAttribute('title');
+  b.classList.remove('v11961-command','v11960-command','v11964-ready','v11965-ready','v11967-ready');
+  b.classList.add('dashboard-master-nav');
+  b.setAttribute('aria-label',label); b.removeAttribute('title'); delete b.dataset.tooltip;
+  b.innerHTML=`<span class="dashboard-master-svg" aria-hidden="true">${svg}</span><span class="dashboard-master-label">${label}</span>`;
   b.dataset.v11970ColorIcon='1';
  });
 }
@@ -1587,14 +1589,14 @@ document.addEventListener('DOMContentLoaded',()=>{v11969WrapMasterNav();setTimeo
 // v1.19.71 RC — readable utility dropdown + global search icon.
 // ============================================================
 const V11971_SEARCH_ICON='🔍';
-function v11971ReadableUtilityMenu(){ return; /* v1.19.78 disabled legacy menu icon rewriter */
+function v11971ReadableUtilityMenu(){
  const specs={
   usersBtn:['👥','Kelola Users'],
   historySearchBtn:[V11971_SEARCH_ICON,'Cari Klausul & Riwayat'],
   backupBtn:['🗄️','Backup & Restore'],
   logoutBtn:['🚪','Keluar']
  };
- Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.classList.add('v11971-menu-row');b.setAttribute('aria-label',label);b.title=label;b.innerHTML=`<span class="v11971-menu-icon" aria-hidden="true">${icon}</span><span class="v11971-menu-label">${label}</span>`;});
+ Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.classList.remove('v11961-command','v11960-command');b.classList.add('v11971-menu-row');b.setAttribute('aria-label',label);b.removeAttribute('title');delete b.dataset.tooltip;b.innerHTML=`<span class="v11971-menu-icon" aria-hidden="true">${icon}</span><span class="v11971-menu-label">${label}</span>`;});
 }
 function v11971SearchIcons(root=document){ return; /* v1.19.78 disabled legacy search icon rewriter */
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
@@ -1630,7 +1632,7 @@ function v11972SectionIcons(root=document){ return; /* v1.19.78 no decorative se
 function v11972ColorObjectButtons(){
  // v1.19.76: disabled legacy icon rewriter; canonical icons are authored once at render time.
  return;
- const specs={assetsBtn:['🏢','Master Properti'],pbbBtn:['🧾','Master PBB'],leaseBtn:['📝','Master Akta Sewa']};
+ const specs={assetsBtn:['__PROPERTY__','Master Properti'],pbbBtn:['__PBB__','Master PBB'],leaseBtn:['__LEASE__','Master Akta Sewa']};
  Object.entries(specs).forEach(([id,[icon,label]])=>{const b=document.getElementById(id);if(!b)return;b.innerHTML=`<span class="v11972-color-icon" aria-hidden="true">${icon}</span><span class="v11961-sr">${label}</span>`;b.setAttribute('aria-label',label);b.title=label;b.dataset.v11970ColorIcon='1'});
  // Detail-property leading object icon and all map/location commands should be colorful too.
  document.querySelectorAll('button').forEach(b=>{if(b.classList.contains('collapsible-header'))return;const label=String(b.dataset.v11961Label||b.getAttribute('aria-label')||b.title||b.textContent||'');
@@ -1722,28 +1724,3 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
  document.addEventListener('DOMContentLoaded',()=>obs.observe(document.body,{childList:true,subtree:true}));
  window.v11978MinimalActions=run;
 })();
-
-// ============================================================
-// v1.19.83 RC — Dashboard source-level menu safeguard.
-// Deliberately scoped to the dashboard header utility dropdown only.
-// ============================================================
-function v11980RestoreDashboardUtilityLabels(){
- const panel=document.querySelector('#appShell>header #utilityMenuPanel');
- if(!panel)return;
- const specs={
-  usersBtn:['👥','Kelola Users'],
-  historySearchBtn:['🔎','Cari Klausul & Riwayat'],
-  backupBtn:['⬇️','Backup & Restore'],
-  logoutBtn:['↪','Keluar']
- };
- Object.entries(specs).forEach(([id,[icon,label]])=>{
-  const b=panel.querySelector('#'+id);if(!b)return;
-  b.classList.remove('v11961-command','v11964-ready','v11965-ready','v11960-command','v11977-edit','v11977-delete','v11977-open','v11978-edit','v11978-delete','v11978-open');
-  b.classList.add('dashboard-menu-row');
-  delete b.dataset.v11961Shortcut; delete b.dataset.v11963Code; delete b.dataset.tooltip;
-  b.removeAttribute('title');
-  b.setAttribute('aria-label',label);
-  b.innerHTML=`<span class="dashboard-menu-icon" aria-hidden="true">${icon}</span><span class="dashboard-menu-text">${label}</span>`;
- });
-}
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(v11980RestoreDashboardUtilityLabels,180);setTimeout(v11980RestoreDashboardUtilityLabels,600)});
