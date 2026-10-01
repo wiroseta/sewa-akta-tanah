@@ -289,3 +289,10 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Nomor Surat Ukur diperketat: hanya berasal dari bagian Surat Ukur, bukan nomor sertifikat/NIB/akta/pembukuan/peralihan.
 - Layout Alamat / Lokasi Bidang dan Nama Pemegang Hak tetap sejajar; field dinamis tetap dipertahankan.
 - Perubahan ini memerlukan deploy ulang Edge Function extract-lease. Tidak ada perubahan database/SQL.
+
+
+## v1.20.07 RC — Adaptive Visual Verification
+- Sertifikat Tanah dan Akta Sewa dirender resolusi tinggi.
+- Setiap halaman diverifikasi memakai versi warna asli dan grayscale/high-contrast.
+- Nama, nomor, tanggal, luas, NIB dan Surat Ukur wajib dibaca karakter demi karakter tanpa autocorrect/tebakan.
+- Field yang tetap ambigu harus ditandai perlu verifikasi, bukan dihalusinasikan.

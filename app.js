@@ -638,16 +638,27 @@ async function consolidateWholeDocument(pageResults,documentType,filename,totalP
  return out.data;
 }
 async function canvasJpegBase64(canvas,quality=.58){return new Promise((resolve,reject)=>canvas.toBlob(async b=>{if(!b)return reject(new Error('Gagal membuat gambar halaman PDF.'));try{resolve(await blobToBase64(b))}catch(e){reject(e)}},'image/jpeg',quality))}
-async function renderPdfPageForAI(page){
+async function renderPdfPageForAI(page,documentType=''){
  const base=page.getViewport({scale:1});
- // Keep each page intentionally small: the Edge Function receives only one compressed page per request.
- const maxSide=1400,scale=Math.min(1.45,maxSide/Math.max(base.width,base.height));
+ // v1.20.07 Adaptive Visual Verification: land titles and leases are rendered larger so small names/numbers remain legible.
+ const critical=(documentType==='land_title'||documentType==='lease');
+ const maxSide=critical?2400:1400,scale=Math.min(critical?2.6:1.45,maxSide/Math.max(base.width,base.height));
  const vp=page.getViewport({scale});const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
  const ctx=c.getContext('2d',{alpha:false});await page.render({canvasContext:ctx,viewport:vp,background:'white'}).promise;
- let base64=await canvasJpegBase64(c,.58);
+ let base64=await canvasJpegBase64(c,critical?.76:.58);
  // Extra guard for unusually dense scans. Re-render smaller rather than sending a large request to Supabase.
- if(base64.length>1400000){const smallScale=scale*.72,svp=page.getViewport({scale:smallScale});c.width=Math.ceil(svp.width);c.height=Math.ceil(svp.height);await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:svp,background:'white'}).promise;base64=await canvasJpegBase64(c,.5)}
+ if(base64.length>(critical?2600000:1400000)){const smallScale=scale*.78,svp=page.getViewport({scale:smallScale});c.width=Math.ceil(svp.width);c.height=Math.ceil(svp.height);await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:svp,background:'white'}).promise;base64=await canvasJpegBase64(c,critical?.68:.5)}
  c.width=c.height=1;return base64
+}
+async function makeGrayContrastVariant(base64){
+ const blob=await (await fetch('data:image/jpeg;base64,'+base64)).blob();const bmp=await createImageBitmap(blob);
+ const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;const ctx=c.getContext('2d',{alpha:false});ctx.drawImage(bmp,0,0);try{bmp.close()}catch(_){}
+ const im=ctx.getImageData(0,0,c.width,c.height),d=im.data;for(let i=0;i<d.length;i+=4){let g=.299*d[i]+.587*d[i+1]+.114*d[i+2];g=Math.max(0,Math.min(255,(g-128)*1.35+128));d[i]=d[i+1]=d[i+2]=g}ctx.putImageData(im,0,0);
+ const out=await canvasJpegBase64(c,.76);c.width=c.height=1;return out
+}
+async function renderPdfPageVariantsForAI(page,documentType){
+ const original=await renderPdfPageForAI(page,documentType);if(documentType!=='land_title'&&documentType!=='lease')return [{base64:original,mimeType:'image/jpeg',variant:'original'}];
+ const enhanced=await makeGrayContrastVariant(original);return [{base64:original,mimeType:'image/jpeg',variant:'original-color-highres'},{base64:enhanced,mimeType:'image/jpeg',variant:'grayscale-high-contrast'}]
 }
 async function invokeLargePdfAI(file,documentType,onProgress=()=>{}){
  if(!window.pdfjsLib)throw new Error('Modul PDF besar belum termuat. Muat ulang halaman lalu coba lagi.');
@@ -658,9 +669,9 @@ async function invokeLargePdfAI(file,documentType,onProgress=()=>{}){
    const total=pdf.numPages;let pageResults=[];
    for(let n=1;n<=total;n++){
      onProgress(`Menyiapkan halaman ${n} dari ${total} di perangkat Anda…`);
-     const page=await pdf.getPage(n);const base64=await renderPdfPageForAI(page);page.cleanup();
+     const page=await pdf.getPage(n);const variants=await renderPdfPageVariantsForAI(page,documentType);page.cleanup();
      onProgress(`AI membaca halaman ${n} dari ${total}…`);
-     const out=await invokeExtractLease({filename:file.name,documentType,images:[{base64,mimeType:'image/jpeg',page:n}],pageStart:n,pageEnd:n,totalPages:total});
+     const out=await invokeExtractLease({filename:file.name,documentType,images:variants.map(v=>({...v,page:n})),pageStart:n,pageEnd:n,totalPages:total});
      if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);pageResults.push({page:n,data:out.data});
      // Yield to Safari/Chrome so memory from the previous canvas/request can be reclaimed.
      await new Promise(r=>setTimeout(r,40));
@@ -699,9 +710,9 @@ async function invokeLargeDrivePdfAI(id,meta,documentType,onProgress=()=>{}){
    pdf=await task.promise;const totalPages=pdf.numPages;let pageResults=[];
    for(let n=1;n<=totalPages;n++){
      onProgress(`Menyiapkan halaman ${n} dari ${totalPages} langsung dari Google Drive…`);
-     const page=await pdf.getPage(n);const base64=await renderPdfPageForAI(page);page.cleanup();
+     const page=await pdf.getPage(n);const variants=await renderPdfPageVariantsForAI(page,documentType);page.cleanup();
      onProgress(`AI membaca halaman ${n} dari ${totalPages}…`);
-     const out=await invokeExtractLease({filename:meta.name||'drive-file.pdf',documentType,images:[{base64,mimeType:'image/jpeg',page:n}],pageStart:n,pageEnd:n,totalPages});
+     const out=await invokeExtractLease({filename:meta.name||'drive-file.pdf',documentType,images:variants.map(v=>({...v,page:n})),pageStart:n,pageEnd:n,totalPages});
      if(!out?.data)throw new Error(out?.error||`Hasil ekstraksi halaman ${n} kosong`);pageResults.push({page:n,data:out.data});
      await new Promise(r=>setTimeout(r,60));
    }
