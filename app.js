@@ -1727,7 +1727,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
 })();
 
 // ============================================================
-// v1.19.81 RC — Dashboard utility menu readable labels hotfix.
+// v1.19.82 RC — Dashboard source-level menu safeguard.
 // Deliberately scoped to the dashboard header utility dropdown only.
 // ============================================================
 function v11980RestoreDashboardUtilityLabels(){
@@ -1742,11 +1742,11 @@ function v11980RestoreDashboardUtilityLabels(){
  Object.entries(specs).forEach(([id,[icon,label]])=>{
   const b=panel.querySelector('#'+id);if(!b)return;
   b.classList.remove('v11961-command','v11964-ready','v11965-ready','v11960-command','v11977-edit','v11977-delete','v11977-open','v11978-edit','v11978-delete','v11978-open');
-  b.classList.add('v11980-dashboard-menu-row');
+  b.classList.add('dashboard-menu-row');
   delete b.dataset.v11961Shortcut; delete b.dataset.v11963Code; delete b.dataset.tooltip;
   b.removeAttribute('title');
   b.setAttribute('aria-label',label);
-  b.innerHTML=`<span class="v11980-dashboard-menu-icon" aria-hidden="true">${icon}</span><span class="v11980-dashboard-menu-label">${label}</span>`;
+  b.innerHTML=`<span class="dashboard-menu-icon" aria-hidden="true">${icon}</span><span class="dashboard-menu-text">${label}</span>`;
  });
 }
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(v11980RestoreDashboardUtilityLabels,180);setTimeout(v11980RestoreDashboardUtilityLabels,600)});

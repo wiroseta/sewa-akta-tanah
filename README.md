@@ -206,3 +206,10 @@ Rebuilt minimal icon/action layer at source level. Removed legacy runtime icon r
 - Fixed blank action icons caused by legacy `font-size:0` rules overriding child glyphs.
 - Preserves approved minimal icon system: one icon per action, + only for add, no decorative icons on collapsible headers, no tooltips.
 - No database schema change.
+
+
+## v1.19.82 RC — Dashboard source-level repair
+- Akar masalah cache ditemukan: index masih memanggil style.css/app.js dengan query v1.19.77 sehingga browser dapat mempertahankan aset lama walaupun badge versi sudah berubah. Semua cache-buster dinaikkan ke v1.19.82.
+- Tiga navigasi Dashboard ditulis langsung sebagai SVG canonical: Properti/Lokasi, PBB/SPPT, dan Akta Sewa; tidak bergantung pada emoji atau legacy icon enhancer.
+- Menu ••• ditulis langsung di HTML sebagai ikon + label permanen: Kelola Users, Cari Klausul & Riwayat, Backup & Restore, Keluar.
+- CSS scoped hanya pada header Dashboard.
