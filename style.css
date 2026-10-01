@@ -739,3 +739,13 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 .asset-master-actions button.v11978-edit>span,.asset-master-actions button.v11978-delete>span,.asset-master-actions button.v11978-open>span,
 .pbb-card-actions button.v11978-edit>span,.pbb-card-actions button.v11978-delete>span,.pbb-card-actions button.v11978-open>span,
 .lease-card-actions button.v11978-edit>span,.lease-card-actions button.v11978-delete>span,.lease-card-actions button.v11978-open>span{display:inline-flex!important;font-size:21px!important;line-height:1!important}
+
+/* ============================================================
+   v1.19.80 RC — Dashboard utility menu readable labels hotfix
+   Dashboard header only: restore permanent text beside each utility icon.
+   ============================================================ */
+#appShell>header .utility-menu-panel .v11980-dashboard-menu-row{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;min-height:46px!important;padding:8px 12px!important;text-align:left!important;font-size:14px!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important;color:#1d1d1f!important;overflow:visible!important}
+#appShell>header .utility-menu-panel .v11980-dashboard-menu-row:hover{background:rgba(0,122,255,.07)!important}
+#appShell>header .utility-menu-panel .v11980-dashboard-menu-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:30px!important;min-width:30px!important;font-size:23px!important;line-height:1!important;color:inherit!important}
+#appShell>header .utility-menu-panel .v11980-dashboard-menu-label{display:inline-block!important;visibility:visible!important;opacity:1!important;width:auto!important;height:auto!important;position:static!important;clip:auto!important;overflow:visible!important;white-space:nowrap!important;font-size:14px!important;line-height:1.25!important;font-weight:650!important;color:#1d1d1f!important}
+#appShell>header .utility-menu-panel #logoutBtn.v11980-dashboard-menu-row,#appShell>header .utility-menu-panel #logoutBtn .v11980-dashboard-menu-label{color:#b42318!important}

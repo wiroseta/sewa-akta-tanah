@@ -1725,3 +1725,26 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
  document.addEventListener('DOMContentLoaded',()=>obs.observe(document.body,{childList:true,subtree:true}));
  window.v11978MinimalActions=run;
 })();
+
+// ============================================================
+// v1.19.80 RC — Dashboard utility menu readable labels hotfix.
+// Deliberately scoped to the dashboard header utility dropdown only.
+// ============================================================
+function v11980RestoreDashboardUtilityLabels(){
+ const panel=document.querySelector('#appShell>header #utilityMenuPanel');
+ if(!panel)return;
+ const specs={
+  usersBtn:['👥','Kelola Users'],
+  historySearchBtn:['🔎','Cari Klausul & Riwayat'],
+  backupBtn:['⬇️','Backup & Restore'],
+  logoutBtn:['↪','Keluar']
+ };
+ Object.entries(specs).forEach(([id,[icon,label]])=>{
+  const b=panel.querySelector('#'+id);if(!b)return;
+  b.classList.add('v11980-dashboard-menu-row');
+  b.removeAttribute('title');
+  b.setAttribute('aria-label',label);
+  b.innerHTML=`<span class="v11980-dashboard-menu-icon" aria-hidden="true">${icon}</span><span class="v11980-dashboard-menu-label">${label}</span>`;
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(v11980RestoreDashboardUtilityLabels,180)});
