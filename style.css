@@ -673,75 +673,31 @@ body.lease-detail-open .lease-detail-topbar::before{content:""!important;positio
 @media(max-width:760px){body.lease-detail-open .lease-detail-page{padding-top:calc(var(--detail-nav-h) + 6px)!important}}
 
 /* ============================================================
-   v1.19.77 RC — Approved Minimal Icon System
-   Based on the approved 12-page visual mockup.
+   v1.19.77 RC — preview-approved minimal icon system
    ============================================================ */
-/* 1) Collapsible headers are text-only: no decorative/object icon. */
-.collapsible-title{display:inline-flex!important;align-items:center!important;gap:0!important}
-.collapsible-title .v11961-icon,.collapsible-title .v11972-color-icon{display:none!important}
-
-/* 2) Compact action controls. One icon = one action. */
-.asset-master-actions button,.lease-card-actions button,.pbb-card-actions button,
-.pbb-page-actions button,.asset-page-head>button,.lease-master-head>button{
-  width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;
-  padding:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;
-  justify-content:center!important;gap:0!important;font-size:0!important;overflow:hidden!important
-}
-.asset-master-actions .asset-open-approved::before{content:'✎'!important;font-size:20px!important}
-.asset-master-actions .asset-map-approved::before{content:'↗'!important;font-size:20px!important}
-.asset-master-actions .asset-delete-approved::before{content:'🗑️'!important;font-size:18px!important}
-.lease-card-actions .lease-open-approved::before{content:'✎'!important;font-size:20px!important}
-.lease-card-actions .lease-delete-approved::before{content:'🗑️'!important;font-size:18px!important}
-.pbb-card-actions .pbb-open-approved::before{content:'✎'!important;font-size:20px!important}
-.pbb-card-actions .pbb-sppt-approved::before{content:'↗'!important;font-size:20px!important}
-
-/* 3) Every add-data action uses one plain + only. */
-#newAssetBtn,#addBtn.lease-add-approved,#newPbbBtn.pbb-add-approved{
-  background:#16a34a!important;border-color:#16a34a!important;color:#fff!important
-}
-#newAssetBtn::before,#addBtn.lease-add-approved::before,#newPbbBtn.pbb-add-approved::before{
-  content:'+'!important;display:block!important;font-size:27px!important;font-weight:700!important;line-height:1!important
-}
-#newAssetBtn::after,#addBtn.lease-add-approved::after,#newPbbBtn.pbb-add-approved::after{content:none!important}
-#newAssetBtn>*,#addBtn.lease-add-approved>*,#newPbbBtn.pbb-add-approved>*{display:none!important}
-
-/* 4) Master-list data rows contain no decorative record icons. */
-.property-counts .approved-land::before,.property-counts .approved-building::before{content:none!important}
-.property-counts .approved-land,.property-counts .approved-building{padding-left:10px!important}
-
-/* 5) Detail form section headings are text-only too. */
-.master-section>h3,.relation-grid>h4{padding-left:0!important}
-
-/* 6) Return controls: compact, obvious back arrow; dashboard/master relationship stays textual. */
-.dashboard-return-button,.master-return-button{height:40px!important;min-height:40px!important;padding:0 10px!important;gap:7px!important}
-.dashboard-return-icon{font-size:0!important}.dashboard-return-icon::after{content:'←';font-size:22px!important;line-height:1}
-.master-return-icon{width:22px!important;height:22px!important;flex-basis:22px!important}
-.master-main-icon,.master-home-badge{display:none!important}.master-return-icon::after{content:'←';font-size:22px!important;line-height:1}
-
-/* 7) Search remains a clear, compact blue magnifier where a search button exists. */
-.v11971-search-command{width:40px!important;min-width:40px!important;height:40px!important;padding:0!important;font-size:21px!important}
-
-/* 8) Header navigation is intentionally quiet; master shortcuts remain functional. */
-.head-actions .primary-actions button{min-width:40px!important;width:40px!important;height:40px!important;padding:0!important}
-.head-actions .primary-actions button .v11961-sr{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important}
-.head-actions .primary-actions button>span[aria-hidden="true"]{font-size:20px!important}
-
-/* 9) No legacy duplicate glyphs. */
-[data-v11977-clean="1"]::after{content:none!important}
-[data-v11977-clean="1"]>.v11961-icon,[data-v11977-clean="1"]>.v11972-color-icon{display:none!important}
-
-/* 10) Mobile/iPhone: smaller controls and no layout inflation. */
-@media(max-width:700px){
- .asset-master-actions button,.lease-card-actions button,.pbb-card-actions button,.pbb-page-actions button,
- .asset-page-head>button,.lease-master-head>button{width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important}
- .master-return-label,.dashboard-return-button>span:last-child{display:none!important}
- .dashboard-return-button,.master-return-button{width:40px!important;min-width:40px!important;padding:0!important;justify-content:center!important}
-}
-
-/* v1.19.77 RC hotfix — user requested zero hover/focus tooltips globally. */
-[data-tooltip]::after,[data-tooltip]::before,
-button[data-tooltip]::after,button[data-tooltip]::before,
-.v11960-command[data-tooltip]::after,.v11961-command[data-tooltip]::after,
-.lease-nav-action[data-tooltip]::after,.lease-save-action[data-tooltip]::after{
-  content:none!important;display:none!important;opacity:0!important;visibility:hidden!important;
-}
+/* Collapsible headers are text navigation, never illustrated. */
+.collapsible-title::before,.collapsible-title::after,.pbb-long-section>summary::after{content:none!important}
+.collapsible-title{padding-left:0!important}
+/* Hide legacy enhancer glyphs everywhere an approved v1.19.77 action is used. */
+.v11977-add .v11961-icon,.v11977-add .v11972-color-icon,
+.v11977-edit .v11961-icon,.v11977-edit .v11972-color-icon,
+.v11977-delete .v11961-icon,.v11977-delete .v11972-color-icon{display:none!important}
+.v11977-sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+/* One universal add button: only a single plus sign. */
+button.v11977-add{width:46px!important;min-width:46px!important;height:46px!important;min-height:46px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#16a34a!important;border-color:#16a34a!important;color:#fff!important;border-radius:13px!important;font-size:29px!important;font-weight:600!important;line-height:1!important;overflow:hidden!important}
+button.v11977-add::before,button.v11977-add::after{content:none!important;display:none!important}
+/* Compact edit/delete actions used on every master list. */
+button.v11977-edit,button.v11977-delete{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:11px!important;font-size:21px!important;line-height:1!important;overflow:hidden!important}
+button.v11977-edit{background:#fff!important;color:#1d1d1f!important;border:1px solid #cfd5dd!important}
+button.v11977-delete{background:#fff!important;border:1px solid #f1b5b5!important}
+button.v11977-edit::before,button.v11977-edit::after,button.v11977-delete::before,button.v11977-delete::after{content:none!important;display:none!important}
+/* Override historical property/PBB/lease pseudo icons. */
+.asset-master-actions .asset-open-approved::before,.asset-master-actions .asset-map-approved::before,.asset-master-actions .asset-delete-approved::before,
+.pbb-card-actions .pbb-open-approved::before,.pbb-card-actions .pbb-sppt-approved::before,
+.lease-card-actions .lease-open-approved::before,.lease-card-actions .lease-delete-approved::before{content:none!important;display:none!important}
+/* Record rows have no decorative leading icon. */
+.property-linked-card b::before,.property-linked-card b::after{content:none!important}
+/* Standard master list action sizing must not be inflated by old 48px rules. */
+.asset-master-actions button.v11977-edit,.asset-master-actions button.v11977-delete,
+.pbb-card-actions button.v11977-edit,.pbb-card-actions button.v11977-delete,
+.lease-card-actions button.v11977-edit,.lease-card-actions button.v11977-delete{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;font-size:21px!important}

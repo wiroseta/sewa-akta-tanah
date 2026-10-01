@@ -1691,33 +1691,42 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
 (function(){const o=window.__v11974UIObserver;const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)v11975CanonicalAudit(n)});obs.observe(document.body,{childList:true,subtree:true});window.__v11975CanonicalObserver=obs})();
 
 // ============================================================
-// v1.19.77 RC — approved minimal icon system.
-// Decorative icons are removed from data/list rows and collapsible headers.
-// Add actions use one plain +. Action buttons stay compact and semantic.
+// v1.19.77 RC — Approved Minimal Icon System (FINAL)
+// Preview-approved rules: no icons on collapsible headers/data rows; one + for
+// every add action; compact action icons; zero hover tooltips application-wide.
 // ============================================================
-function v11977StripLeadingDecorativeIcon(text){
- return String(text||'').replace(/^\s*[\p{Extended_Pictographic}\uFE0F]+\s*/u,'').trim();
-}
-function v11977CleanUI(root=document){
- // Collapsible headers: text + summary + chevron only.
- const heads=root.matches?.('.collapsible-header')?[root]:[...root.querySelectorAll?.('.collapsible-header')||[]];
- heads.forEach(h=>{const t=h.querySelector('.collapsible-title');if(t){t.textContent=v11977StripLeadingDecorativeIcon(t.textContent);t.removeAttribute('data-v11972-icon')}});
- // Inner section titles: remove decorative leading emoji while retaining wording.
- const sectionTitles=root.matches?.('.master-section h3,.relation-grid h4')?[root]:[...root.querySelectorAll?.('.master-section h3,.relation-grid h4')||[]];
- sectionTitles.forEach(h=>{h.textContent=v11977StripLeadingDecorativeIcon(h.textContent)});
- // Canonical compact actions: never allow legacy injected duplicate spans.
- const actionSelector='.asset-master-actions button,.lease-card-actions button,.pbb-card-actions button,#newAssetBtn,#addBtn,#newPbbBtn,.v11971-search-command';
- const actions=root.matches?.(actionSelector)?[root]:[...root.querySelectorAll?.(actionSelector)||[]];
- actions.forEach(b=>{b.dataset.v11977Clean='1';b.querySelectorAll(':scope > .v11961-icon,:scope > .v11972-color-icon,:scope > .action-icon').forEach(n=>n.remove());if(b.hasAttribute('title'))b.removeAttribute('title')});
-}
-document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11977CleanUI(document),280));
-(function(){let raf=0,roots=new Set();const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)roots.add(n);if(roots.size&&!raf)raf=requestAnimationFrame(()=>{raf=0;for(const r of roots)v11977CleanUI(r);roots.clear()})});obs.observe(document.body,{childList:true,subtree:true});window.__v11977CleanObserver=obs})();
-
-// v1.19.77 RC hotfix — remove every hover tooltip globally while preserving aria-label accessibility.
-function v11977RemoveAllTooltips(root=document){
- const sel='[title],[data-tooltip]';
- const nodes=root.matches?.(sel)?[root]:[...root.querySelectorAll?.(sel)||[]];
- nodes.forEach(el=>{el.removeAttribute('title');el.removeAttribute('data-tooltip')});
-}
-document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11977RemoveAllTooltips(document),320));
-(function(){let raf=0,roots=new Set();const obs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='attributes')roots.add(m.target);for(const n of m.addedNodes||[])if(n.nodeType===1)roots.add(n)}if(roots.size&&!raf)raf=requestAnimationFrame(()=>{raf=0;for(const r of roots)v11977RemoveAllTooltips(r);roots.clear()})});obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['title','data-tooltip']});window.__v11977NoTooltipObserver=obs})();
+(function v11977ApprovedMinimalUI(){
+ const emojiLead=/^[\s\u200d\ufe0f]*(?:[🏠📅🪙📘📄🏢🛠️⚡🛡️📋🤝📝🕘⚙️📜🏭🧾🗺️🗂️📍🤝🏭📁✨🌈🔗]+)[\s\u200d\ufe0f]*/u;
+ const clean=s=>String(s||'').replace(emojiLead,'').trim();
+ function noTooltips(root=document){
+   const nodes=[]; if(root.nodeType===1)nodes.push(root); root.querySelectorAll?.('[title],[data-tooltip],[data-tip],[data-original-title]').forEach(n=>nodes.push(n));
+   nodes.forEach(n=>{n.removeAttribute('title');n.removeAttribute('data-tooltip');n.removeAttribute('data-tip');n.removeAttribute('data-original-title')});
+ }
+ function cleanSectionHeaders(root=document){
+   const titles=root.matches?.('.collapsible-title')?[root]:[...root.querySelectorAll?.('.collapsible-title')||[]];
+   titles.forEach(t=>{t.textContent=clean(t.textContent);t.removeAttribute('data-v11972-icon')});
+   const pbb=root.matches?.('.pbb-long-section>summary')?[root]:[...root.querySelectorAll?.('.pbb-long-section>summary')||[]];
+   pbb.forEach(h=>{for(const n of [...h.childNodes])if(n.nodeType===3)n.textContent=clean(n.textContent)});
+ }
+ function cleanDataHeadings(root=document){
+   const hs=root.matches?.('.master-section h3,.relation-grid h4,.property-linked-card b')?[root]:[...root.querySelectorAll?.('.master-section h3,.relation-grid h4,.property-linked-card b')||[]];
+   hs.forEach(h=>h.textContent=clean(h.textContent));
+ }
+ function canonicalButtons(root=document){
+   const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
+   buttons.forEach(b=>{
+     if(b.closest('.collapsible-header')||b.closest('.pbb-long-section>summary'))return;
+     const label=clean(b.getAttribute('aria-label')||b.textContent||'');
+     if(/^tambah\b|\btambah\b|baru$/i.test(label)||['newAssetBtn','newPbbBtn','addBtn','addPayment','addLedgerPayment','addContact','addBank','addClause','addLeaseFacility'].includes(b.id)){
+       b.classList.add('v11977-add'); b.innerHTML='<span aria-hidden="true">+</span><span class="v11977-sr">'+label+'</span>'; return;
+     }
+     if(/hapus/i.test(label)||b.classList.contains('danger-action')){b.classList.add('v11977-delete');b.innerHTML='<span aria-hidden="true">🗑️</span><span class="v11977-sr">'+label+'</span>';return}
+     if(/buka \/ edit|edit|ubah/i.test(label)||b.classList.contains('asset-open-approved')||b.classList.contains('lease-open-approved')||b.classList.contains('pbb-open-approved')){b.classList.add('v11977-edit');b.innerHTML='<span aria-hidden="true">✎</span><span class="v11977-sr">'+label+'</span>';return}
+   });
+ }
+ function run(root=document){noTooltips(root);cleanSectionHeaders(root);cleanDataHeadings(root);canonicalButtons(root)}
+ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>run(document),260)});
+ const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)run(n);noTooltips(document)});
+ obs.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['title','data-tooltip','data-tip','data-original-title']});
+ window.v11977ApprovedMinimalUI=run;
+})();
