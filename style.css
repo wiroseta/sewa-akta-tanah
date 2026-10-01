@@ -761,3 +761,16 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #appShell>header .utility-menu-panel .v11971-menu-icon{display:inline-flex!important;flex:0 0 28px!important;width:28px!important;justify-content:center!important;font-size:20px!important;visibility:visible!important;opacity:1!important}
 #appShell>header .utility-menu-panel .v11971-menu-label{display:block!important;position:static!important;width:auto!important;height:auto!important;clip:auto!important;overflow:visible!important;white-space:nowrap!important;font-size:14px!important;font-weight:650!important;color:#202124!important;visibility:visible!important;opacity:1!important}
 #appShell>header .utility-menu-panel .danger-menu .v11971-menu-label{color:#b42318!important}
+
+/* v1.19.88 — Lease relation controls: readable, direct linking from Akta */
+.lease-relations .relation-help{margin:0 0 10px;color:#6e6e73;font-size:13px;line-height:1.4}
+.lease-relations .check-list{display:grid;gap:8px}
+.lease-relations .relation-choice{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid #dedee5;border-radius:12px;background:#fff;font-size:13px}
+.lease-relations .relation-choice input[type=checkbox]{width:20px;height:20px;flex:0 0 20px;margin:1px 0 0;accent-color:#007aff}
+.lease-relations .relation-choice span{display:grid;gap:3px;min-width:0}.lease-relations .relation-choice small{letter-spacing:0;color:#6e6e73;font-weight:500}
+.lease-relations .relation-subhead{margin:12px 0 6px;font-size:12px;font-weight:800;color:#6e6e73;text-transform:uppercase;letter-spacing:.06em}
+.lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle,#addLeaseFacility{display:inline-flex!important;align-items:center;justify-content:center;width:auto!important;min-width:0!important;max-width:100%;height:auto!important;min-height:42px;padding:9px 14px!important;margin:10px 0!important;white-space:normal!important;line-height:1.2!important;font-size:13px!important;overflow:visible!important}
+.lease-relations #addLeaseFacility::after{content:" Tambah Fasilitas"}.lease-relations #addLeaseFacility{font-size:0!important}.lease-relations #addLeaseFacility::after{font-size:13px}
+.lease-relations .lease-pbb-item{display:flex!important;flex-direction:row!important}.lease-relations .lease-pbb-label{display:grid;gap:3px}
+.lease-relations .lease-relation-empty{padding:12px;border:1px dashed #c7c7cc;border-radius:12px;color:#6e6e73;background:#fafafd}
+@media(max-width:700px){.lease-relations .relation-more-btn,.lease-relations .lease-pbb-toggle,#addLeaseFacility{width:100%!important}}

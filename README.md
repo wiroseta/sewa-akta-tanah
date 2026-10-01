@@ -218,3 +218,11 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Jika masih ada relasi, penghapusan diblokir dan hanya relasi yang benar-benar ada yang ditampilkan.
 - Error Supabase kini menampilkan message/details/hint/code agar tidak lagi kosong setelah tanda titik dua.
 - Header/SVG v1.19.85 dipertahankan. Tidak ada perubahan SQL.
+
+
+## v1.19.87 RC — Lease/Property Relation Consistency + Header Return Fix
+- Master Akta Sewa sekarang menghitung “hak tanah” dari tabel relasi `lease_land_titles`, bukan dari JSON hasil AI lama `contracts.land_rights`.
+- Relasi hak tanah yang menunjuk sertifikat milik properti lain / sertifikat yang sudah tidak ada ditandai “perlu diperiksa”; tidak dihapus otomatis.
+- Detail Akta menampilkan peringatan relasi lama yang tidak sesuai Properti/Lokasi terpilih. Menyimpan Akta setelah memilih sertifikat yang benar akan memperbarui relasi melalui mekanisme relasi yang sudah ada.
+- Kembali dari Detail Akta ke Master Akta memulihkan `appShell` sehingga header global tidak hilang.
+- Tidak ada perubahan schema/SQL. Header SVG v1.19.85 dan Property Delete Fix v1.19.86 dipertahankan.
