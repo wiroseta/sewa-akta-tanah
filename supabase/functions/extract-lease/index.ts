@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.19.96] request received");
+ console.log("[extract-lease v1.20.04] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
  if(!base64&&driveFileId){
@@ -47,8 +47,8 @@ ATURAN KETAT:
 2. Jika pemegang awal PT A lalu tercatat Jual Beli kepada B, dan setelah itu hanya perpanjangan, holderName WAJIB B. Simpan pemegang lama dan peralihan penting di notes.
 3. rightType harus berasal dari jenis hak yang benar-benar tercetak. HAK GUNA BANGUNAN/HGB => HGB. Jangan mengubahnya menjadi Lainnya hanya karena halaman lain tidak menyebut jenis hak.
 4. certificateNo hanya nomor sertifikat bidang ini. landArea WAJIB berasal dari angka yang tercetak tepat sebagai LUAS bidang pada bagian SURAT UKUR / data fisik yang terkait langsung dengan sertifikat ini. Prioritaskan pasangan label-nilai yang eksplisit seperti "Luas 6.159 m²" pada SURAT UKUR. Angka Indonesia bertitik adalah pemisah ribuan: "6.159 m²" = 6159, BUKAN 6.159 desimal, 1659, atau 6759. Jangan membuang digit pertama/terakhir akibat OCR. Jangan mengambil angka luas dari bidang lain, riwayat peralihan, lampiran lain, Akta Sewa, PBB, atau teks yang konteksnya tidak jelas. Bila hasil halaman berbeda, nilai dari SURAT UKUR yang secara eksplisit berlabel Luas mengalahkan tebakan dari halaman lain.
-5. surveyNo dan surveyDate hanya dari bagian SURAT UKUR yang terkait dengan bidang ini.
-6. nib HANYA berisi Nomor Identifikasi Bidang (NIB) yang benar-benar terbaca. notes HANYA berisi riwayat peralihan/pencatatan penting dan konflik/ketidakpastian; jangan campurkan NIB ke notes. Jika NIB tidak ditemukan, nib harus kosong. JANGAN isi notes dengan teks sampul, judul dokumen, atau OCR acak. Teks seperti 'Sertipikat Tanda Bukti Hak...' bukan NIB.
+5. surveyNo dan surveyDate hanya dari bagian SURAT UKUR yang terkait dengan bidang ini. Nomor Surat Ukur harus dibaca dari baris/heading Surat Ukur itu sendiri. Jangan mengambil nomor sertifikat, nomor hak, nomor NIB, nomor akta, nomor pembukuan, nomor dasar pendaftaran, atau angka dari tabel peralihan. Jika halaman Surat Ukur menampilkan nomor lengkap dengan wilayah/tahun, pertahankan seluruh teks nomor itu persis sebagaimana terbaca.
+6. nib HANYA berisi Nomor Identifikasi Bidang (NIB) yang benar-benar terbaca. notes WAJIB merangkum riwayat peralihan/pencatatan penting yang benar-benar ditemukan di seluruh dokumen: pemegang awal bila terbaca, setiap peralihan kepemilikan, tanggal, dasar/jenis peralihan, pihak lama → pihak baru, serta perpanjangan/pembaruan hak yang relevan. Cantumkan halaman sumber bila tersedia. Jangan campurkan NIB ke notes. Jika NIB tidak ditemukan, nib harus kosong. JANGAN isi notes dengan teks sampul, judul dokumen, atau OCR acak. Teks seperti 'Sertipikat Tanda Bukti Hak...' bukan NIB.
 7. validUntil hanya tanggal berakhir hak yang benar-benar berlaku setelah perpanjangan/pembaruan terakhir. SHM/HM tanpa masa berakhir => kosong.
 8. Jika ada konflik angka/nama antar halaman, pilih fakta yang paling spesifik dan secara hukum paling akhir; jelaskan konflik di notes. Jangan mengarang.
 9. Untuk menentukan holderName, bedakan tegas: (a) PEMEGANG AWAL, (b) PIHAK YANG MENGALIHKAN/PENJUAL, (c) PENERIMA/PEMBELI, dan (d) nama yang hanya disebut dalam akta/catatan. Hanya penerima hak pada peristiwa peralihan terakhir yang boleh menjadi holderName.
@@ -69,6 +69,37 @@ ${JSON.stringify(pageResults)}`;
    const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
    let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan konsolidasi sertifikat yang bukan JSON valid")}
+
+   // v1.20.04: deterministic legal chronology guard. Do not let a later administrative entry
+   // or a more frequently repeated old name override the latest actual ownership transfer.
+   const allEvents:any[]=[];
+   for(const pr of pageResults){
+     const events=Array.isArray(pr?.data?.ownershipEvents)?pr.data.ownershipEvents:[];
+     for(const ev of events)if(ev&&typeof ev==='object')allEvents.push({...ev,_page:pr?.page||null});
+   }
+   const dateValue=(v:any)=>{const x=String(v||'').trim();const m=x.match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?Number(m[1]+m[2]+m[3]):0};
+   const transfers=allEvents.filter(ev=>ev.ownershipChanged===true&&String(ev.to||'').trim());
+   transfers.sort((a,b)=>dateValue(a.date)-dateValue(b.date)||(Number(a._page)||0)-(Number(b._page)||0));
+   if(transfers.length){
+     const latest=transfers[transfers.length-1];
+     data.holderName=String(latest.to).trim();
+   }
+   // Notes must preserve the factual chain that explains the current holder. Build it from
+   // extracted events when the final model omitted it; never invent missing names/dates.
+   const factualEvents=allEvents.filter(ev=>String(ev.eventType||'').trim()||String(ev.evidence||'').trim());
+   if(!String(data.notes||'').trim()&&factualEvents.length){
+     const seen=new Set<string>(); const lines:string[]=[];
+     for(const ev of factualEvents){
+       const typ=String(ev.eventType||'pencatatan').replaceAll('_',' ');
+       const dt=String(ev.date||'').trim(); const fr=String(ev.from||'').trim(); const to=String(ev.to||'').trim();
+       let line=[dt,typ].filter(Boolean).join(' · ');
+       if(fr&&to)line+=` · ${fr} → ${to}`; else if(to)line+=` · kepada ${to}`;
+       const evidence=String(ev.evidence||'').trim(); if(evidence)line+=` · ${evidence}`;
+       if(ev._page)line+=` · halaman ${ev._page}`;
+       const key=line.toLowerCase(); if(line&&!seen.has(key)){seen.add(key);lines.push(line)}
+     }
+     data.notes=lines.join('\n');
+   }
    return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
 

@@ -281,3 +281,11 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Hardened land-title AI to interpret Indonesian transfer-registration tables by column: for JUAL BELI/ownership transfer, the recipient in `Nama yang berhak` is the current holder unless a later ownership transfer exists.
 - Later HGB extension/renewal changes validity only and must not revert the holder.
 - Address and Nama Pemegang Hak are again side-by-side at equal initial height; both remain dynamically expandable.
+
+
+## v1.20.04 RC — Certificate chronology, notes & Survey Number validation
+- Pemegang hak final kini memiliki deterministic chronology guard dari seluruh ownershipEvents; event perpanjangan/HT/roya/administratif tidak dapat mengembalikan nama pemegang lama.
+- Catatan Sertifikat wajib menyimpan kronologi faktual peralihan; fallback dibangun dari ownershipEvents lengkap dengan halaman sumber bila AI final mengosongkannya.
+- Nomor Surat Ukur diperketat: hanya berasal dari bagian Surat Ukur, bukan nomor sertifikat/NIB/akta/pembukuan/peralihan.
+- Layout Alamat / Lokasi Bidang dan Nama Pemegang Hak tetap sejajar; field dinamis tetap dipertahankan.
+- Perubahan ini memerlukan deploy ulang Edge Function extract-lease. Tidak ada perubahan database/SQL.
