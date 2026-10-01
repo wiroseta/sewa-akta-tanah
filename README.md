@@ -376,8 +376,16 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Tidak ada perubahan database/SQL pada versi ini.
 
 
-## v1.20.20 RC — General Other Payments & Ledger Row Persistence
+## v1.20.21 RC — General Other Payments & Ledger Row Persistence
 - Jenis `Penggantian PBB` digabung menjadi `Pembayaran Lain-lain`; tujuan pembayaran ditulis pada Keterangan/Catatan.
 - Data lama dengan kind `pbb`/`pbb_reimbursement` tetap kompatibel dan ditampilkan sebagai Pembayaran Lain-lain.
 - Baris Pembayaran Aktual yang baru tidak lagi hilang saat jenis diubah ke Security Deposit sebelum tanggal/jumlah diisi.
 - Hanya Sewa yang masuk rekonsiliasi harga sewa/PPh.
+
+## v1.20.22 RC — One-Line Payment Layout
+- Jadwal pembayaran desktop: Jenis | Tanggal | Nominal | Keterangan dinamis | − dalam satu baris.
+- Riwayat pembayaran aktual desktop: Jenis | Tanggal | Nominal | PPh | Metode/Bank | Referensi/Bukti | Catatan dinamis | − dalam satu baris.
+- Tombol hapus memakai tanda − saja.
+- Field target/termin manual disembunyikan dari alur normal; pencocokan Sewa memakai FIFO. Mekanisme targetId lama tetap dipertahankan untuk kompatibilitas data.
+- Security Deposit dan Pembayaran Lain-lain tidak masuk rekonsiliasi sewa.
+- Tidak ada perubahan database/SQL.
