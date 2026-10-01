@@ -283,7 +283,7 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Address and Nama Pemegang Hak are again side-by-side at equal initial height; both remain dynamically expandable.
 
 
-## v1.20.04 RC — Certificate chronology, notes & Survey Number validation
+## v1.20.06 RC — Certificate chronology, notes & Survey Number validation
 - Pemegang hak final kini memiliki deterministic chronology guard dari seluruh ownershipEvents; event perpanjangan/HT/roya/administratif tidak dapat mengembalikan nama pemegang lama.
 - Catatan Sertifikat wajib menyimpan kronologi faktual peralihan; fallback dibangun dari ownershipEvents lengkap dengan halaman sumber bila AI final mengosongkannya.
 - Nomor Surat Ukur diperketat: hanya berasal dari bagian Surat Ukur, bukan nomor sertifikat/NIB/akta/pembukuan/peralihan.

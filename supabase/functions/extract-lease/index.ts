@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.20.04] request received");
+ console.log("[extract-lease v1.20.06] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
  if(!base64&&driveFileId){
@@ -58,6 +58,10 @@ ATURAN KETAT:
 13. KHUSUS tabel "PENDAFTARAN PERALIHAN HAK, PEMBEBANAN DAN PENCATATAN LAINNYA": baca berdasarkan KOLOM. Kolom "Sebab perubahan" menentukan jenis peristiwa, kolom tanggal menentukan tanggal pendaftaran, dan kolom "Nama yang berhak" adalah penerima/pemegang setelah peristiwa itu. Nama pada kolom "Nama yang berhak" untuk baris JUAL BELI/peralihan kepemilikan harus mengalahkan nama pemegang pada halaman pendaftaran awal. Jangan mengambil nama dari tanda tangan, pejabat, nomor akta, atau tulisan tangan di kolom lain sebagai holderName.
 14. Bila satu baris JUAL BELI menampilkan nama penerima pada kolom "Nama yang berhak", gunakan nama itu secara literal sebagai holderName kecuali ada baris peralihan kepemilikan yang lebih baru. Perpanjangan/pembaruan hak yang lebih baru hanya memperbarui validUntil, BUKAN holderName.
 15. Jangan menormalisasi nama berdasarkan kemiripan OCR atau menebak nama keluarga. Pertahankan ejaan nama penerima yang paling jelas pada kolom "Nama yang berhak".
+16. VALIDASI ANTI-HALUSINASI NAMA: holderName dan field "to" pada peralihan TIDAK BOLEH berisi nama yang tidak benar-benar ditranskripsikan dari dokumen. Nama harus didukung oleh "evidence" yang mengulang nama tersebut secara literal. Jika evidence tidak memuat nama penerima yang sama, event itu tidak boleh dipakai untuk menentukan holderName.
+17. Untuk tabel peralihan, jangan menyimpulkan pihak dari tanda tangan/cap. Baca satu BARIS secara horizontal: Sebab perubahan -> Tanggal Pendaftaran -> Nama yang berhak. Untuk JUAL BELI, nama pada kolom "Nama yang berhak" di baris yang sama adalah penerima.
+18. Jika pembacaan nama meragukan, JANGAN memperbaiki ejaan dengan dugaan. Salin karakter yang terlihat. Bila tidak cukup jelas, kosongkan nama dan jelaskan ketidakpastian di notes daripada menciptakan nama baru.
+19. Nomor Surat Ukur harus literal dari baris "No." di bagian SURAT UKUR. Jangan menambahkan nol di depan, nama kelurahan, atau komponen lain yang tidak tercetak pada nomor tersebut.
 
 Kembalikan HANYA JSON valid persis:
 {"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","nib":"","notes":""}
@@ -70,7 +74,7 @@ ${JSON.stringify(pageResults)}`;
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
    let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan konsolidasi sertifikat yang bukan JSON valid")}
 
-   // v1.20.04: deterministic legal chronology guard. Do not let a later administrative entry
+   // v1.20.06: deterministic legal chronology guard. Do not let a later administrative entry
    // or a more frequently repeated old name override the latest actual ownership transfer.
    const allEvents:any[]=[];
    for(const pr of pageResults){
@@ -78,7 +82,14 @@ ${JSON.stringify(pageResults)}`;
      for(const ev of events)if(ev&&typeof ev==='object')allEvents.push({...ev,_page:pr?.page||null});
    }
    const dateValue=(v:any)=>{const x=String(v||'').trim();const m=x.match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?Number(m[1]+m[2]+m[3]):0};
-   const transfers=allEvents.filter(ev=>ev.ownershipChanged===true&&String(ev.to||'').trim());
+   const normEvidence=(v:any)=>String(v||'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim();
+   const transfers=allEvents.filter(ev=>{
+     if(ev.ownershipChanged!==true)return false;
+     const to=String(ev.to||'').trim(); if(!to)return false;
+     const evd=normEvidence(ev.evidence), nm=normEvidence(to);
+     // Reject unsupported recipient names. This prevents a guessed name from becoming the legal holder.
+     return !!evd && !!nm && evd.includes(nm);
+   });
    transfers.sort((a,b)=>dateValue(a.date)-dateValue(b.date)||(Number(a._page)||0)-(Number(b._page)||0));
    if(transfers.length){
      const latest=transfers[transfers.length-1];
@@ -169,17 +180,21 @@ ATURAN WAJIB PEMEGANG HAK TERKINI:
 4. Pencatatan yang hanya memperpanjang masa hak, membebankan hak tanggungan, roya, atau catatan administratif tanpa mengalihkan pemegang hak TIDAK boleh mengganti holderName.
 5. Bila beberapa peralihan terjadi, gunakan penerima pada peralihan sah yang paling akhir secara kronologis. Bila urutan atau penerima benar-benar tidak dapat dipastikan dari dokumen, jangan menebak: gunakan nama yang paling jelas didukung dokumen dan tulis konflik/ketidakpastian di notes.
 6. Contoh pola: halaman awal menyebut PT A sebagai pemegang hak, lalu halaman pencatatan menyebut Jual Beli kepada B, dan setelahnya hanya ada perpanjangan HGB tanpa peralihan baru; holderName harus B.
+7. ANTI-HALUSINASI: jangan pernah menghasilkan nama orang/perusahaan yang tidak terlihat pada halaman. Untuk setiap ownershipEvents, "evidence" harus berupa transkripsi singkat dari baris/sel sumber dan WAJIB memuat nama "to" secara literal jika "to" diisi. Jika nama penerima tidak terbaca cukup jelas, isi "to"="" dan jangan menebak.
+8. Pada tabel "PENDAFTARAN PERALIHAN HAK, PEMBEBANAN DAN PENCATATAN LAINNYA", ikuti garis KOLOM dan BARIS secara visual. Baca "Sebab perubahan", "Tanggal Pendaftaran", lalu "Nama yang berhak" pada BARIS YANG SAMA. Jangan mengambil nama dari tanda tangan/cap/pejabat atau baris di atas/bawah.
+9. Transkripsikan nama karakter demi karakter sebagaimana tercetak. Jangan melakukan autocorrect nama, jangan mengganti dengan nama yang mirip, dan jangan menggabungkan nama dari halaman lain.
+10. Untuk SURAT UKUR, "surveyNo" harus sama persis dengan teks nomor yang tercetak setelah label No. Jangan menambahkan leading zero, nama wilayah, atau angka lain yang tidak tercetak. "surveyDate" hanya dari tanggal pada bagian SURAT UKUR.
 
 Untuk rightType, prioritaskan judul/jenis hak yang tercetak pada sertifikat: tulisan HAK GUNA BANGUNAN atau HGB wajib dipetakan ke HGB; SERTIPIKAT HAK GUNA BANGUNAN/SHGB ke SHGB bila singkatan SHGB memang tercetak; HAK MILIK/SHM ke SHM atau HM sesuai yang tercetak; HAK PAKAI ke Hak Pakai. Gunakan Lainnya hanya jika jenis hak benar-benar bukan salah satu pilihan tersebut atau tidak dapat dikenali. Jangan menebak. Data luas harus hanya berasal dari dokumen tanah ini, bukan dari Akta Sewa atau PBB. KHUSUS landArea: cari label "Luas" pada bagian SURAT UKUR/data fisik sertifikat dan baca seluruh angka persis di sebelahnya. Format Indonesia memakai titik sebagai pemisah ribuan: contoh "6.159 m²" harus dikembalikan sebagai 6159. Jangan menghilangkan digit sehingga menjadi 1659 dan jangan mengganti digit sehingga menjadi 6759. Jika ada beberapa angka luas, utamakan yang secara eksplisit menjadi Luas pada SURAT UKUR yang nomor/tanggalnya cocok dengan sertifikat ini. Semua tanggal YYYY-MM-DD. Untuk SHM/HM yang tidak memiliki masa berakhir, validUntil harus string kosong. Struktur persis: {"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","nib":"","notes":"","ownershipEvents":[{"date":"","eventType":"pemegang_awal|jual_beli|hibah|waris|lelang|perubahan_nama|peralihan_lain|perpanjangan|hak_tanggungan|roya|administratif","from":"","to":"","ownershipChanged":false,"evidence":""}]}. ownershipEvents WAJIB memuat semua peristiwa yang terlihat pada halaman; untuk jual beli/peralihan isi from dan to sesuai pihak yang tertulis, ownershipChanged=true. KHUSUS halaman tabel PENDAFTARAN PERALIHAN HAK: untuk baris JUAL BELI/peralihan, field to WAJIB diambil dari kolom "Nama yang berhak" pada baris yang sama; jangan mengambil nama pejabat, tanda tangan, atau nama dari kolom lain. Untuk perpanjangan/Hak Tanggungan/roya/administratif ownershipChanged=false. WAJIB cari bagian berjudul SURAT UKUR pada seluruh halaman. Jika bagian itu terlihat, isi surveyNo dari nomor yang tercetak tepat pada bagian SURAT UKUR dan surveyDate dari tanggal yang tercetak tepat pada bagian itu. Jangan membiarkan surveyNo/surveyDate kosong jika teksnya terbaca. Bedakan dari nomor/tanggal sertifikat, tanggal pembukuan, dan nomor dasar pendaftaran. Jika ada NIB, masukkan hanya ke field nib. notes harus merangkum riwayat pemegang/peralihan hak penting yang benar-benar terlihat, termasuk pemegang sebelumnya, jenis peralihan dan tanggal bila terbaca.`,
  building:`Baca SELURUH dokumen bangunan/gudang/gedung Indonesia ini dengan teliti. Kembalikan HANYA JSON valid tanpa markdown. Jangan menebak. Ambil hanya data yang benar-benar tertulis atau terlihat pada dokumen. Struktur persis: {"name":"","buildingType":"Gudang|Gedung|Kantor|Pabrik|Ruko|Lainnya","buildingArea":0,"address":"","notes":""}. buildingArea harus angka m² tanpa pemisah ribuan. Jika jenis bangunan tidak jelas gunakan Lainnya. Masukkan informasi teknis penting lain (misalnya PBG/IMB, nomor dokumen, fungsi, lantai, spesifikasi yang relevan) ke notes tanpa mengarang.`,
- building:`Baca SELURUH dokumen bangunan/gudang/gedung Indonesia ini dengan teliti. Kembalikan HANYA JSON valid tanpa markdown. Jangan menebak. Ambil hanya data yang benar-benar tertulis atau terlihat. Struktur persis: {"name":"","buildingType":"Gudang|Gedung|Kantor|Pabrik|Ruko|Lainnya","buildingArea":0,"address":"","notes":""}. buildingArea berupa angka m². Masukkan nomor PBG/IMB, fungsi, lantai, dan informasi teknis penting lain yang benar-benar tertulis ke notes.`,
  pbb:`Baca SELURUH dokumen SPPT PBB Indonesia ini dengan sangat teliti, termasuk halaman bukti bayar dan tabel/ringkasan histori pembayaran. Kembalikan HANYA JSON valid tanpa markdown. Jangan menebak. Semua angka luas dan NJOP harus hanya berasal dari SPPT PBB ini; jangan mengambil dari Sertifikat Tanah atau Akta Sewa. Semua tanggal YYYY-MM-DD dan uang berupa angka tanpa Rp/pemisah ribuan. Data utama adalah SPPT/tahun terbaru atau SPPT utama pada dokumen. Struktur persis: {"nop":"","taxpayerName":"","objectAddress":"","taxYear":0,"landArea":0,"buildingArea":0,"landNjopM2":0,"landNjopTotal":0,"buildingNjopM2":0,"buildingNjopTotal":0,"totalNjop":0,"taxDue":0,"payableAmount":0,"dueDate":"","paymentStatus":"lunas|belum_bayar|","paidDate":"","notes":"","paymentHistory":[{"nop":"","taxYear":0,"paymentStatus":"lunas|belum_bayar","dueDate":"","paidDate":"","taxDue":0,"payableAmount":0}]}. WAJIB periksa seluruh halaman untuk tabel histori/ringkasan pembayaran dengan NOP yang sama. Masukkan SETIAP tahun yang benar-benar tercantum ke paymentHistory, termasuk tahun utama bila tercantum. Jika sumber menyatakan Sudah Bayar/Lunas, set paymentStatus=lunas dan isi paidDate bila tanggal bayar terlihat. Jika menyatakan belum bayar, set belum_bayar. Jangan menyalin NJOP, luas, atau data tahun utama ke tahun historis bila data tahun historis itu tidak tercantum. taxDue adalah pokok/tagihan sebelum diskon bila jelas; payableAmount adalah jumlah yang harus/dibayar setelah diskon bila jelas. Jika SPPT hanya menampilkan NJOP per m2 dan luas, boleh hitung total NJOP tanah/bangunan secara aritmetika; jangan mengarang data lain.`
  }; const prompt=prompts[documentType]||prompts.lease
  const isImage=String(mimeType||'').startsWith('image/');
  const batchNote=Array.isArray(images)&&images.length?`\n\nDokumen besar sedang dibaca per batch. Ini halaman ${pageStart||'?'} sampai ${pageEnd||'?'} dari total ${totalPages||'?'}. Ekstrak HANYA data yang benar-benar terlihat pada halaman batch ini. Field yang tidak terlihat harus kosong/0/array kosong. Jangan menebak dari batch lain.`:'';
  const content:any[]=[{type:"input_text",text:prompt+batchNote}];
- if(Array.isArray(images)&&images.length){for(const im of images)content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:"auto"})}
- else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:"auto"});
+ const imageDetail=documentType==='land_title'?'high':'auto';
+ if(Array.isArray(images)&&images.length){for(const im of images)content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:imageDetail})}
+ else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:imageDetail});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
  stage="openai"; console.log("[extract-lease] sending document to OpenAI", {filename,mimeType,documentType,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]})});
