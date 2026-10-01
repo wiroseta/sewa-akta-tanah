@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.17-RC";
+const APP_BUILD="1.20.18-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -1527,6 +1527,20 @@ function v11965Enhance(root=document){
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
  buttons.forEach(b=>{
    if(b.classList.contains('collapsible-header'))return;
+   // v1.20.18: these three actions must remain self-explanatory text buttons.
+   const readableLeaseActions={
+     addClause:'＋ Klausul',
+     leaseHistoryBtn:'Riwayat & Bandingkan Akta',
+     historicalLeaseBtn:'＋ Akta Lama / Dokumen Historis'
+   };
+   if(readableLeaseActions[b.id]){
+     const label=readableLeaseActions[b.id];
+     b.classList.remove('v11961-command','v11964-ready','v11965-ready','v11967-ready','v11964-text-fallback','v11965-text-fallback');
+     b.classList.add('v12018-readable-action');
+     b.textContent=label; b.setAttribute('aria-label',label); b.removeAttribute('title');
+     delete b.dataset.v11961Shortcut; delete b.dataset.v11963Code; delete b.dataset.tooltip;
+     return;
+   }
    const label=v11965OriginalLabel(b), spec=v11965Spec(b,label);
    if(!spec){
      // Safety: no mystery icon. Preserve readable label for unmapped commands.

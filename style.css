@@ -853,6 +853,10 @@ button .location-pin-icon{margin-right:.28em}
 /* v1.20.15 — multiline fields show their full content instead of internal scrolling. */
 textarea.auto-grow-textarea{overflow-y:hidden!important;resize:none!important;min-height:58px;height:auto;line-height:1.4}
 
-/* v1.20.17 — explicit payment categories; non-rent obligations stay separate from rent reconciliation. */
+/* v1.20.18 — explicit payment categories; non-rent obligations stay separate from rent reconciliation. */
 .payrow{grid-template-columns:1.05fr 1fr 1fr 1.3fr auto}.payrow .payment-row-summary{grid-column:1/-1}.ledger-row{grid-template-columns:1.05fr .85fr 1.05fr 1.05fr .9fr 1.1fr 1.1fr auto}.ledger-row select{min-width:0}
 @media(max-width:760px){.payrow,.ledger-row{grid-template-columns:1fr 1fr}.payrow .label,.payrow .payment-row-summary,.ledger-row .ledgerTarget{grid-column:1/-1}.ledger-row .ledgerMethod,.ledger-row .ledgerReference,.ledger-row .ledgerNotes{grid-column:1/-1}}
+
+/* v1.20.18 — readable lease clause/history actions */
+button.v12018-readable-action{width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:38px!important;padding:8px 14px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+button.v12018-readable-action::after{content:none!important;display:none!important}

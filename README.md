@@ -347,7 +347,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Seluruh perbaikan v1.20.12 Lease AI Stability tetap dipertahankan.
 - Tidak ada perubahan database/SQL.
 
-## v1.20.17 RC — Payment Type Separation
+## v1.20.18 RC — Payment Type Separation
 - Jadwal kewajiban dan pembayaran aktual kini memiliki jenis: Sewa, Security Deposit, Penggantian PBB, Lainnya.
 - Security Deposit/PBB tidak masuk rekonsiliasi harga sewa dan tidak otomatis dikenai PPh sewa.
 - Pembayaran aktual dialokasikan FIFO hanya ke kewajiban dengan jenis yang sama; kelebihan pembayaran dicatat apa adanya.
@@ -356,7 +356,13 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Tidak memerlukan perubahan database/SQL baru.
 
 
-## v1.20.17
+## v1.20.18
 - Riwayat Pembayaran Aktual menambahkan pilihan Untuk Pembayaran yang menghubungkan transaksi aktual ke termin/kewajiban tertentu.
 - Pilihan manual mengalahkan FIFO; Otomatis tetap memakai FIFO dalam jenis pembayaran yang sama.
 - Target pembayaran tersimpan bersama transaksi tanpa perubahan schema SQL.
+
+
+## v1.20.18 RC
+- Memperjelas tiga tombol di bawah Klausul Penting: `+ Klausul`, `Riwayat & Bandingkan Akta`, dan `+ Akta Lama / Dokumen Historis`.
+- Ketiga tombol tidak lagi diringkas menjadi ikon § / jam / centang dan tidak memakai tooltip.
+- Tidak ada perubahan SQL.
