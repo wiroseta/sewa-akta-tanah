@@ -202,11 +202,19 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 Rebuilt minimal icon/action layer at source level. Removed legacy runtime icon rewriting and all hover tooltip attributes.
 
 
-## v1.19.85 RC
+## v1.19.86 RC
 - Fixed blank action icons caused by legacy `font-size:0` rules overriding child glyphs.
 - Preserves approved minimal icon system: one icon per action, + only for add, no decorative icons on collapsible headers, no tooltips.
 - No database schema change.
 
 
-## v1.19.85 RC
+## v1.19.86 RC
 Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utility menu labels; removes conflicting legacy icon-only classes for these header controls.
+
+
+## v1.19.86 RC
+- Memperbaiki penghapusan Properti/Lokasi. Query PBB yang salah ke kolom `property_id` dihapus; schema aktif memakai `asset_id`.
+- Pemeriksaan sebelum hapus mencakup Akta Sewa, PBB/SPPT, Sertifikat Tanah, Bangunan, Perizinan & Legalitas, dan Perjanjian Agen.
+- Jika masih ada relasi, penghapusan diblokir dan hanya relasi yang benar-benar ada yang ditampilkan.
+- Error Supabase kini menampilkan message/details/hint/code agar tidak lagi kosong setelah tanda titik dua.
+- Header/SVG v1.19.85 dipertahankan. Tidak ada perubahan SQL.

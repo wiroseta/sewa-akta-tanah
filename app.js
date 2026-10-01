@@ -463,24 +463,43 @@ async function deleteLeaseContract(id){
  }catch(e){alert('Gagal menghapus Akta Sewa: '+e.message)}
 }window.deleteLeaseContract=deleteLeaseContract;
 
+function propertyDeleteErrorText(e){
+ if(!e)return 'Kesalahan tidak diketahui.';
+ if(typeof e==='string')return e;
+ return [e.message,e.details,e.hint,e.code].filter(Boolean).join(' | ')||JSON.stringify(e)||'Kesalahan tidak diketahui.';
+}
 async function deletePropertySafe(id){
  if(currentRole!=='administrator')return alert('Hanya Administrator yang dapat menghapus Property Master.');
  let a=assets.find(v=>String(v.id)===String(id));if(!a)return alert('Properti tidak ditemukan.');
  try{
-  const [c,p,l,b]=await Promise.all([
-   sb.from('contracts').select('id',{count:'exact',head:true}).eq('asset_id',id),
-   sb.from('pbb_records').select('id',{count:'exact',head:true}).or(`asset_id.eq.${id},property_id.eq.${id}`),
-   sb.from('land_titles').select('id',{count:'exact',head:true}).eq('asset_id',id),
-   sb.from('buildings').select('id',{count:'exact',head:true}).eq('asset_id',id)
-  ]);
-  for(const r of [c,p,l,b])if(r.error)throw r.error;
-  let deps={contracts:c.count||0,pbb:p.count||0,lands:l.count||0,buildings:b.count||0};
-  if(deps.contracts||deps.pbb||deps.lands||deps.buildings){
-   return alert(`Property tidak dapat dihapus karena masih memiliki data terkait:\n\n• ${deps.contracts} Akta Sewa\n• ${deps.pbb} record PBB/SPPT\n• ${deps.lands} Sertifikat Tanah\n• ${deps.buildings} Bangunan\n\nHapus atau pindahkan relasi tersebut terlebih dahulu. Tidak ada data yang dihapus.`)
+  // Gunakan hanya kolom relasi yang benar-benar ada pada schema aktif. pbb_records memakai asset_id; property_id tidak ada.
+  const checks=[
+   ['Akta Sewa','contracts','asset_id'],
+   ['PBB/SPPT','pbb_records','asset_id'],
+   ['Sertifikat Tanah','land_titles','asset_id'],
+   ['Bangunan','buildings','asset_id'],
+   ['Perizinan & Legalitas','property_permits','asset_id'],
+   ['Perjanjian Agen','property_agent_agreements','asset_id']
+  ];
+  const deps=[];
+  for(const [label,table,column] of checks){
+   const r=await sb.from(table).select('id',{count:'exact',head:true}).eq(column,id);
+   if(r.error)throw new Error(`${label}: ${propertyDeleteErrorText(r.error)}`);
+   deps.push([label,r.count||0]);
   }
-  if(!confirm(`Hapus Property Master “${a.alias||a.name||'-'}”?\n\nTindakan ini tidak dapat dikembalikan.`))return;
-  let q=await sb.from('assets').delete().eq('id',id).select('id');if(q.error)throw q.error;await loadData();openAssetList();alert('Property Master berhasil dihapus.');
- }catch(e){alert('Gagal memeriksa/menghapus Property Master: '+e.message)}
+  const used=deps.filter(([,n])=>n>0);
+  if(used.length){
+   return alert(`Properti/Lokasi “${a.alias||a.name||'-'}” tidak dapat dihapus karena masih memiliki data terkait:\n\n${used.map(([label,n])=>`• ${n} ${label}`).join('\n')}\n\nLepaskan atau pindahkan relasi tersebut terlebih dahulu. Tidak ada data yang dihapus.`);
+  }
+  if(!confirm(`Hapus Properti/Lokasi “${a.alias||a.name||'-'}”?\n\nProperti ini sudah diperiksa dan tidak mempunyai data terkait pada Akta Sewa, PBB/SPPT, Sertifikat Tanah, Bangunan, Perizinan/Legalitas, atau Perjanjian Agen.\n\nTindakan ini tidak dapat dikembalikan.`))return;
+  const q=await sb.from('assets').delete().eq('id',id).select('id');
+  if(q.error)throw new Error(propertyDeleteErrorText(q.error));
+  if(!q.data?.length)throw new Error('Record tidak terhapus. Periksa hak akses/RLS Administrator atau apakah record masih ada.');
+  await loadData();openAssetList();alert('Properti/Lokasi berhasil dihapus.');
+ }catch(e){
+  console.error('deletePropertySafe',e);
+  alert('Gagal memeriksa/menghapus Properti/Lokasi:\n\n'+propertyDeleteErrorText(e));
+ }
 }window.deletePropertySafe=deletePropertySafe;
 
 async function loadPbbData(){let r=await sb.from('pbb_records').select('*').order('tax_year',{ascending:false});if(r.error)throw r.error;pbbData=(r.data||[]).map(v=>normalizeAIObject(v))}
