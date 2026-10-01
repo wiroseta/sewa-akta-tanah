@@ -240,3 +240,17 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Pemegang sebelumnya dan riwayat peralihan penting dipertahankan di `notes` bila benar-benar terlihat pada dokumen.
 - Kasus uji HGB 16 BSB Kecil: pemegang awal PT Karyadeka Alam Lestari + Jual Beli 28-07-2003 kepada Lim Ai Tijen Mariani => pemegang hak terkini harus Lim Ai Tijen Mariani.
 - Tidak ada perubahan database/schema.
+
+
+## v1.19.94 RC — Certificate AI Reader Alignment Fix
+- Menyatukan kontrol File Sertifikat, Baca, koneksi Google Drive, dan Baca dari Google Drive dalam satu toolbar responsif.
+- Desktop: keempat kontrol sejajar satu baris. Tablet/ponsel: wrap terkontrol tanpa tombol terserak.
+- Tidak mengubah data model, SQL, atau pipeline AI v1.19.93.
+
+
+## v1.19.95 RC — Land Area Source Lock + Reader Compact Fix
+- Ekstraksi luas sertifikat dikunci ke label `Luas` pada bagian Surat Ukur/data fisik sertifikat yang sama.
+- Format luas Indonesia dengan titik sebagai pemisah ribuan ditegaskan: `6.159 m²` = `6159`.
+- Final consolidation memprioritaskan luas Surat Ukur dibanding angka lain dari halaman lain.
+- Toolbar reader sertifikat dirapikan: File, Baca, ikon koneksi Drive, dan Baca dari Google Drive berada dalam satu baris proporsional pada desktop dan wrap teratur di layar kecil.
+- Tidak ada perubahan database/SQL pada versi ini.
