@@ -707,3 +707,17 @@ button.v11977-edit::before,button.v11977-edit::after,button.v11977-delete::befor
 button.v11960-command::after,button.v11961-command::after,button.v11961-command.v11962-shortcut-flash::after,.lease-nav-action::after,.lease-save-action::after{content:none!important;display:none!important}
 #assetsBtn::before,#assetsBtn::after,#pbbBtn::before,#pbbBtn::after,#leaseBtn::before,#leaseBtn::after{content:none!important;display:none!important}
 #assetsBtn,#pbbBtn,#leaseBtn{overflow:hidden!important}
+
+/* ============================================================
+   v1.19.78 RC — clean minimal actions, no legacy pseudo-icons
+   ============================================================ */
+[data-tooltip]::before,[data-tooltip]::after,[data-tip]::before,[data-tip]::after,[data-original-title]::before,[data-original-title]::after{content:none!important;display:none!important}
+.collapsible-header .collapsible-title{font-weight:800!important}.collapsible-header .collapsible-title::before,.collapsible-header .collapsible-title::after{content:none!important;display:none!important}
+.v11978-add,.v11978-add-small,.v11978-back,.v11978-save,.v11978-edit,.v11978-delete,.v11978-open{display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0!important;overflow:hidden!important}
+.v11978-add{width:46px!important;min-width:46px!important;height:46px!important;min-height:46px!important;border-radius:13px!important;background:#16a34a!important;border-color:#16a34a!important;color:#fff!important;font-size:29px!important}
+.v11978-add-small{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;border-radius:11px!important;background:#16a34a!important;border-color:#16a34a!important;color:#fff!important;font-size:25px!important}
+.v11978-back,.v11978-save,.v11978-edit,.v11978-delete,.v11978-open{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important;border-radius:12px!important;font-size:21px!important}
+.v11978-back{background:#fff!important;color:#1d1d1f!important;border:1px solid #cfd5dd!important}.v11978-save{background:#0a6ed1!important;color:#fff!important;border-color:#0a6ed1!important}.v11978-edit{background:#0a6ed1!important;color:#fff!important;border-color:#0a6ed1!important}.v11978-delete{background:#fff!important;border:1px solid #f1b5b5!important}.v11978-open{background:#fff!important;color:#1d1d1f!important;border:1px solid #cfd5dd!important}
+.v11978-add::before,.v11978-add::after,.v11978-add-small::before,.v11978-add-small::after,.v11978-back::before,.v11978-back::after,.v11978-save::before,.v11978-save::after,.v11978-edit::before,.v11978-edit::after,.v11978-delete::before,.v11978-delete::after,.v11978-open::before,.v11978-open::after{content:none!important;display:none!important}
+/* Old card pseudo-icons must never participate in layout. */
+.asset-master-actions button::before,.asset-master-actions button::after,.pbb-card-actions button::before,.pbb-card-actions button::after,.lease-card-actions button::before,.lease-card-actions button::after{content:none!important;display:none!important}

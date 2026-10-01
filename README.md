@@ -196,3 +196,7 @@ Jalankan `supabase_latest.sql` sekali untuk perubahan relasi PBB -> properti.
 - Master-list edit/delete controls use compact single action icons.
 - All browser/custom hover tooltip attributes (`title`, `data-tooltip`, related variants) are removed globally, including dynamically rendered controls.
 - No database migration is required; `supabase_latest.sql` remains unchanged.
+
+
+## v1.19.78 RC
+Rebuilt minimal icon/action layer at source level. Removed legacy runtime icon rewriting and all hover tooltip attributes.
