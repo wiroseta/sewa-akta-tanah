@@ -737,3 +737,11 @@ body.lease-detail-open .lease-detail-topbar::before{content:""!important;positio
  .master-return-label,.dashboard-return-button>span:last-child{display:none!important}
  .dashboard-return-button,.master-return-button{width:40px!important;min-width:40px!important;padding:0!important;justify-content:center!important}
 }
+
+/* v1.19.77 RC hotfix — user requested zero hover/focus tooltips globally. */
+[data-tooltip]::after,[data-tooltip]::before,
+button[data-tooltip]::after,button[data-tooltip]::before,
+.v11960-command[data-tooltip]::after,.v11961-command[data-tooltip]::after,
+.lease-nav-action[data-tooltip]::after,.lease-save-action[data-tooltip]::after{
+  content:none!important;display:none!important;opacity:0!important;visibility:hidden!important;
+}

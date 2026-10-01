@@ -1712,3 +1712,12 @@ function v11977CleanUI(root=document){
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11977CleanUI(document),280));
 (function(){let raf=0,roots=new Set();const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)roots.add(n);if(roots.size&&!raf)raf=requestAnimationFrame(()=>{raf=0;for(const r of roots)v11977CleanUI(r);roots.clear()})});obs.observe(document.body,{childList:true,subtree:true});window.__v11977CleanObserver=obs})();
+
+// v1.19.77 RC hotfix — remove every hover tooltip globally while preserving aria-label accessibility.
+function v11977RemoveAllTooltips(root=document){
+ const sel='[title],[data-tooltip]';
+ const nodes=root.matches?.(sel)?[root]:[...root.querySelectorAll?.(sel)||[]];
+ nodes.forEach(el=>{el.removeAttribute('title');el.removeAttribute('data-tooltip')});
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>v11977RemoveAllTooltips(document),320));
+(function(){let raf=0,roots=new Set();const obs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='attributes')roots.add(m.target);for(const n of m.addedNodes||[])if(n.nodeType===1)roots.add(n)}if(roots.size&&!raf)raf=requestAnimationFrame(()=>{raf=0;for(const r of roots)v11977RemoveAllTooltips(r);roots.clear()})});obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['title','data-tooltip']});window.__v11977NoTooltipObserver=obs})();
