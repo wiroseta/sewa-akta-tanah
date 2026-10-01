@@ -231,3 +231,12 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 ## v1.19.91 RC
 - Menyederhanakan tombol ekspansi relasi Sertifikat dan PBB pada Detail Akta menjadi tombol + / − compact.
 - Fungsi pemilihan/relasi dari v1.19.88 tetap sama; hanya tampilan kontrol yang disederhanakan.
+
+
+## v1.19.92 RC — Current Land-Title Holder Chronology Fix
+- Pembacaan AI Sertifikat/Akta Tanah sekarang wajib membaca seluruh halaman dan menelusuri catatan peralihan hak secara kronologis.
+- `holderName` berarti pemegang hak terakhir/terkini setelah jual beli/peralihan terakhir, bukan otomatis nama pada halaman identitas awal.
+- Perpanjangan HGB, hak tanggungan, roya, atau catatan administratif yang tidak mengalihkan hak tidak mengganti pemegang hak.
+- Pemegang sebelumnya dan riwayat peralihan penting dipertahankan di `notes` bila benar-benar terlihat pada dokumen.
+- Kasus uji HGB 16 BSB Kecil: pemegang awal PT Karyadeka Alam Lestari + Jual Beli 28-07-2003 kepada Lim Ai Tijen Mariani => pemegang hak terkini harus Lim Ai Tijen Mariani.
+- Tidak ada perubahan database/schema.
