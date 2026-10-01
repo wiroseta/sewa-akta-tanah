@@ -374,3 +374,10 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Rincian luas bangunan wajib dipertahankan; total hanya dihitung bila komponen lengkap dan jelas dapat dijumlahkan.
 - Bila total luas belum pasti, field luas ditampilkan kosong (bukan 0) dan kandidat luas masuk catatan/peringatan verifikasi.
 - Tidak ada perubahan database/SQL pada versi ini.
+
+
+## v1.20.20 RC — General Other Payments & Ledger Row Persistence
+- Jenis `Penggantian PBB` digabung menjadi `Pembayaran Lain-lain`; tujuan pembayaran ditulis pada Keterangan/Catatan.
+- Data lama dengan kind `pbb`/`pbb_reimbursement` tetap kompatibel dan ditampilkan sebagai Pembayaran Lain-lain.
+- Baris Pembayaran Aktual yang baru tidak lagi hilang saat jenis diubah ke Security Deposit sebelum tanggal/jumlah diisi.
+- Hanya Sewa yang masuk rekonsiliasi harga sewa/PPh.
