@@ -786,3 +786,9 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #assetLandTitles .landtitle textarea{width:100%;box-sizing:border-box}
 /* The top bar is the canonical save/cancel navigation on full-page Property detail. */
 #assetDlg #assetForm>.actions{display:none!important}
+
+/* v1.19.93 — Certificate reader compact controls */
+.landtitle .land-ai-btn{white-space:nowrap;min-width:92px}
+.landtitle .land-drive-connect-btn{width:54px;min-width:54px;padding-left:0!important;padding-right:0!important;font-size:20px}
+.landtitle .land-drive-ai-btn{white-space:nowrap;min-width:190px}
+@media(max-width:700px){.landtitle .land-drive-ai-btn{min-width:0}.landtitle .land-ai-btn{min-width:76px}}

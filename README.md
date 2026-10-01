@@ -233,7 +233,7 @@ Dashboard-only canonical header repair: SVG Properti/PBB/Akta and readable utili
 - Fungsi pemilihan/relasi dari v1.19.88 tetap sama; hanya tampilan kontrol yang disederhanakan.
 
 
-## v1.19.92 RC — Current Land-Title Holder Chronology Fix
+## v1.19.93 RC — Current Land-Title Holder Chronology Fix
 - Pembacaan AI Sertifikat/Akta Tanah sekarang wajib membaca seluruh halaman dan menelusuri catatan peralihan hak secara kronologis.
 - `holderName` berarti pemegang hak terakhir/terkini setelah jual beli/peralihan terakhir, bukan otomatis nama pada halaman identitas awal.
 - Perpanjangan HGB, hak tanggungan, roya, atau catatan administratif yang tidak mengalihkan hak tidak mengganti pemegang hak.

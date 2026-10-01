@@ -36,6 +36,35 @@ serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:c
    for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
    base64=btoa(binary); console.log("[extract-lease] Drive download OK", {bytes:bytes.byteLength}); filename=meta.name||filename||'drive-file.pdf'; mimeType=meta.mimeType||mimeType||'application/pdf';
  }
+
+ if(documentType==='land_title_consolidate'){
+   stage="land-title-consolidation";
+   if(!Array.isArray(pageResults)||!pageResults.length)throw new Error("Hasil pembacaan halaman sertifikat belum tersedia");
+   const landPrompt=`Anda adalah pemeriksa akhir Sertifikat/Akta Tanah Indonesia. Anda menerima hasil ekstraksi SEMUA halaman dari SATU dokumen. Tentukan hasil FINAL dari seluruh dokumen, bukan dari halaman pertama.
+
+ATURAN KETAT:
+1. holderName = PEMEGANG HAK TERKINI. Susun kronologi dari halaman identitas awal lalu seluruh bagian PENDAFTARAN PERALIHAN HAK, PEMBEBANAN DAN PENCATATAN LAINNYA. Jual beli/hibah/waris/lelang/pemasukan perusahaan/perubahan nama/peralihan lain mengubah pemegang. Perpanjangan hak, Hak Tanggungan, roya, dan catatan administratif tidak mengubah pemegang.
+2. Jika pemegang awal PT A lalu tercatat Jual Beli kepada B, dan setelah itu hanya perpanjangan, holderName WAJIB B. Simpan pemegang lama dan peralihan penting di notes.
+3. rightType harus berasal dari jenis hak yang benar-benar tercetak. HAK GUNA BANGUNAN/HGB => HGB. Jangan mengubahnya menjadi Lainnya hanya karena halaman lain tidak menyebut jenis hak.
+4. certificateNo hanya nomor sertifikat bidang ini. landArea hanya luas bidang yang secara eksplisit merupakan luas sertifikat/bidang ini. Jangan mengambil angka luas dari bidang lain, lampiran, Akta Sewa, PBB, atau teks OCR yang konteksnya tidak jelas.
+5. surveyNo dan surveyDate hanya dari bagian SURAT UKUR yang terkait dengan bidang ini.
+6. notes: jika NIB benar-benar terbaca, tulis 'NIB: <nomor>' lalu ringkasan riwayat penting. Jika NIB tidak ditemukan, JANGAN isi notes dengan teks sampul, judul dokumen, atau OCR acak. Teks seperti 'Sertipikat Tanda Bukti Hak...' bukan NIB.
+7. validUntil hanya tanggal berakhir hak yang benar-benar berlaku setelah perpanjangan/pembaruan terakhir. SHM/HM tanpa masa berakhir => kosong.
+8. Jika ada konflik angka/nama antar halaman, pilih fakta yang paling spesifik dan secara hukum paling akhir; jelaskan konflik di notes. Jangan mengarang.
+
+Kembalikan HANYA JSON valid persis:
+{"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","notes":""}
+Semua tanggal YYYY-MM-DD.
+
+HASIL PER HALAMAN (${pageResults.length} halaman):
+${JSON.stringify(pageResults)}`;
+   const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:landPrompt})});
+   const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
+   const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
+   let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan konsolidasi sertifikat yang bukan JSON valid")}
+   return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+ }
+
  if(documentType==='whole_document_consolidate'){
    stage="whole-document-consolidation";
    if(!Array.isArray(pageResults)||!pageResults.length)throw new Error("Hasil pembacaan halaman belum tersedia untuk konsolidasi dokumen");
