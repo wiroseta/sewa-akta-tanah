@@ -537,3 +537,11 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - LaunchAgent starts at login and restarts the helper if it exits.
 - Added persistent logs under `~/Library/Logs/PALM`.
 - Added `uninstall_autostart.command`. Manual start remains available for diagnostics.
+
+## v1.20.58 RC — Property/PBB UI Consistency
+- Detail Property/Lokasi desktop diperlebar dan dipusatkan.
+- Optimizer Sertifikat diposisikan antara Baca File dan Baca dari Google Drive.
+- Logout membersihkan dialog/detail state sebelum menampilkan login.
+- Tambah/Edit PBB diperbesar pada desktop; Pembacaan AI SPPT mengikuti pola Akta Sewa dan mendapat Optimize File Google Drive.
+- Riwayat SPPT dibuat compact dan icon aksi dipulihkan.
+- Tombol Google Drive PBB dibuat eksplisit/konsisten.
