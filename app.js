@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.24-RC";
+const APP_BUILD="1.20.25-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -1915,3 +1915,24 @@ document.addEventListener("DOMContentLoaded",()=>{bindDynamicTextareas();request
 const dynamicTextareaObserver=new MutationObserver(muts=>{muts.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1){if(n.matches?.("textarea"))bindDynamicTextareas(n.parentElement||document);else bindDynamicTextareas(n)}}))});
 dynamicTextareaObserver.observe(document.documentElement,{childList:true,subtree:true});
 document.addEventListener("focusin",e=>{if(e.target?.tagName==="TEXTAREA")autoGrowTextarea(e.target)});
+
+// v1.20.25 — collapsible lease-object relations with live compact summary
+function v12025LeaseObjectSummary(){
+ const d=document.querySelector('#leaseObjectSection'), out=document.querySelector('#leaseObjectSummary'); if(!d||!out)return;
+ const land=d.querySelectorAll('#leaseLandChoices input[type="checkbox"]:checked').length;
+ const building=d.querySelectorAll('#leaseBuildingChoices input[type="checkbox"]:checked').length;
+ const pbb=d.querySelectorAll('#leasePbbSelected input[type="checkbox"]:checked').length || d.querySelectorAll('.lease-pbb-item input[type="checkbox"]:checked').length;
+ const fac=d.querySelectorAll('#leaseFacilities .repeat-row').length;
+ out.textContent=`${land} sertifikat · ${building} bangunan · ${pbb} PBB${fac?` · ${fac} fasilitas`:''}`;
+}
+(function(){
+ const install=()=>{const d=document.querySelector('#leaseObjectSection');if(!d||d.dataset.v12025Ready)return;d.dataset.v12025Ready='1';
+  const saved=localStorage.getItem('leaseObjectSectionOpen'); if(saved!==null)d.open=saved==='1';
+  d.addEventListener('toggle',()=>localStorage.setItem('leaseObjectSectionOpen',d.open?'1':'0'));
+  d.addEventListener('change',()=>setTimeout(v12025LeaseObjectSummary,0));
+  new MutationObserver(v12025LeaseObjectSummary).observe(d,{subtree:true,childList:true,attributes:true,attributeFilter:['checked']});
+  v12025LeaseObjectSummary();
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
+ document.addEventListener('click',e=>{if(e.target.closest('#leaseObjectSection'))setTimeout(v12025LeaseObjectSummary,0)},true);
+})();

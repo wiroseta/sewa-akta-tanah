@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.20.24] request received");
+ console.log("[extract-lease v1.20.25] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
 
@@ -134,7 +134,7 @@ ${JSON.stringify(pageResults)}`;
      }
      data.notes=lines.join('\n');
    }
-   console.log("[extract-lease v1.20.24] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
 
  if(documentType==='whole_document_consolidate'){
@@ -173,7 +173,7 @@ HASIL SEMUA HALAMAN (${pageResults.length} halaman/batch):\n${JSON.stringify(pag
    }
    const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
    if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
-   console.log("[extract-lease v1.20.24] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(documentType==='history_compare'){
    stage="openai-compare";
@@ -189,7 +189,7 @@ ${JSON.stringify(comparisonData.new)}`;
    const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:comparePrompt})});
    const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan perbandingan yang bukan JSON valid")}
-   console.log("[extract-lease v1.20.24] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
@@ -226,16 +226,16 @@ ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untu
  if(Array.isArray(images)&&images.length){for(const im of images){if(im.variant)content.push({type:"input_text",text:`Versi visual halaman ${im.page||pageStart||'?'}: ${im.variant}. Ini bukan halaman tambahan; gunakan untuk verifikasi pembacaan halaman yang sama.`});content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:imageDetail})}}
  else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:imageDetail});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
- stage="openai"; console.log("[extract-lease v1.20.24] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
+ stage="openai"; console.log("[extract-lease v1.20.25] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),50000);let r;
  try{r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]}),signal:controller.signal})}
  catch(err){if(err?.name==='AbortError')throw new Error('OpenAI request timeout setelah 50 detik');throw err}
  finally{clearTimeout(timeout)}
- console.log("[extract-lease v1.20.24] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
+ console.log("[extract-lease v1.20.25] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
  const raw=await r.json();if(!r.ok)throw new Error(raw?.error?.message||`OpenAI error ${r.status}`);
  const text=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
  let clean=String(text).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan hasil yang bukan JSON valid")}
  const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
  if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
- console.log("[extract-lease v1.20.24] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+ console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
 }catch(e){const message=e?.message||String(e);console.error("[extract-lease] failed",{stage,message});return new Response(JSON.stringify({error:message,stage}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});
