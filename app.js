@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.50-RC";
+const APP_BUILD="1.20.51-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -885,7 +885,7 @@ async function collectBackup(){
   const r=await sb.from(t).select('*');if(r.error)throw new Error(`${t}: ${r.error.message}`);tables[t]=r.data||[];
  }
  let aiScans={};try{for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('sewa_ai_scans_'))aiScans[k]=localStorage.getItem(k)}}catch(_){}
- return {app:'Property Asset & Legal Management',version:'1.20.50-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
+ return {app:'Property Asset & Legal Management',version:'1.20.51-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
 }
 function downloadJson(obj,name){let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function downloadBackup(){if(currentRole!=='administrator')return alert('Backup hanya tersedia untuk Administrator.');let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
