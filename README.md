@@ -545,3 +545,8 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - Tambah/Edit PBB diperbesar pada desktop; Pembacaan AI SPPT mengikuti pola Akta Sewa dan mendapat Optimize File Google Drive.
 - Riwayat SPPT dibuat compact dan icon aksi dipulihkan.
 - Tombol Google Drive PBB dibuat eksplisit/konsisten.
+
+## v1.20.59 RC — Global Google Drive PDF Optimizer
+- Menambahkan menu `Optimize PDF Google Drive` tepat di bawah `Backup & Restore` pada menu `...`.
+- Membuka dialog optimizer mandiri: paste link PDF Google Drive, buka file, lalu Optimize File.
+- Menggunakan engine optimizer yang sama dengan Akta Sewa/Sertifikat/PBB: Ghostscript lokal bila tersedia, fallback browser, Quality Check, backup original, lalu update content file Google Drive dengan File ID yang sama.

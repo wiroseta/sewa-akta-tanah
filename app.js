@@ -2366,3 +2366,16 @@ const palm43Obs=new MutationObserver(()=>{installPdfOptimizeButtons();bindLeaseP
 // v1.20.49 RC corrected — relation cards show all Property aliases from asset_land_titles for shared certificates.
 
 // v1.20.58 RC — Property/PBB layout consistency, logout cleanup, unified Drive/optimizer controls.
+
+// v1.20.59 RC — standalone Google Drive PDF Optimizer from utility menu.
+function bindGlobalPdfOptimizer(){
+ const menuBtn=document.getElementById('globalPdfOptimizerBtn'),dlg=document.getElementById('globalPdfOptimizerDlg'),url=document.getElementById('globalPdfOptimizerUrl'),run=document.getElementById('globalPdfOptimizerRunBtn'),runText=document.getElementById('globalPdfOptimizerRunTextBtn'),open=document.getElementById('globalPdfOptimizerOpenBtn'),close=document.getElementById('globalPdfOptimizerCloseBtn'),st=document.getElementById('globalPdfOptimizerStatus');
+ if(!menuBtn||!dlg||!url||!run||menuBtn.dataset.bound)return; menuBtn.dataset.bound='1';
+ const show=()=>{if(st)st.textContent='Siap. Tempel link PDF Google Drive lalu tekan Optimize File.';dlg.showModal();setTimeout(()=>url.focus(),40)};
+ const doRun=()=>optimizeDrivePdf(run,url);
+ menuBtn.addEventListener('click',show); close?.addEventListener('click',()=>dlg.close()); run.addEventListener('click',doRun); runText?.addEventListener('click',doRun);
+ open?.addEventListener('click',()=>{const u=url.value.trim();if(!driveFileIdFromUrl(u))return alert('Link Google Drive tidak valid.');window.open(u,'_blank','noopener')});
+ dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+}
+function v12059GlobalOptimizerMenu(){const b=document.getElementById('globalPdfOptimizerBtn');if(!b)return;b.classList.add('v11971-menu-row');b.setAttribute('aria-label','Optimize PDF Google Drive');b.removeAttribute('title');b.innerHTML='<span class="v11971-menu-icon global-optimizer-menu-icon" aria-hidden="true">🗜️</span><span class="v11971-menu-label">Optimize PDF Google Drive</span>'}
+document.addEventListener('DOMContentLoaded',()=>{bindGlobalPdfOptimizer();setTimeout(v12059GlobalOptimizerMenu,140)});
