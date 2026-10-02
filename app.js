@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.51-RC";
+const APP_BUILD="1.20.54-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -885,7 +885,7 @@ async function collectBackup(){
   const r=await sb.from(t).select('*');if(r.error)throw new Error(`${t}: ${r.error.message}`);tables[t]=r.data||[];
  }
  let aiScans={};try{for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('sewa_ai_scans_'))aiScans[k]=localStorage.getItem(k)}}catch(_){}
- return {app:'Property Asset & Legal Management',version:'1.20.51-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
+ return {app:'Property Asset & Legal Management',version:'1.20.54-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
 }
 function downloadJson(obj,name){let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function downloadBackup(){if(currentRole!=='administrator')return alert('Backup hanya tersedia untuk Administrator.');let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
@@ -2284,20 +2284,27 @@ function pdfOptimizeIcon(){return '<span class="pdf-opt-icon" aria-hidden="true"
 async function palmLocalOptimizePdf(original,say){
  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),3500);
  try{
-  say('Mengecek PALM Local PDF Optimizer di 127.0.0.1:8765…');
+  say('Mengecek PALM Local PDF Optimizer di HTTPS localhost:8765…');
   console.info('[PALM Optimizer] checking local helper');
-  let health=await fetch('http://127.0.0.1:8765/health',{method:'GET',cache:'no-store',signal:ctl.signal});
+  let health=await fetch('https://localhost:8765/health',{method:'GET',cache:'no-store',signal:ctl.signal});
   clearTimeout(timer);
   if(!health.ok)throw new Error('helper lokal tidak siap');
   let info=await health.json().catch(()=>({}));
   if(!info.ok||!info.ghostscript)throw new Error('Ghostscript lokal tidak tersedia');
   say('Ghostscript lokal terhubung. Mengirim PDF ke Ghostscript…');
   console.info('[PALM Optimizer] local helper healthy; POST /optimize');
-  let r=await fetch('http://127.0.0.1:8765/optimize',{method:'POST',headers:{'Content-Type':'application/pdf'},body:original.slice(0)});
+  let r=await fetch('https://localhost:8765/optimize',{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8','Accept':'application/pdf'},body:original.slice(0)});
   if(!r.ok){let msg=await r.text().catch(()=> '');throw new Error(msg||`helper lokal gagal (${r.status})`)}
   let blob=await r.blob();if(!blob.size)throw new Error('hasil Ghostscript kosong');
   return {blob,engine:'Ghostscript lokal'};
- }catch(e){clearTimeout(timer);console.warn('[PALM Optimizer] local helper unavailable:',e);say('Ghostscript lokal tidak dapat dipakai ('+(e?.message||e)+'). Fallback ke optimizer PALM browser…');return null}
+ }catch(e){
+  clearTimeout(timer);console.warn('[PALM Optimizer] local helper unavailable:',e);
+  const msg=String(e?.message||e||'');
+  const hint=(e?.name==='TypeError'||/fetch|network|load failed|certificate|ssl|tls/i.test(msg))
+   ? 'Helper HTTPS localhost tidak dapat diakses. Pastikan helper sedang berjalan dan sertifikat PALM localhost sudah dipercaya di Keychain.'
+   : 'Ghostscript lokal tidak dapat dipakai ('+msg+').' ;
+  say(hint+' Menggunakan optimizer PALM browser…');return null
+ }
 }
 async function validateOptimizedPdf(blob,pages,dimensions){
  let check=await window.pdfjsLib.getDocument({data:await blob.arrayBuffer()}).promise;

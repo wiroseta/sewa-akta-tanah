@@ -510,3 +510,10 @@ v1.20.49 RC: PDF optimizer loader diganti dari dynamic ES-module PDF.js 4.x ke c
 - Keterangan Jadwal Pembayaran dan Catatan Riwayat Pembayaran selalu compact 1 baris saat tidak aktif.
 - Tidak ada expand karena mouse hover/pointer.
 - Expand hanya setelah field diklik/focus; klik/focus ke tempat lain mengembalikan tinggi compact 1 baris.
+
+
+## v1.20.54 RC — Trusted localhost HTTPS helper
+- Memperbaiki jalur GitHub Pages HTTPS -> PALM Local PDF Optimizer dengan instalasi trust sertifikat localhost pada Login Keychain macOS.
+- Pesan fallback membedakan kegagalan jaringan/sertifikat localhost dan kegagalan Ghostscript.
+- Helper tetap bind hanya ke 127.0.0.1 dan CORS hanya mengizinkan https://wiroseta.github.io.
+- Aturan safety tetap: validasi PDF, tidak membuat backup bila hasil tidak cukup kecil, satu backup original sebelum PATCH content file Drive yang sama.
