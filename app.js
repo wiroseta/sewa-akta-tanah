@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.36-RC";
+const APP_BUILD="1.20.38-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -851,11 +851,11 @@ async function collectBackup(){
   const r=await sb.from(t).select('*');if(r.error)throw new Error(`${t}: ${r.error.message}`);tables[t]=r.data||[];
  }
  let aiScans={};try{for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('sewa_ai_scans_'))aiScans[k]=localStorage.getItem(k)}}catch(_){}
- return {app:'Sewa & Akta Tanah',version:'1.17.0',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
+ return {app:'Property Asset & Legal Management',version:'1.20.38-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
 }
 function downloadJson(obj,name){let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function downloadBackup(){if(currentRole!=='administrator')return alert('Backup hanya tersedia untuk Administrator.');let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
-function validateBackup(x){if(!x||x.app!=='Sewa & Akta Tanah'||!x.tables||typeof x.tables!=='object')throw new Error('File bukan backup Sewa & Akta Tanah yang valid.');for(const t of BACKUP_TABLES)if(!Array.isArray(x.tables[t]))throw new Error(`Data ${t} tidak ditemukan di backup.`);return x}
+function validateBackup(x){const validApps=['Property Asset & Legal Management','Sewa & Akta Tanah'];if(!x||!validApps.includes(x.app)||!x.tables||typeof x.tables!=='object')throw new Error('File bukan backup Property Asset & Legal Management yang valid.');for(const t of BACKUP_TABLES)if(!Array.isArray(x.tables[t]))throw new Error(`Data ${t} tidak ditemukan di backup.`);return x}
 async function restoreBackup(){
  if(currentRole!=='administrator')return alert('Restore hanya tersedia untuk Administrator.');
  let f=$('#restoreFile').files?.[0];if(!f)return alert('Pilih file backup JSON terlebih dahulu.');let b=$('#restoreBackupBtn');b.disabled=true;
@@ -2138,4 +2138,65 @@ function bindLeaseLongFields(root=document){
  ob.observe(document.documentElement,{childList:true,subtree:true});
  document.addEventListener('focusin',e=>{if(e.target?.matches?.('#form textarea'))leaseLongExpand(e.target)},true);
  document.addEventListener('focusout',e=>{if(e.target?.matches?.('#form textarea'))setTimeout(()=>leaseLongCollapse(e.target),0)},true);
+})();
+
+// v1.20.38 — consolidated lease-detail corrections from user review.
+// 1) Indonesian area display after every lease load / AI apply.
+(function(){
+ const prevOpen=window.openEdit;
+ window.openEdit=async function(...args){const r=await prevOpen(...args);['leaseLandArea','leaseBuildingArea'].forEach(n=>normalizeAreaField(document.querySelector(`[name="${n}"]`)));return r};
+ const prevSet=window.setField||setField;
+ window.setField=function(name,value){const r=prevSet(name,value);if(name==='leaseLandArea'||name==='leaseBuildingArea')normalizeAreaField(document.querySelector(`[name="${name}"]`));return r};
+})();
+
+// 2) One compact baseline for lease long-text fields (including source pages / plan notes).
+function leaseCompactHeight(el){if(!el)return 58;if(el.name==='notes')return 118;return 58}
+
+// 3) Land and building relation pickers: selected-only by default; + exposes candidates.
+let leaseLandPickerOpen=false, leaseBuildingPickerOpen=false, leaseBuildingRows=[], leaseBuildingSelected=[];
+function v12038RelationCard(r,type,selected){
+ const isLand=type==='land';
+ const label=isLand?`${r.right_type||'Tanah'} ${r.certificate_no||'(tanpa nomor)'}${r.land_area?' · '+formatIndonesianArea(r.land_area)+' m²':''}`:`${r.name||'Bangunan'}${r.building_area?' · '+formatIndonesianArea(r.building_area)+' m²':''}`;
+ return `<label class="check-item relation-choice"><input type="checkbox" value="${historySearchEscape(r.id)}" ${selected?'checked':''}> <span><b>${historySearchEscape(label)}</b><small>${historySearchEscape(relationAssetName(r.asset_id))}</small></span></label>`;
+}
+function v12038RenderLand(selected=checkedValues('#leaseLandChoices')){
+ const set=new Set(selected.map(String));
+ const rows=leaseLandPickerOpen?leaseLandAllRows:leaseLandAllRows.filter(r=>set.has(String(r.id)));
+ $('#leaseLandChoices').innerHTML=rows.length?rows.map(r=>v12038RelationCard(r,'land',set.has(String(r.id)))).join(''):'<div class="lease-relation-empty">Belum ada sertifikat yang dipilih untuk Akta ini.</div>';
+ const b=$('#leaseLandMoreBtn');if(b){b.hidden=false;b.textContent=leaseLandPickerOpen?'−':'＋';b.setAttribute('aria-label',leaseLandPickerOpen?'Tutup pilihan sertifikat':'Pilih sertifikat')}
+}
+function v12038RenderBuildings(selected=leaseBuildingSelected){
+ const set=new Set(selected.map(String));
+ const rows=leaseBuildingPickerOpen?leaseBuildingRows:leaseBuildingRows.filter(r=>set.has(String(r.id)));
+ $('#leaseBuildingChoices').innerHTML=rows.length?rows.map(r=>v12038RelationCard(r,'building',set.has(String(r.id)))).join(''):'<div class="lease-relation-empty">Belum ada bangunan/gudang/gedung yang dipilih untuk Akta ini.</div>';
+ const b=$('#leaseBuildingMoreBtn');if(b){b.textContent=leaseBuildingPickerOpen?'−':'＋';b.setAttribute('aria-label',leaseBuildingPickerOpen?'Tutup pilihan bangunan':'Pilih bangunan')}
+}
+(function(){
+ const oldLoad=loadLeaseRelations;
+ loadLeaseRelations=async function(contractId,assetId){await oldLoad(contractId,assetId);let ids=[];if(contractId){const q=await sb.from('lease_buildings').select('building_id').eq('contract_id',contractId);if(q.error)throw q.error;ids=(q.data||[]).map(x=>String(x.building_id))}const q=await sb.from('buildings').select('*').order('name');if(q.error)throw q.error;leaseBuildingRows=q.data||[];leaseBuildingSelected=ids;leaseLandPickerOpen=false;leaseBuildingPickerOpen=false;v12038RenderLand(checkedValues('#leaseLandChoices'));v12038RenderBuildings(ids);v12038CompactFacilities();};
+ document.addEventListener('click',e=>{if(e.target?.id==='leaseLandMoreBtn'){e.preventDefault();leaseLandPickerOpen=!leaseLandPickerOpen;v12038RenderLand(checkedValues('#leaseLandChoices'))}if(e.target?.id==='leaseBuildingMoreBtn'){e.preventDefault();leaseBuildingSelected=checkedValues('#leaseBuildingChoices');leaseBuildingPickerOpen=!leaseBuildingPickerOpen;v12038RenderBuildings(leaseBuildingSelected)}},true);
+})();
+
+// 4) Lease facilities: readable cards by default; edit only on demand.
+function v12038FacilitySync(row){
+ if(!row)return; const g=c=>row.querySelector('.'+c)?.value?.trim()||'';
+ row.querySelector('.facility-read-title').textContent=g('facilityType')||'Fasilitas';
+ row.querySelector('.facility-read-meta').textContent=[g('provider'),g('customerId')&&`ID ${g('customerId')}`,g('meterNo')&&`Meter/Layanan ${g('meterNo')}`,g('planPower')].filter(Boolean).join(' · ')||'Detail belum diisi';
+ row.querySelector('.facility-read-sub').textContent=[g('registeredName'),g('phone'),g('notes')].filter(Boolean).join(' · ');
+}
+function v12038CompactFacility(row){
+ if(!row||row.dataset.facilityCard==='1')return;row.dataset.facilityCard='1';row.classList.add('facility-card');
+ const head=document.createElement('div');head.className='facility-card-head';head.innerHTML='<div><b class="facility-read-title"></b><small class="facility-read-meta"></small><div class="facility-read-sub"></div></div><button type="button" class="secondary facility-edit-toggle">Edit</button>';
+ row.insertBefore(head,row.firstChild);row.querySelector('.facility-edit-toggle').onclick=()=>{row.classList.toggle('is-editing');row.querySelector('.facility-edit-toggle').textContent=row.classList.contains('is-editing')?'Selesai':'Edit';v12038FacilitySync(row)};
+ row.querySelectorAll('input,select,textarea').forEach(x=>{x.addEventListener('input',()=>v12038FacilitySync(row));x.addEventListener('change',()=>v12038FacilitySync(row))});v12038FacilitySync(row);
+}
+function v12038CompactFacilities(){document.querySelectorAll('#leaseFacilities .repeat-row.facility').forEach(v12038CompactFacility)}
+(function(){const old=window.addRepeat||addRepeat;window.addRepeat=function(...a){const r=old(...a);if(a[2]==='facility')setTimeout(v12038CompactFacilities,0);return r};const ob=new MutationObserver(()=>v12038CompactFacilities());const el=document.getElementById('leaseFacilities');if(el)ob.observe(el,{childList:true,subtree:true});setTimeout(v12038CompactFacilities,0)})();
+// v1.20.38 final binding fixes: ensure legacy handlers cannot overwrite the new pickers.
+(function(){
+ const b=document.getElementById('leaseLandMoreBtn');if(b)b.onclick=null;
+ // Replace the global lexical setter too, so AI extraction immediately formats area fields.
+ const base=setField;
+ setField=function(name,value){const r=base(name,value);if(name==='leaseLandArea'||name==='leaseBuildingArea')normalizeAreaField(document.querySelector(`[name="${name}"]`));return r};
+ window.setField=setField;
 })();

@@ -453,8 +453,15 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Mempertahankan perbaikan v1.20.35: format luas Indonesia, tombol hapus pembayaran aktual, deduplikasi/full-text pencarian, dan alignment halaman.
 
 
-## v1.20.37 RC
+## v1.20.38 RC
 - Nama aplikasi: Property Asset & Legal Management.
 - Audit Detail Akta Sewa: semua textarea/multiline field dinamis membesar penuh saat fokus/input dan kembali compact setelah blur.
 - Keterangan/objek sewa, Halaman sumber, dan Keterangan denah sewa diubah menjadi multiline agar teks panjang tidak terpotong.
 - Mempertahankan seluruh perbaikan v1.20.36 termasuk PBB master picker.
+
+## v1.20.38 RC — Lease Detail Consistency Review
+- Luas tanah/bangunan Akta selalu ditampilkan dalam format Indonesia setelah load maupun hasil AI; input keyboard tetap menerima titik sebagai desimal.
+- Tinggi compact `Halaman sumber` dan `Keterangan denah sewa` disamakan dengan field teks panjang lain; expand saat fokus dan collapse setelah blur.
+- Sertifikat/Bidang Tanah pada Akta memakai selected-only read mode; tombol + membuka kandidat Master Sertifikat. Tidak ada relasi otomatis dari Properti/Lokasi.
+- Bangunan/Gudang/Gedung memakai selected-only picker yang sama. Master bangunan tetap dibuat/diedit dari Detail Properti/Lokasi melalui `+ Bangunan`.
+- Fasilitas Akta Sewa sekarang berupa card ringkas/readable; Edit membuka field lengkap, Selesai kembali ke ringkasan, + menambah fasilitas, dan − menghapus.

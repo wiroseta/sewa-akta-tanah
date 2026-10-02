@@ -1123,3 +1123,13 @@ textarea.compact-hover-textarea.is-expanded{
 /* v1.20.37: unified compact/expand behavior for every multiline field in Detail Akta Sewa. */
 #form textarea.lease-dynamic-long{resize:vertical!important;overflow-y:auto!important}
 #form textarea.lease-dynamic-long.is-expanded{max-height:none!important;overflow-y:hidden!important}
+/* v1.20.38 relation pickers + readable facility cards */
+#leaseBuildingMoreBtn{display:inline-flex!important;align-items:center;justify-content:center;min-height:42px;padding:9px 14px!important;margin:10px 0!important}
+#leaseFacilities .facility-card{display:grid!important;grid-template-columns:1fr auto!important;gap:10px!important;align-items:start!important;padding:14px!important}
+#leaseFacilities .facility-card>input,#leaseFacilities .facility-card>select,#leaseFacilities .facility-card>textarea,#leaseFacilities .facility-card>.mini-open{display:none!important}
+#leaseFacilities .facility-card.is-editing{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#leaseFacilities .facility-card.is-editing>input,#leaseFacilities .facility-card.is-editing>select,#leaseFacilities .facility-card.is-editing>textarea,#leaseFacilities .facility-card.is-editing>.mini-open{display:block!important}
+#leaseFacilities .facility-card-head{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+#leaseFacilities .facility-card-head>div{min-width:0}.facility-read-title{display:block;font-size:15px}.facility-read-meta{display:block;margin-top:3px;color:#4b5563;white-space:normal}.facility-read-sub{margin-top:6px;color:#6b7280;white-space:normal;overflow-wrap:anywhere}
+#leaseFacilities .facility-card>button:last-child{grid-column:1/-1;width:44px!important;min-width:44px!important}
+@media(max-width:760px){#leaseFacilities .facility-card.is-editing{grid-template-columns:1fr!important}.facility-card-head{grid-column:1!important}}
