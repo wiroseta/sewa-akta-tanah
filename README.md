@@ -402,7 +402,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Keterangan/Catatan compact normal, expand saat pointer/focus, compact kembali saat pointer keluar/blur.
 - Header Jadwal tetap biru saat ada peringatan.
 
-## v1.20.30 RC — Payment Table Responsive Grid Correction
+## v1.20.31 RC — Payment Table Responsive Grid Correction
 - Corrected the payment schedule and payment history layout so headers and fields use the same fluid grid.
 - Removed the 900px stacking breakpoint that caused Mac/tablet-sized windows to become vertical; stacking now occurs only on phone widths below 600px.
 - Keterangan and Catatan stay compact at rest and expand to their full content on hover/focus, then collapse again on pointer leave/blur.

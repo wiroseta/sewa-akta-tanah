@@ -963,3 +963,55 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
   .payrow .label,.payrow .payment-row-summary,.ledger-row .ledgerNotes{grid-column:1/-1!important}
   .payrow .remove-payment,.ledger-row .ledgerRemove{grid-column:2!important;justify-self:end!important}
 }
+
+
+/* ============================================================
+   v1.20.31 RC — FINAL scoped payment layout contract
+   IMPORTANT: payment rows stay horizontal at every non-phone layout.
+   These selectors are intentionally ID-scoped so legacy .repeat-row,
+   responsive, and generic form rules cannot override payment tables.
+   ============================================================ */
+#payments{width:100%!important;min-width:0!important}
+#paymentLedger{width:100%!important;min-width:0!important}
+.payment-schedule-head,
+#payments>.payrow{
+  display:grid!important;
+  grid-template-columns:132px 116px 190px minmax(300px,1fr) 38px!important;
+  column-gap:8px!important;
+  align-items:start!important;
+  width:100%!important;
+  max-width:none!important;
+}
+.payment-ledger-head,
+#paymentLedger>.ledger-row{
+  display:grid!important;
+  grid-template-columns:132px 116px 190px 154px 126px 138px minmax(210px,1fr) 38px!important;
+  column-gap:8px!important;
+  align-items:start!important;
+  width:100%!important;
+  max-width:none!important;
+}
+.payment-column-head{display:grid!important;margin:6px 7px 5px!important;padding:0!important;width:calc(100% - 14px)!important}
+#payments>.payrow>.paykind,#payments>.payrow>.due,#payments>.payrow>.amount,
+#payments>.payrow>.label,#paymentLedger>.ledger-row>.ledgerKind,#paymentLedger>.ledger-row>.ledgerDate,
+#paymentLedger>.ledger-row>.ledgerAmount,#paymentLedger>.ledger-row>.ledgerTax,
+#paymentLedger>.ledger-row>.ledgerMethod,#paymentLedger>.ledger-row>.ledgerReference,
+#paymentLedger>.ledger-row>.ledgerNotes{width:100%!important;min-width:0!important;max-width:none!important;grid-column:auto!important}
+#payments>.payrow>.remove-payment,#paymentLedger>.ledger-row>.ledgerRemove{grid-column:auto!important;justify-self:stretch!important;width:38px!important;min-width:38px!important}
+#payments>.payrow>.payment-row-summary{grid-column:1/-1!important;width:100%!important}
+#paymentLedger>.ledger-row>.ledgerTarget,#paymentLedger>.ledger-row>.ledgerManualTarget{display:none!important}
+#payments>.payrow>.label,#paymentLedger>.ledger-row>.ledgerNotes{
+  height:36px!important;min-height:36px!important;max-height:36px!important;
+  overflow:hidden!important;resize:none!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;
+  transition:height .12s ease!important;
+}
+#payments>.payrow>.label.payment-text-expanded,#paymentLedger>.ledger-row>.ledgerNotes.payment-text-expanded{
+  max-height:none!important;overflow:hidden!important;
+}
+/* Only a genuinely narrow phone may stack. Keep the desktop/tablet contract untouched. */
+@media(max-width:480px){
+ .payment-column-head{display:none!important}
+ #payments>.payrow,#paymentLedger>.ledger-row{grid-template-columns:1fr 1fr!important;row-gap:7px!important}
+ #payments>.payrow>.label,#payments>.payrow>.payment-row-summary,#paymentLedger>.ledger-row>.ledgerNotes{grid-column:1/-1!important}
+ #payments>.payrow>.remove-payment,#paymentLedger>.ledger-row>.ledgerRemove{grid-column:2!important;justify-self:end!important}
+}
