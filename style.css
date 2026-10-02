@@ -904,3 +904,12 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 .lease-object-summary::-webkit-details-marker{display:none}.lease-object-title{font-size:16px}.lease-object-count{font-size:12px;color:rgba(255,255,255,.82);font-weight:600;text-align:right}.lease-object-chevron::after{content:'▶';font-size:14px}.lease-object-details[open]>.lease-object-summary .lease-object-chevron::after{content:'▼'}
 .lease-object-body{padding:18px}.lease-object-details[open]>.lease-object-summary{border-bottom:1px solid rgba(0,0,0,.08)}
 @media(max-width:760px){.lease-object-summary{grid-template-columns:minmax(0,1fr) minmax(0,96px) 18px;padding:10px 11px}.lease-object-title{font-size:16px}.lease-object-count{font-size:10px;line-height:1.15}.lease-object-body{padding:10px}}
+
+/* v1.20.27 — payment section attention keeps the standard blue header; warning stays in summary/border */
+.collapsible-section[data-collapse-key="lease-schedule"]>.collapsible-header,
+.collapsible-section[data-collapse-key="h3-jadwal-pembayaran-menurut-akta"]>.collapsible-header,
+.collapsible-section[data-collapse-key="lease-schedule"].has-attention>.collapsible-header,
+.collapsible-section[data-collapse-key="h3-jadwal-pembayaran-menurut-akta"].has-attention>.collapsible-header{
+  background:linear-gradient(115deg,var(--v11969-blueGlass1),var(--v11969-blueGlass2))!important;
+  color:#fff!important;
+}
