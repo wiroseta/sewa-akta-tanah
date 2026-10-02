@@ -477,7 +477,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - `supabase_latest.sql` berisi hanya migrasi terbaru v1.20.43.
 
 
-## v1.20.44 RC
+## v1.20.45 RC
 - Tombol Optimasi PDF dikoreksi menjadi icon-only Stack/Layer + panah ke bawah, tanpa teks dan tanpa tooltip/title.
 - Inline sizing ditambahkan agar ikon tetap icon-only walaupun browser masih memegang CSS lama.
 - Fungsi optimizeDrivePdf tetap terhubung seperti v1.20.43. Tidak ada SQL baru untuk koreksi visual ini.
