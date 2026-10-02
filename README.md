@@ -382,7 +382,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Baris Pembayaran Aktual yang baru tidak lagi hilang saat jenis diubah ke Security Deposit sebelum tanggal/jumlah diisi.
 - Hanya Sewa yang masuk rekonsiliasi harga sewa/PPh.
 
-## v1.20.22 RC — One-Line Payment Layout
+## v1.20.23 RC — One-Line Payment Layout
 - Jadwal pembayaran desktop: Jenis | Tanggal | Nominal | Keterangan dinamis | − dalam satu baris.
 - Riwayat pembayaran aktual desktop: Jenis | Tanggal | Nominal | PPh | Metode/Bank | Referensi/Bukti | Catatan dinamis | − dalam satu baris.
 - Tombol hapus memakai tanda − saja.
