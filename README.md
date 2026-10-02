@@ -422,3 +422,10 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Pemilihan Properti/Lokasi mengisi alamat master sebagai default dan langsung menyesuaikan tinggi textarea.
 - Saat menyimpan, alamat override pada Akta diprioritaskan; perubahan alamat Akta tidak menimpa alamat master Properti/Lokasi.
 - Tidak memerlukan perubahan database/SQL.
+
+
+## v1.20.34 RC — Lease Identity Display & Compact Dynamic Fields
+- Luas tanah/bangunan Akta selalu dinormalisasi ke format angka Indonesia saat idle/load.
+- Alamat Aset dan Opsi/periode perpanjangan compact saat idle, expand penuh saat hover/focus, kembali compact saat mouse keluar/blur.
+- Alamat Aset tetap editable sebagai override Akta dan tidak mengubah master Properti.
+- testgrid.html tidak disertakan dalam release.

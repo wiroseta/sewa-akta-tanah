@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.33-RC";
+const APP_BUILD="1.20.34-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -1943,10 +1943,12 @@ function v12025LeaseObjectSummary(){
 })();
 
 
-// v1.20.32 — Indonesian area display + editable dynamic asset address
+// v1.20.34 — Indonesian area display + compact/expand-on-hover lease text fields
 function parseIndonesianArea(value){
   let s=String(value??'').trim().replace(/\s/g,''); if(!s)return 0;
+  // When both separators exist, Indonesian display uses dots for thousands and comma for decimals.
   if(s.includes(',')&&s.includes('.')) s=s.replace(/\./g,'').replace(',','.');
+  // Comma alone is the decimal separator. A dot alone is accepted as decimal input from stored/API values.
   else if(s.includes(',')) s=s.replace(',','.');
   return Number(s)||0;
 }
@@ -1955,28 +1957,53 @@ function formatIndonesianArea(value){
   if(!Number.isFinite(n))return '';
   return new Intl.NumberFormat('id-ID',{minimumFractionDigits:0,maximumFractionDigits:2}).format(n);
 }
+function normalizeAreaField(el){
+  if(!el)return; const n=parseIndonesianArea(el.value); el.value=n?formatIndonesianArea(n):'';
+}
 function bindIndonesianAreaInputs(root=document){
-  root.querySelectorAll('.area-id-input').forEach(el=>{
-    if(el.dataset.areaIdBound==='1')return; el.dataset.areaIdBound='1';
-    const initial=parseIndonesianArea(el.value); if(initial)el.value=formatIndonesianArea(initial);
-    el.addEventListener('focus',()=>{const n=parseIndonesianArea(el.value);el.value=n?String(n).replace('.',','):''});
-    el.addEventListener('blur',()=>{const n=parseIndonesianArea(el.value);el.value=n?formatIndonesianArea(n):''});
+  const fields=[];
+  if(root.matches?.('.area-id-input')) fields.push(root);
+  root.querySelectorAll?.('.area-id-input').forEach(el=>fields.push(el));
+  fields.forEach(el=>{
+    if(el.dataset.areaIdBound!=='1'){
+      el.dataset.areaIdBound='1';
+      el.addEventListener('focus',()=>{const n=parseIndonesianArea(el.value);el.value=n?String(n).replace('.',','):''});
+      el.addEventListener('blur',()=>normalizeAreaField(el));
+    }
+    if(document.activeElement!==el) normalizeAreaField(el);
   });
 }
-document.addEventListener('DOMContentLoaded',()=>{bindIndonesianAreaInputs();const a=document.querySelector('[name="propertyAddress"]');if(a){a.readOnly=false;a.classList.add('asset-address-dynamic','auto-grow-textarea');requestAnimationFrame(()=>autoGrowTextarea(a))}});
-const v12032AreaObserver=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)bindIndonesianAreaInputs(n.matches?.('.area-id-input')?n.parentElement:n)})));
-v12032AreaObserver.observe(document.documentElement,{childList:true,subtree:true});
-
-
-// v1.20.33 — harden lease identity fields after every render/load.
+function compactTextHeight(el){
+  if(!el)return; el.style.height=''; el.classList.remove('is-expanded');
+}
+function expandCompactText(el){
+  if(!el)return; el.classList.add('is-expanded'); el.style.height='auto'; el.style.height=Math.max(el.scrollHeight,58)+'px';
+}
+function bindCompactHoverTextareas(root=document){
+  const fields=[];
+  if(root.matches?.('textarea.compact-hover-textarea'))fields.push(root);
+  root.querySelectorAll?.('textarea.compact-hover-textarea').forEach(el=>fields.push(el));
+  fields.forEach(el=>{
+    if(el.dataset.compactHoverBound==='1')return; el.dataset.compactHoverBound='1';
+    // Desktop: hover/focus shows all text. Leaving the field restores the compact size.
+    el.addEventListener('mouseenter',()=>expandCompactText(el));
+    el.addEventListener('mouseleave',()=>{if(document.activeElement!==el)compactTextHeight(el)});
+    el.addEventListener('focus',()=>expandCompactText(el));
+    el.addEventListener('input',()=>expandCompactText(el));
+    el.addEventListener('blur',()=>compactTextHeight(el));
+    compactTextHeight(el);
+  });
+}
 function refreshLeaseIdentityPresentation(root=document){
   bindIndonesianAreaInputs(root);
-  root.querySelectorAll?.('[name="leaseLandArea"],[name="leaseBuildingArea"]').forEach(el=>{
-    const n=parseIndonesianArea(el.value); if(n && document.activeElement!==el) el.value=formatIndonesianArea(n);
-  });
+  bindCompactHoverTextareas(root);
   const a=root.querySelector?.('[name="propertyAddress"]');
-  if(a){a.readOnly=false;a.classList.add('asset-address-dynamic','auto-grow-textarea');requestAnimationFrame(()=>autoGrowTextarea(a));}
+  if(a){a.readOnly=false;a.classList.add('asset-address-dynamic','compact-hover-textarea');bindCompactHoverTextareas(a);}
+  const r=root.querySelector?.('[name="renewalTerm"]');
+  if(r){r.classList.add('compact-hover-textarea');bindCompactHoverTextareas(r);}
 }
 document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>refreshLeaseIdentityPresentation()));
-document.addEventListener('input',e=>{if(e.target?.matches?.('[name="propertyAddress"]'))autoGrowTextarea(e.target)});
+const v12034Observer=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)refreshLeaseIdentityPresentation(n)})));
+v12034Observer.observe(document.documentElement,{childList:true,subtree:true});
 document.addEventListener('change',e=>{if(e.target?.matches?.('[name="assetId"],#contractAssetSelect'))requestAnimationFrame(()=>refreshLeaseIdentityPresentation())});
+
