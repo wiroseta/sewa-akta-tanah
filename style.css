@@ -1140,3 +1140,14 @@ textarea.compact-hover-textarea.is-expanded{
 #form .history-actions + label:has(textarea[name="notes"]){margin-top:16px!important}
 /* v1.20.41 */
 #leaseDataSearchDlg{width:min(980px,94vw);max-height:88vh;padding:22px}#leaseDataSearchDlg .history-search-filters{margin:14px 0 12px;gap:10px}#leaseDataSearchResults{max-height:60vh;overflow:auto;padding:4px 2px 12px}.context-search-card{margin:10px 0;padding:12px}.context-search-snippet{white-space:pre-wrap;line-height:1.45}.lease-notes-readable{line-height:1.45;padding:8px 10px;margin:0 0 6px;border:1px solid #d9dee7;border-radius:8px;background:#fafbfc}.lease-notes-readable div+div{margin-top:4px}.lease-export-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.lease-export-grid button{min-height:44px}@media(max-width:700px){.lease-export-grid{grid-template-columns:1fr}#leaseDataSearchDlg{width:96vw;padding:16px}}
+/* v1.20.42 RC */
+#assetLandTitles .landtitle{position:relative}
+.landtitle-summary{grid-column:1/-1!important;display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;min-height:44px!important;text-align:left!important;background:#f6f8fb!important;color:#20242c!important;border:1px solid #dce2ea!important;border-radius:10px!important;padding:9px 12px!important}
+.landtitle-summary-text{font-size:14px}.landtitle-chevron{font-size:16px;min-width:16px}
+.landtitle.landtitle-collapsed>:not(.landtitle-summary){display:none!important}
+.land-relation-fields{grid-column:1/-1;display:grid;grid-template-columns:1fr 2fr;gap:12px;padding:10px;border:1px dashed #ccd4df;border-radius:10px;background:#fff}
+.land-relation-fields label{display:flex;flex-direction:column;gap:6px}
+.land-title-picker-list{max-height:55vh;overflow:auto;margin:12px 0;border:1px solid #dde2e8;border-radius:12px}
+.land-picker-row{display:flex;gap:10px;padding:11px 12px;border-bottom:1px solid #eef1f4;align-items:flex-start}.land-picker-row:last-child{border-bottom:0}.land-picker-row small{display:block;color:#667085;margin-top:3px}.land-picker-row input{margin-top:3px}
+.pdf-optimize-btn{width:46px!important;min-width:46px!important;height:46px!important;padding:10px!important}.pdf-optimize-btn svg{width:22px;height:22px;display:block}
+@media(max-width:700px){.land-relation-fields{grid-template-columns:1fr}}

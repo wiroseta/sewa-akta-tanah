@@ -465,3 +465,13 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Sertifikat/Bidang Tanah pada Akta memakai selected-only read mode; tombol + membuka kandidat Master Sertifikat. Tidak ada relasi otomatis dari Properti/Lokasi.
 - Bangunan/Gudang/Gedung memakai selected-only picker yang sama. Master bangunan tetap dibuat/diedit dari Detail Properti/Lokasi melalui `+ Bangunan`.
 - Fasilitas Akta Sewa sekarang berupa card ringkas/readable; Edit membuka field lengkap, Selesai kembali ke ringkasan, + menambah fasilitas, dan − menghapus.
+
+
+## v1.20.42 RC
+- Catatan Tambahan: menghapus render ganda read-view + textarea; satu field saja dengan compact/expand/blur.
+- Bidang/Sertifikat: collapse/expand per sertifikat, default collapsed; sertifikat baru expanded.
+- Property ↔ Sertifikat menjadi many-to-many melalui `asset_land_titles`; sertifikat existing dapat dihubungkan ke beberapa Property tanpa scan ulang.
+- Relasi menyimpan luas bagian Property dan catatan penggunaan.
+- Tombol `+ Hubungkan Sertifikat` memakai selector Master Sertifikat.
+- Optimasi PDF Google Drive: ikon-only stack/layer, proses lokal browser, quality/structure check, replace file Drive yang sama hanya bila penghematan >=15%; tidak memakai OpenAI.
+- `supabase_latest.sql` berisi hanya migrasi terbaru v1.20.42.
