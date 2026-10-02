@@ -512,8 +512,14 @@ v1.20.49 RC: PDF optimizer loader diganti dari dynamic ES-module PDF.js 4.x ke c
 - Expand hanya setelah field diklik/focus; klik/focus ke tempat lain mengembalikan tinggi compact 1 baris.
 
 
-## v1.20.54 RC — Trusted localhost HTTPS helper
+## v1.20.55 RC — Trusted localhost HTTPS helper
 - Memperbaiki jalur GitHub Pages HTTPS -> PALM Local PDF Optimizer dengan instalasi trust sertifikat localhost pada Login Keychain macOS.
 - Pesan fallback membedakan kegagalan jaringan/sertifikat localhost dan kegagalan Ghostscript.
 - Helper tetap bind hanya ke 127.0.0.1 dan CORS hanya mengizinkan https://wiroseta.github.io.
 - Aturan safety tetap: validasi PDF, tidak membuat backup bila hasil tidak cukup kecil, satu backup original sebelum PATCH content file Drive yang sama.
+
+v1.20.55 RC — Google Drive existing-file write authorization & backup retry safety
+- OAuth Drive dinaikkan ke `https://www.googleapis.com/auth/drive` karena PALM mengoptimasi file existing yang direferensikan lewat URL, bukan file yang dipilih/dibagikan melalui Google Picker. Token cache dinaikkan ke V2 agar token lama drive.file tidak dipakai kembali.
+- OAuth meminta consent ulang agar scope write baru benar-benar diberikan.
+- Retry setelah PATCH gagal tidak membuat backup original kedua bila ditemukan backup sebelumnya dengan nama sumber yang sesuai dan MD5 identik dengan original saat ini.
+- Backup baru diberi appProperties `palmBackupOriginalId` untuk identifikasi ke depan.
