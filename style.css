@@ -1057,3 +1057,5 @@ textarea.compact-hover-textarea.is-expanded{
   text-align:center!important;
 }
 #paymentLedger>.ledger-row{overflow:visible!important}
+/* v1.20.35 search dedupe/full result text */
+.lease-search-full-text{white-space:normal;overflow:visible;text-overflow:clip;max-height:none;word-break:break-word;overflow-wrap:anywhere}

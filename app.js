@@ -395,11 +395,41 @@ async function runHistorySearch(){
 }
 function highlightHistoryHit(s,q){let text=JSON.stringify(s||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', '),low=text.toLowerCase(),i=low.indexOf(q);if(i<0)return '';let a=Math.max(0,i-140),b=Math.min(text.length,i+q.length+260),before=historySearchEscape(text.slice(a,i)),match=historySearchEscape(text.slice(i,i+q.length)),after=historySearchEscape(text.slice(i+q.length,b));return (a?'…':'')+before+'<mark>'+match+'</mark>'+after+(b<text.length?'…':'')}
 
-function leaseSearchSnippet(obj,q){let text=JSON.stringify(obj||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', '),low=text.toLowerCase(),i=low.indexOf(q);if(i<0)return historySearchEscape(text.slice(0,320));let a=Math.max(0,i-110),b=Math.min(text.length,i+q.length+260);return (a?'…':'')+historySearchEscape(text.slice(a,i))+'<mark>'+historySearchEscape(text.slice(i,i+q.length))+'</mark>'+historySearchEscape(text.slice(i+q.length,b))+(b<text.length?'…':'')}
+function leaseSearchFullText(obj,q){
+ let text=JSON.stringify(obj||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', '),low=text.toLowerCase();
+ if(!q)return historySearchEscape(text);
+ let out='',pos=0,i=low.indexOf(q,pos);
+ while(i>=0){out+=historySearchEscape(text.slice(pos,i))+'<mark>'+historySearchEscape(text.slice(i,i+q.length))+'</mark>';pos=i+q.length;i=low.indexOf(q,pos)}
+ return out+historySearchEscape(text.slice(pos));
+}
 function leaseSearchAssetId(row,type){if(type==='Properti')return row.id;return row.asset_id||row.assetId||row.snapshot?.asset_id||row.snapshot?.assetId||row.snapshot?.asset?.id||''}
 function leaseSearchTitle(row,type){if(type==='Properti')return row.alias||row.name||row.address||'Properti';if(type==='Sertifikat')return `${row.right_type||'Sertifikat'} ${row.certificate_no||'-'}`;if(type==='Bangunan')return row.name||'Bangunan';if(type==='PBB')return `${row.property_alias||'PBB'} · NOP ${row.nop||'-'} · ${row.tax_year||'-'}`;if(type==='Akta Sewa')return `${row.tenant||row.lessee||'Akta Sewa'} · Akta ${row.deed_no||row.deedNo||'-'}`;if(type==='Riwayat Akta/Klausul'){let s=row.snapshot||{};return `${s.tenant||'Riwayat Akta'} · Akta ${s.deedNo||'-'}`}return type}
+function leaseSearchComparableLease(row,type){
+ let s=type==='Riwayat Akta/Klausul'?(row.snapshot||{}):row;
+ return {tenant:String(s.tenant||s.lessee||'').trim().toLowerCase(),deed:String(s.deed_no||s.deedNo||'').trim().toLowerCase(),asset:String(leaseSearchAssetId(row,type)||'')};
+}
+function leaseSearchSameLease(a,b){return !!(a.tenant&&a.deed&&a.tenant===b.tenant&&a.deed===b.deed&&(!a.asset||!b.asset||a.asset===b.asset))}
 async function openLeaseDataSearch(){let active=edit>=0?data[edit]:null,sel=$('#leaseDataSearchAsset');sel.innerHTML='<option value="">Semua Properti</option>'+assets.map(a=>`<option value="${historySearchEscape(a.id)}">${historySearchEscape(a.alias||a.name||a.address||'Properti')}</option>`).join('');sel.value=active?.assetId||$('#contractAssetSelect').value||'';$('#leaseDataSearchInput').value='';$('#leaseDataSearchResults').innerHTML='<div class="muted">Ketik minimal 2 karakter. Pencarian mencakup data properti, sertifikat, bangunan, PBB, Akta Sewa, Klausul Penting, catatan, dan seluruh riwayat Akta.</div>';$('#leaseDataSearchDlg').showModal();setTimeout(()=>$('#leaseDataSearchInput').focus(),50)}
-async function runLeaseDataSearch(){let q=$('#leaseDataSearchInput').value.trim().toLowerCase(),assetId=$('#leaseDataSearchAsset').value,box=$('#leaseDataSearchResults');if(q.length<2){box.innerHTML='<div class="muted">Ketik minimal 2 karakter.</div>';return}box.innerHTML='<div class="muted">Mencari data properti dan seluruh Akta…</div>';try{let [ar,lr,br,pr,cr,hr]=await Promise.all([sb.from('assets').select('*'),sb.from('land_titles').select('*'),sb.from('buildings').select('*'),sb.from('pbb_records').select('*'),sb.from('contracts').select('*'),fetchAllDocumentHistory()]);for(let r of [ar,lr,br,pr,cr])if(r.error)throw r.error;let groups=[['Properti',ar.data||[]],['Sertifikat',lr.data||[]],['Bangunan',br.data||[]],['PBB',pr.data||[]],['Akta Sewa',cr.data||[]],['Riwayat Akta/Klausul',hr||[]]],hits=[];for(let [type,rows] of groups)for(let row of rows){if(assetId&&String(leaseSearchAssetId(row,type))!==String(assetId))continue;if(JSON.stringify(row||{}).toLowerCase().includes(q))hits.push({type,row})}let shown=hits.slice(0,200);box.innerHTML=`<div class="history-search-summary"><b>${hits.length} hasil</b>${assetId?' pada '+historySearchEscape(assets.find(a=>String(a.id)===String(assetId))?.alias||'properti terpilih'):' pada semua properti'}${hits.length>200?' · menampilkan 200 teratas':''}</div>`+(shown.length?shown.map(h=>`<div class="lease-data-hit"><div class="history-search-head"><div><span class="lease-data-source">${historySearchEscape(h.type).toUpperCase()}</span><br><b>${historySearchEscape(leaseSearchTitle(h.row,h.type))}</b></div></div><div class="history-search-snippet">${leaseSearchSnippet(h.type==='Riwayat Akta/Klausul'?h.row.snapshot:h.row,q)}</div></div>`).join(''):'<div class="muted">Data yang dicari tidak ditemukan.</div>')}catch(e){box.innerHTML=`<div class="compare-warning">Pencarian gagal: ${historySearchEscape(e.message)}</div>`}}
+async function runLeaseDataSearch(){
+ let q=$('#leaseDataSearchInput').value.trim().toLowerCase(),assetId=$('#leaseDataSearchAsset').value,box=$('#leaseDataSearchResults');
+ if(q.length<2){box.innerHTML='<div class="muted">Ketik minimal 2 karakter.</div>';return}
+ box.innerHTML='<div class="muted">Mencari data properti dan seluruh Akta…</div>';
+ try{
+  let [ar,lr,br,pr,cr,hr]=await Promise.all([sb.from('assets').select('*'),sb.from('land_titles').select('*'),sb.from('buildings').select('*'),sb.from('pbb_records').select('*'),sb.from('contracts').select('*'),fetchAllDocumentHistory()]);
+  for(let r of [ar,lr,br,pr,cr])if(r.error)throw r.error;
+  let currentLeaseRows=(cr.data||[]), currentMatches=currentLeaseRows.filter(row=>(!assetId||String(leaseSearchAssetId(row,'Akta Sewa'))===String(assetId))&&JSON.stringify(row||{}).toLowerCase().includes(q));
+  let currentKeys=currentMatches.map(row=>leaseSearchComparableLease(row,'Akta Sewa'));
+  let groups=[['Properti',ar.data||[]],['Sertifikat',lr.data||[]],['Bangunan',br.data||[]],['PBB',pr.data||[]],['Akta Sewa',currentLeaseRows],['Riwayat Akta/Klausul',hr||[]]],hits=[];
+  for(let [type,rows] of groups)for(let row of rows){
+   if(assetId&&String(leaseSearchAssetId(row,type))!==String(assetId))continue;
+   if(!JSON.stringify(type==='Riwayat Akta/Klausul'?(row.snapshot||{}):row).toLowerCase().includes(q))continue;
+   if(type==='Riwayat Akta/Klausul'&&row.entity_type==='lease'&&currentKeys.some(k=>leaseSearchSameLease(k,leaseSearchComparableLease(row,type))))continue;
+   hits.push({type,row});
+  }
+  let shown=hits.slice(0,200);
+  box.innerHTML=`<div class="history-search-summary"><b>${hits.length} hasil</b>${assetId?' pada '+historySearchEscape(assets.find(a=>String(a.id)===String(assetId))?.alias||'properti terpilih'):' pada semua properti'}${hits.length>200?' · menampilkan 200 teratas':''}</div>`+(shown.length?shown.map(h=>`<div class="lease-data-hit"><div class="history-search-head"><div><span class="lease-data-source">${historySearchEscape(h.type).toUpperCase()}</span><br><b>${historySearchEscape(leaseSearchTitle(h.row,h.type))}</b></div></div><div class="history-search-snippet lease-search-full-text">${leaseSearchFullText(h.type==='Riwayat Akta/Klausul'?h.row.snapshot:h.row,q)}</div></div>`).join(''):'<div class="muted">Data yang dicari tidak ditemukan.</div>');
+ }catch(e){box.innerHTML=`<div class="compare-warning">Pencarian gagal: ${historySearchEscape(e.message)}</div>`}
+}
 (()=>{const btn=$('#leaseDataSearchBtn'),close=$('#leaseDataSearchClose'),input=$('#leaseDataSearchInput'),asset=$('#leaseDataSearchAsset');if(btn)btn.onclick=openLeaseDataSearch;if(close)close.onclick=()=>$('#leaseDataSearchDlg')?.close();if(input)input.addEventListener('input',()=>{clearTimeout(window.__lds);window.__lds=setTimeout(runLeaseDataSearch,220)});if(asset)asset.addEventListener('change',()=>{if(input?.value.trim().length>=2)runLeaseDataSearch()})})();
 async function getPropertyChildren(assetId){
   const [lt,b,pr,ag]=await Promise.all([
