@@ -1133,3 +1133,8 @@ textarea.compact-hover-textarea.is-expanded{
 #leaseFacilities .facility-card-head>div{min-width:0}.facility-read-title{display:block;font-size:15px}.facility-read-meta{display:block;margin-top:3px;color:#4b5563;white-space:normal}.facility-read-sub{margin-top:6px;color:#6b7280;white-space:normal;overflow-wrap:anywhere}
 #leaseFacilities .facility-card>button:last-child{grid-column:1/-1;width:44px!important;min-width:44px!important}
 @media(max-width:760px){#leaseFacilities .facility-card.is-editing{grid-template-columns:1fr!important}.facility-card-head{grid-column:1!important}}
+
+/* v1.20.39 — lease detail polish from user review. */
+#form textarea[name="sourcePages"].lease-dynamic-long:not(.is-expanded),
+#form textarea[name="leasePlanNotes"].lease-dynamic-long:not(.is-expanded){height:42px!important;min-height:42px!important;max-height:42px!important;overflow-y:auto!important;resize:none!important}
+#form .history-actions + label:has(textarea[name="notes"]){margin-top:16px!important}
