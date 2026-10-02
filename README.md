@@ -481,3 +481,9 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Tombol Optimasi PDF dikoreksi menjadi icon-only Stack/Layer + panah ke bawah, tanpa teks dan tanpa tooltip/title.
 - Inline sizing ditambahkan agar ikon tetap icon-only walaupun browser masih memegang CSS lama.
 - Fungsi optimizeDrivePdf tetap terhubung seperti v1.20.43. Tidak ada SQL baru untuk koreksi visual ini.
+
+
+## v1.20.46 RC
+- PDF optimizer icon changed from SVG to CSS-drawn layer stack + down arrow and protected from the legacy global button rewriter that caused the blank button.
+- Clicking optimizer while Drive is disconnected now starts Google Drive OAuth and resumes optimization after successful authorization.
+- PDF optimizer still never replaces the Drive file until optimization and structural quality checks pass.

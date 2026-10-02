@@ -1151,3 +1151,10 @@ textarea.compact-hover-textarea.is-expanded{
 .land-picker-row{display:flex;gap:10px;padding:11px 12px;border-bottom:1px solid #eef1f4;align-items:flex-start}.land-picker-row:last-child{border-bottom:0}.land-picker-row small{display:block;color:#667085;margin-top:3px}.land-picker-row input{margin-top:3px}
 .pdf-optimize-btn{width:46px!important;min-width:46px!important;height:46px!important;padding:10px!important}.pdf-optimize-btn svg{width:22px;height:22px;display:block}
 @media(max-width:700px){.land-relation-fields{grid-template-columns:1fr}}
+
+/* v1.20.46 RC — PDF optimize icon is CSS-drawn so it cannot disappear with SVG/currentColor rules. */
+.pdf-optimize-btn{width:46px!important;min-width:46px!important;height:46px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important;font-size:0!important;line-height:0!important;position:relative!important}
+.pdf-opt-icon{position:relative!important;display:block!important;width:26px!important;height:28px!important;visibility:visible!important;opacity:1!important}
+.pdf-opt-icon i{display:block!important;position:absolute!important;left:3px!important;width:17px!important;height:5px!important;border:2px solid #111827!important;border-radius:2px!important;background:#fff!important;box-sizing:border-box!important;visibility:visible!important;opacity:1!important}
+.pdf-opt-icon i:nth-child(1){top:2px!important}.pdf-opt-icon i:nth-child(2){top:7px!important;left:5px!important}.pdf-opt-icon i:nth-child(3){top:12px!important;left:7px!important}
+.pdf-opt-icon b{display:block!important;position:absolute!important;right:0!important;bottom:-1px!important;color:#111827!important;font:700 20px/20px Arial,sans-serif!important;visibility:visible!important;opacity:1!important}
