@@ -929,3 +929,37 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 .payrow .label,.ledger-row .ledgerNotes{height:38px!important;min-height:38px!important;max-height:38px!important;overflow:hidden!important;resize:none!important}
 .payrow .label.payment-text-expanded,.ledger-row .ledgerNotes.payment-text-expanded{max-height:none!important;overflow:hidden!important}
 @media(max-width:900px){.payrow,.ledger-row{grid-template-columns:1fr 1fr!important}.payment-column-head{display:none!important}}
+
+/* v1.20.30 — payment tables: fluid single-line desktop/tablet layout; true expanding notes */
+:root{
+  --payment-gap-12030:6px;
+}
+.payment-column-head{display:grid!important;gap:var(--payment-gap-12030)!important;margin:6px 7px 5px!important;width:calc(100% - 14px)!important}
+.payment-schedule-head,.payrow{
+  grid-template-columns:minmax(88px,.75fr) minmax(94px,.70fr) minmax(150px,1.05fr) minmax(190px,2.6fr) 34px!important;
+  gap:var(--payment-gap-12030)!important;
+  width:100%!important;
+}
+.payment-ledger-head,.ledger-row{
+  grid-template-columns:minmax(88px,.80fr) minmax(94px,.75fr) minmax(145px,1.15fr) minmax(120px,.95fr) minmax(100px,.85fr) minmax(110px,.95fr) minmax(150px,1.55fr) 34px!important;
+  gap:var(--payment-gap-12030)!important;
+  width:100%!important;
+}
+.payrow .paykind,.payrow .due,.payrow .amount,
+.ledger-row .ledgerKind,.ledger-row .ledgerDate,.ledger-row .ledgerAmount,.ledger-row .ledgerTax,.ledger-row .ledgerMethod,.ledger-row .ledgerReference,
+.payrow .label,.ledger-row .ledgerNotes{width:100%!important;min-width:0!important;max-width:none!important}
+.payrow .label,.ledger-row .ledgerNotes{
+  height:36px!important;min-height:36px!important;max-height:36px!important;
+  overflow:hidden!important;resize:none!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;
+  transition:height .10s ease!important;
+}
+.payrow .label.payment-text-expanded,.ledger-row .ledgerNotes.payment-text-expanded{max-height:none!important;overflow:hidden!important}
+.payrow select,.payrow input,.payrow textarea,.ledger-row select,.ledger-row input,.ledger-row textarea{font-size:11.5px!important;padding:7px 8px!important}
+.payment-column-head{font-size:10.5px!important}
+/* Keep the payment tables in one row on normal computer/tablet widths. Only phones stack. */
+@media (max-width:599px){
+  .payment-column-head{display:none!important}
+  .payrow,.ledger-row{grid-template-columns:1fr 1fr!important}
+  .payrow .label,.payrow .payment-row-summary,.ledger-row .ledgerNotes{grid-column:1/-1!important}
+  .payrow .remove-payment,.ledger-row .ledgerRemove{grid-column:2!important;justify-self:end!important}
+}
