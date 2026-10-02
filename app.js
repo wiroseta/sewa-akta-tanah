@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.32-RC";
+const APP_BUILD="1.20.33-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -60,7 +60,7 @@ function renderOpenAIStatus(){
 
 function status(m,k=''){const e=$('#authMsg');if(e){e.textContent=m;e.dataset.kind=k}}function withTimeout(p,ms,l){return Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error(l||'Timeout')),ms))])}
 function rowToApp(r){let out={id:r.id,assetId:r.asset_id||'',tenant:r.tenant||'',lessor:r.lessor||'',asset:r.asset||'',propertyAddress:r.property_address||'',propertyArea:r.property_area||'',leaseLandArea:r.lease_land_area??'',leaseBuildingArea:r.lease_building_area??'',deedNo:r.deed_no||'',deedDate:isoToID(r.deed_date),start:isoToID(r.start_date),end:isoToID(r.end_date),rent:Number(r.rent||0),rentTaxMode:(r.payments_meta?.rentTaxMode||'gross_includes_tax'),rentTaxRate:Number(r.payments_meta?.rentTaxRate||0),rentTaxAmount:Number(r.payments_meta?.rentTaxAmount||0),rentGross:Number(r.payments_meta?.rentGross||0),rentNet:Number(r.payments_meta?.rentNet||0),taxClause:r.payments_meta?.taxClause||'',taxTreatment:r.payments_meta?.taxTreatment||'',taxNeedsVerification:!!r.payments_meta?.taxNeedsVerification,supplementalAgreements:Array.isArray(r.payments_meta?.supplementalAgreements)?r.payments_meta.supplementalAgreements:[],totalContractRent:Number(r.payments_meta?.totalContractRent||0),rentPeriods:Array.isArray(r.payments_meta?.rentPeriods)?r.payments_meta.rentPeriods:[],priorDeeds:Array.isArray(r.payments_meta?.priorDeeds)?r.payments_meta.priorDeeds:[],lastAIVerification:r.payments_meta?.lastAIVerification||null,parentContractId:r.payments_meta?.parentContractId||'',leaseRelationType:r.payments_meta?.leaseRelationType||'',deposit:Number(r.deposit||0),renewalNotice:isoToID(r.renewal_notice),renewalTerm:r.renewal_term||'',googleMapsUrl:r.google_maps_url||'',leasePlanUrl:r.lease_plan_url||'',leasePlanNotes:r.lease_plan_notes||'',docUrl:r.doc_url||'',notes:r.notes||'',payments:r.payments||[],contacts:r.contacts||[],bankAccounts:r.bank_accounts||[],landRights:r.land_rights||[],clauses:r.clauses||[],verificationStatus:r.verification_status||'perlu_verifikasi',sourcePages:r.source_pages||''};return normalizeAIObject(out)}
-function appToRow(x){let a=assets.find(v=>v.id===x.assetId);return{user_id:(dataOwnerId||currentUser.id),asset_id:x.assetId||null,tenant:x.tenant||'',lessor:x.lessor||'',asset:a?.name||x.asset||'',property_address:a?.address||x.propertyAddress||'',property_area:x.propertyArea||'',lease_land_area:x.leaseLandArea?parseIndonesianArea(x.leaseLandArea):null,lease_building_area:x.leaseBuildingArea?parseIndonesianArea(x.leaseBuildingArea):null,deed_no:x.deedNo||null,deed_date:idToISO(x.deedDate)||null,start_date:idToISO(x.start)||null,end_date:idToISO(x.end)||null,rent:parseMoney(x.rent),payments_meta:{rentTaxMode:x.rentTaxMode||'gross_includes_tax',rentTaxRate:Number(x.rentTaxRate||0),rentTaxAmount:Number(x.rentTaxAmount||0),rentGross:Number(x.rentGross||0),rentNet:Number(x.rentNet||0),taxClause:x.taxClause||'',taxTreatment:x.taxTreatment||'',taxNeedsVerification:!!x.taxNeedsVerification,supplementalAgreements:Array.isArray(x.supplementalAgreements)?x.supplementalAgreements:[],totalContractRent:Number(x.totalContractRent||leaseAIWholeMeta.totalContractRent||0),rentPeriods:Array.isArray(x.rentPeriods)?x.rentPeriods:(leaseAIWholeMeta.rentPeriods||[]),priorDeeds:Array.isArray(x.priorDeeds)?x.priorDeeds:(pendingPriorDeeds||[]),lastAIVerification:x.lastAIVerification||leaseAIWholeMeta.lastAIVerification||null,parentContractId:x.parentContractId||pendingLeaseLink?.parentContractId||'',leaseRelationType:x.leaseRelationType||pendingLeaseLink?.leaseRelationType||''},deposit:parseMoney(x.deposit),renewal_notice:idToISO(x.renewalNotice)||null,renewal_term:x.renewalTerm||'',google_maps_url:a?.googleMapsUrl||x.googleMapsUrl||'',lease_plan_url:x.leasePlanUrl||'',lease_plan_notes:x.leasePlanNotes||'',doc_url:x.docUrl||'',notes:x.notes||'',payments:x.payments||[],contacts:x.contacts||[],bank_accounts:x.bankAccounts||[],clauses:x.clauses||[],verification_status:x.verificationStatus||'perlu_verifikasi',source_pages:x.sourcePages||'',updated_at:new Date().toISOString()}}
+function appToRow(x){let a=assets.find(v=>v.id===x.assetId);return{user_id:(dataOwnerId||currentUser.id),asset_id:x.assetId||null,tenant:x.tenant||'',lessor:x.lessor||'',asset:a?.name||x.asset||'',property_address:x.propertyAddress||a?.address||'',property_area:x.propertyArea||'',lease_land_area:x.leaseLandArea?parseIndonesianArea(x.leaseLandArea):null,lease_building_area:x.leaseBuildingArea?parseIndonesianArea(x.leaseBuildingArea):null,deed_no:x.deedNo||null,deed_date:idToISO(x.deedDate)||null,start_date:idToISO(x.start)||null,end_date:idToISO(x.end)||null,rent:parseMoney(x.rent),payments_meta:{rentTaxMode:x.rentTaxMode||'gross_includes_tax',rentTaxRate:Number(x.rentTaxRate||0),rentTaxAmount:Number(x.rentTaxAmount||0),rentGross:Number(x.rentGross||0),rentNet:Number(x.rentNet||0),taxClause:x.taxClause||'',taxTreatment:x.taxTreatment||'',taxNeedsVerification:!!x.taxNeedsVerification,supplementalAgreements:Array.isArray(x.supplementalAgreements)?x.supplementalAgreements:[],totalContractRent:Number(x.totalContractRent||leaseAIWholeMeta.totalContractRent||0),rentPeriods:Array.isArray(x.rentPeriods)?x.rentPeriods:(leaseAIWholeMeta.rentPeriods||[]),priorDeeds:Array.isArray(x.priorDeeds)?x.priorDeeds:(pendingPriorDeeds||[]),lastAIVerification:x.lastAIVerification||leaseAIWholeMeta.lastAIVerification||null,parentContractId:x.parentContractId||pendingLeaseLink?.parentContractId||'',leaseRelationType:x.leaseRelationType||pendingLeaseLink?.leaseRelationType||''},deposit:parseMoney(x.deposit),renewal_notice:idToISO(x.renewalNotice)||null,renewal_term:x.renewalTerm||'',google_maps_url:a?.googleMapsUrl||x.googleMapsUrl||'',lease_plan_url:x.leasePlanUrl||'',lease_plan_notes:x.leasePlanNotes||'',doc_url:x.docUrl||'',notes:x.notes||'',payments:x.payments||[],contacts:x.contacts||[],bank_accounts:x.bankAccounts||[],clauses:x.clauses||[],verification_status:x.verificationStatus||'perlu_verifikasi',source_pages:x.sourcePages||'',updated_at:new Date().toISOString()}}
 async function loadAssets(){
   const [{data:a,error},{data:titles,error:titleError}]=await Promise.all([sb.from('assets').select('*').order('name'),sb.from('land_titles').select('id,asset_id,right_type,certificate_no,valid_until')]);
   if(error)throw error;if(titleError)throw titleError;
@@ -89,7 +89,7 @@ async function loadData(){try{await loadAssets();await loadPbbData();const {data
 async function saveContract(x){let r=x.id?await sb.from('contracts').update(appToRow(x)).eq('id',x.id).select().single():await sb.from('contracts').insert(appToRow(x)).select().single();if(r.error)throw r.error;await loadData()}
 function assetSelectLabel(a){const alias=String(a?.alias||'').trim(),name=String(a?.name||'').trim(),rights=(a?.landRights||[]).map(r=>[r.type,r.number].filter(Boolean).join(' ')).filter(Boolean).join(', ');if(alias)return [alias,rights||name].filter(Boolean).join(' — ');return [name||a?.address||'Properti',rights].filter(Boolean).join(' — ')}
 function refreshAssetSelect(){let sel=$('#contractAssetSelect');if(!sel)return;let old=sel.value;sel.innerHTML='<option value="">Pilih aset / tanah...</option>'+assets.map(a=>`<option value="${a.id}">${historySearchEscape(assetSelectLabel(a))}</option>`).join('');if(assets.some(a=>a.id===old))sel.value=old}
-function applySelectedAsset(){let a=assets.find(v=>v.id===$('#contractAssetSelect').value);if(!a)return;document.querySelector('[name="propertyAddress"]').value=a.address||'';document.querySelector('[name="googleMapsUrl"]').value=a.googleMapsUrl||'';syncOpenMapsButton()}
+function applySelectedAsset(){let a=assets.find(v=>v.id===$('#contractAssetSelect').value);if(!a)return;const addressEl=document.querySelector('[name="propertyAddress"]');if(addressEl){addressEl.value=a.address||'';addressEl.readOnly=false;requestAnimationFrame(()=>autoGrowTextarea(addressEl))}document.querySelector('[name="googleMapsUrl"]').value=a.googleMapsUrl||'';syncOpenMapsButton()}
 async function loadAccessProfile(){
  currentRole='viewer';dataOwnerId=currentUser?.id||null;
  let r=await sb.rpc('app_get_my_access');
@@ -1945,8 +1945,8 @@ function v12025LeaseObjectSummary(){
 
 // v1.20.32 — Indonesian area display + editable dynamic asset address
 function parseIndonesianArea(value){
-  let s=String(value??'').trim().replace(/\\s/g,''); if(!s)return 0;
-  if(s.includes(',')&&s.includes('.')) s=s.replace(/\\./g,'').replace(',','.');
+  let s=String(value??'').trim().replace(/\s/g,''); if(!s)return 0;
+  if(s.includes(',')&&s.includes('.')) s=s.replace(/\./g,'').replace(',','.');
   else if(s.includes(',')) s=s.replace(',','.');
   return Number(s)||0;
 }
@@ -1958,10 +1958,25 @@ function formatIndonesianArea(value){
 function bindIndonesianAreaInputs(root=document){
   root.querySelectorAll('.area-id-input').forEach(el=>{
     if(el.dataset.areaIdBound==='1')return; el.dataset.areaIdBound='1';
+    const initial=parseIndonesianArea(el.value); if(initial)el.value=formatIndonesianArea(initial);
     el.addEventListener('focus',()=>{const n=parseIndonesianArea(el.value);el.value=n?String(n).replace('.',','):''});
     el.addEventListener('blur',()=>{const n=parseIndonesianArea(el.value);el.value=n?formatIndonesianArea(n):''});
   });
 }
-document.addEventListener('DOMContentLoaded',()=>{bindIndonesianAreaInputs();const a=document.querySelector('[name="propertyAddress"]');if(a){a.readOnly=false;requestAnimationFrame(()=>autoGrowTextarea(a))}});
+document.addEventListener('DOMContentLoaded',()=>{bindIndonesianAreaInputs();const a=document.querySelector('[name="propertyAddress"]');if(a){a.readOnly=false;a.classList.add('asset-address-dynamic','auto-grow-textarea');requestAnimationFrame(()=>autoGrowTextarea(a))}});
 const v12032AreaObserver=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)bindIndonesianAreaInputs(n.matches?.('.area-id-input')?n.parentElement:n)})));
 v12032AreaObserver.observe(document.documentElement,{childList:true,subtree:true});
+
+
+// v1.20.33 — harden lease identity fields after every render/load.
+function refreshLeaseIdentityPresentation(root=document){
+  bindIndonesianAreaInputs(root);
+  root.querySelectorAll?.('[name="leaseLandArea"],[name="leaseBuildingArea"]').forEach(el=>{
+    const n=parseIndonesianArea(el.value); if(n && document.activeElement!==el) el.value=formatIndonesianArea(n);
+  });
+  const a=root.querySelector?.('[name="propertyAddress"]');
+  if(a){a.readOnly=false;a.classList.add('asset-address-dynamic','auto-grow-textarea');requestAnimationFrame(()=>autoGrowTextarea(a));}
+}
+document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>refreshLeaseIdentityPresentation()));
+document.addEventListener('input',e=>{if(e.target?.matches?.('[name="propertyAddress"]'))autoGrowTextarea(e.target)});
+document.addEventListener('change',e=>{if(e.target?.matches?.('[name="assetId"],#contractAssetSelect'))requestAnimationFrame(()=>refreshLeaseIdentityPresentation())});

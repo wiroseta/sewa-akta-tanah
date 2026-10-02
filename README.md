@@ -413,3 +413,12 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Luas tanah/bangunan Akta Sewa ditampilkan dalam format Indonesia (contoh 20.928,21 dan 14.963,96), tetap disimpan numerik.
 - Alamat aset dapat diedit dan auto-expand mengikuti seluruh isi tanpa kembali memotong teks.
 - Tidak ada perubahan database/SQL. Semua aturan payment page v1.20.31 dipertahankan.
+
+
+## v1.20.33 RC — Lease Identity Field Reliability
+- Luas tanah/bangunan Akta tampil dalam format Indonesia (contoh 20.928,21 dan 14.963,96), termasuk saat data lama pertama kali dimuat.
+- Parser luas diperbaiki agar benar membaca pemisah ribuan/tanda desimal Indonesia.
+- Alamat aset tetap editable dan auto-expand permanen sesuai isi.
+- Pemilihan Properti/Lokasi mengisi alamat master sebagai default dan langsung menyesuaikan tinggi textarea.
+- Saat menyimpan, alamat override pada Akta diprioritaskan; perubahan alamat Akta tidak menimpa alamat master Properti/Lokasi.
+- Tidak memerlukan perubahan database/SQL.
