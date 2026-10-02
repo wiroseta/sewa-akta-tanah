@@ -2060,3 +2060,36 @@ function compactLeaseNotesAfterAI(){
  };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 })();
+
+// v1.20.36 RC revision — Lease PBB picker: never infer Akta linkage from property.
+// Load all master PBB/NOP as selectable candidates. Existing lease_pbb rows alone define selection.
+// Current-property candidates are sorted first; other PBB remain available when the list is expanded.
+(function v12036LeasePbbAllMasterCandidates(){
+  const originalLoadLeaseRelations = loadLeaseRelations;
+  loadLeaseRelations = async function(contractId, assetId){
+    await originalLoadLeaseRelations(contractId, assetId);
+    let pbbIds=[];
+    if(contractId){
+      const p=await sb.from('lease_pbb').select('pbb_id').eq('contract_id',contractId);
+      if(p.error)throw p.error;
+      pbbIds=(p.data||[]).map(x=>String(x.pbb_id));
+    }
+    const pr=await sb.from('pbb_records').select('id,nop,tax_year,land_area,building_area,property_alias,asset_id,object_address').order('tax_year',{ascending:false});
+    if(pr.error)throw pr.error;
+    leasePbbRows=(pr.data||[]).map(r=>({...r,_selected:pbbIds.includes(String(r.id))}));
+    leasePbbRows.sort((a,b)=>{
+      const as=String(a.asset_id)===String(assetId)?0:1, bs=String(b.asset_id)===String(assetId)?0:1;
+      if(as!==bs)return as-bs;
+      return String(a.property_alias||relationAssetName(a.asset_id)||'').localeCompare(String(b.property_alias||relationAssetName(b.asset_id)||''),'id',{sensitivity:'base'}) || (Number(b.tax_year)||0)-(Number(a.tax_year)||0);
+    });
+    leasePbbOthersVisible=false;
+    window.renderLeasePbbPicker();
+  };
+
+  const baseRender=window.renderLeasePbbPicker;
+  window.renderLeasePbbPicker=function(){
+    baseRender();
+    const help=document.querySelector('#leasePbbSelected')?.parentElement?.querySelector('h3 + p');
+    if(help)help.textContent='PBB yang sudah dipilih selalu terlihat. Tekan + untuk melihat seluruh Master PBB/NOP dan memilih PBB yang dicakup Akta ini. Relasi tidak dibuat otomatis dari Properti/Lokasi.';
+  };
+})();
