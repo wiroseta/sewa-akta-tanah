@@ -523,3 +523,10 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - OAuth meminta consent ulang agar scope write baru benar-benar diberikan.
 - Retry setelah PATCH gagal tidak membuat backup original kedua bila ditemukan backup sebelumnya dengan nama sumber yang sesuai dan MD5 identik dengan original saat ini.
 - Backup baru diberi appProperties `palmBackupOriginalId` untuk identifikasi ke depan.
+
+
+## v1.20.56 RC — Drive backup retry deduplication
+- Backup retry now stores the exact backup Drive file ID locally before PATCHing the source file.
+- Retry verifies the candidate by Drive MD5; if Drive does not expose a usable MD5, PALM verifies size and SHA-256 of the actual backup bytes before reuse.
+- Legacy BACKUP ORIGINAL files from v1.20.54/v1.20.55 are searched in the same parent folder and can be safely reused after content verification.
+- Ghostscript HTTPS, OAuth Drive write scope, Quality Check, and same-file-ID PATCH flow are unchanged.

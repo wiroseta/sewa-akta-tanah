@@ -2312,27 +2312,46 @@ async function validateOptimizedPdf(blob,pages,dimensions){
  for(let i=1;i<=pages;i++){let p=await check.getPage(i),v=p.getViewport({scale:1}),w=v.width*25.4/72,h=v.height*25.4/72,[ow,oh]=dimensions[i-1];if(Math.abs(w-ow)>1||Math.abs(h-oh)>1)throw new Error('Quality Check gagal: ukuran halaman berubah.')}
  return true;
 }
-async function createDriveOriginalBackup(id){
- let metaRes=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?fields=id,name,parents,mimeType,md5Checksum&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
+async function palmSha256Hex(data){
+ let buf=data instanceof ArrayBuffer?data:(data?.arrayBuffer?await data.arrayBuffer():data);
+ if(!buf||!crypto?.subtle) return '';
+ let digest=await crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function createDriveOriginalBackup(id,original){
+ let metaRes=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?fields=id,name,parents,mimeType,md5Checksum,size&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
  let meta=await metaRes.json().catch(()=>({}));if(!metaRes.ok)throw new Error(meta?.error?.message||'Tidak dapat membaca metadata file untuk backup.');
- // v1.20.55: bila percobaan sebelumnya sudah membuat backup tetapi PATCH gagal,
- // pakai kembali backup identik agar retry tidak membuat backup berulang.
- if(meta.md5Checksum&&meta.parents?.length){
-  let parent=meta.parents[0],prefix=`${meta.name||'PDF'} - BACKUP ORIGINAL `,q=`'${parent.replace(/'/g,"\\'")}' in parents and trashed=false and name contains 'BACKUP ORIGINAL'`;
-  let lr=await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&orderBy=createdTime desc&pageSize=20&fields=files(id,name,webViewLink,md5Checksum,createdTime)&supportsAllDrives=true&includeItemsFromAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});
-  let lo=await lr.json().catch(()=>({}));
-  if(lr.ok){let same=(lo.files||[]).find(f=>f.name?.startsWith(prefix)&&f.md5Checksum===meta.md5Checksum);if(same)return {...same,reused:true}}
+ // v1.20.56: retry-safe backup. Pertama gunakan marker lokal dari backup yang baru saja dibuat;
+ // lalu cari backup PALM/legacy di folder yang sama. Kandidat legacy diverifikasi dengan checksum
+ // atau, bila perlu, byte-for-byte SHA-256 sebelum dipakai kembali.
+ const markerKey=`palmDriveBackup:${id}`;
+ let marker=null;try{marker=JSON.parse(localStorage.getItem(markerKey)||'null')}catch(_){marker=null}
+ async function getCandidate(fid){
+  if(!fid)return null;let rr=await fetch(`https://www.googleapis.com/drive/v3/files/${fid}?fields=id,name,webViewLink,md5Checksum,size,trashed,appProperties&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}}),oo=await rr.json().catch(()=>({}));return rr.ok&&!oo.trashed?oo:null;
  }
- let stamp=new Date().toISOString().replace(/[:.]/g,'-'),body={name:`${meta.name||'PDF'} - BACKUP ORIGINAL ${stamp}`,appProperties:{palmBackupOriginalId:id}};if(meta.parents?.length)body.parents=meta.parents;
- let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}/copy?fields=id,name,webViewLink,md5Checksum&supportsAllDrives=true`,{method:'POST',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
- let out=await r.json().catch(()=>({}));if(!r.ok)throw new Error(out?.error?.message||'Gagal membuat backup original di Google Drive.');return {...out,reused:false};
+ async function candidateMatches(c){
+  if(!c)return false;
+  if(meta.md5Checksum&&c.md5Checksum)return c.md5Checksum===meta.md5Checksum;
+  if(meta.size&&c.size&&String(c.size)!==String(meta.size))return false;
+  if(!original)return false;
+  let br=await fetch(`https://www.googleapis.com/drive/v3/files/${c.id}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});if(!br.ok)return false;
+  let [a,b]=await Promise.all([palmSha256Hex(original),palmSha256Hex(await br.arrayBuffer())]);return !!a&&a===b;
+ }
+ if(marker?.backupId){let c=await getCandidate(marker.backupId);if(await candidateMatches(c))return {...c,reused:true};try{localStorage.removeItem(markerKey)}catch(_){}}
+ if(meta.parents?.length){
+  let parent=meta.parents[0],prefix=`${meta.name||'PDF'} - BACKUP ORIGINAL `,q=`'${parent.replace(/'/g,"\\'")}' in parents and trashed=false and name contains 'BACKUP ORIGINAL'`;
+  let lr=await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&orderBy=createdTime desc&pageSize=50&fields=files(id,name,webViewLink,md5Checksum,size,createdTime,appProperties)&supportsAllDrives=true&includeItemsFromAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}}),lo=await lr.json().catch(()=>({}));
+  if(lr.ok){for(const c of (lo.files||[])){if(!c.name?.startsWith(prefix))continue;if(c.appProperties?.palmBackupOriginalId&&c.appProperties.palmBackupOriginalId!==id)continue;if(await candidateMatches(c)){try{localStorage.setItem(markerKey,JSON.stringify({backupId:c.id,sourceMd5:meta.md5Checksum||'',savedAt:new Date().toISOString()}))}catch(_){}return {...c,reused:true}}}}
+ }
+ let stamp=new Date().toISOString().replace(/[:.]/g,'-'),body={name:`${meta.name||'PDF'} - BACKUP ORIGINAL ${stamp}`,appProperties:{palmBackupOriginalId:id,palmSourceMd5:meta.md5Checksum||''}};if(meta.parents?.length)body.parents=meta.parents;
+ let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}/copy?fields=id,name,webViewLink,md5Checksum,size,appProperties&supportsAllDrives=true`,{method:'POST',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)}),out=await r.json().catch(()=>({}));if(!r.ok)throw new Error(out?.error?.message||'Gagal membuat backup original di Google Drive.');
+ try{localStorage.setItem(markerKey,JSON.stringify({backupId:out.id,sourceMd5:meta.md5Checksum||'',savedAt:new Date().toISOString()}))}catch(_){}return {...out,reused:false};
 }
 async function optimizeDrivePdf(btn,urlInput){let url=urlInput?.value?.trim()||'',id=driveFileIdFromUrl(url),st=btn.closest('.landtitle,.ai-extract,.drive-extract,.master-section')?.querySelector('.drive-local-status,.land-ai-status,.muted');if(!id)return alert('Link Google Drive PDF tidak valid.');let say=t=>{if(st)st.textContent=t};if(!googleDriveToken&&!restoreDriveToken()){say('Menghubungkan Google Drive…');const ok=await connectDriveFromButton(btn);if(!ok){say('Optimasi belum dimulai karena Google Drive belum terhubung. File asli tidak berubah.');return}say('Google Drive terhubung. Melanjutkan optimasi PDF…')}btn.disabled=true;try{say('Mengambil PDF dari Google Drive…');let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});if(!r.ok)throw new Error('Gagal mengambil PDF dari Google Drive.');let original=await r.arrayBuffer(),origSize=original.byteLength;say('Menyiapkan modul pemeriksaan PDF…');await ensurePdfOptimizerReady();let source=await window.pdfjsLib.getDocument({data:original.slice(0)}).promise,pages=source.numPages;if(!pages)throw new Error('PDF tidak memiliki halaman.');let dimensions=[];for(let i=1;i<=pages;i++){let p=await source.getPage(i),v=p.getViewport({scale:1});dimensions.push([v.width*25.4/72,v.height*25.4/72])}
  let local=await palmLocalOptimizePdf(original,say),blob=null,engine='Optimizer PALM';
  if(local){blob=local.blob;engine=local.engine;try{say('Memeriksa hasil Ghostscript…');await validateOptimizedPdf(blob,pages,dimensions)}catch(e){say('Hasil Ghostscript tidak lolos pemeriksaan. Menggunakan optimizer PALM…');blob=null;engine='Optimizer PALM'}}
  if(!blob){let outDoc=null;for(let i=1;i<=pages;i++){say(`Mengoptimalkan halaman ${i} dari ${pages}…`);let page=await source.getPage(i),base=page.getViewport({scale:1}),dpi=180,scale=dpi/72,vp=page.getViewport({scale}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);let ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);await page.render({canvasContext:ctx,viewport:vp}).promise;let mmW=base.width*25.4/72,mmH=base.height*25.4/72,img=canvas.toDataURL('image/jpeg',0.82);if(!outDoc)outDoc=new window.jspdf.jsPDF({unit:'mm',format:[mmW,mmH],orientation:mmW>mmH?'landscape':'portrait',compress:true});else outDoc.addPage([mmW,mmH],mmW>mmH?'landscape':'portrait');outDoc.addImage(img,'JPEG',0,0,mmW,mmH,undefined,'FAST');canvas.width=canvas.height=1}blob=outDoc.output('blob');say('Memeriksa kualitas dan struktur…');await validateOptimizedPdf(blob,pages,dimensions)}
  let newSize=blob.size;if(newSize>=origSize*.85){say(`File sudah cukup optimal (${(origSize/1048576).toFixed(1)} MB → ${(newSize/1048576).toFixed(1)} MB). File asli tidak diubah dan backup tidak dibuat.`);return}
- say('Quality Check lulus. Memastikan backup original di Google Drive…');let backup=await createDriveOriginalBackup(id);
+ say('Quality Check lulus. Memastikan backup original di Google Drive…');let backup=await createDriveOriginalBackup(id,original);
  say(backup.reused?'Backup original identik dari percobaan sebelumnya ditemukan; tidak membuat backup kedua. Memperbarui content file Google Drive yang sama…':'Backup original selesai. Memperbarui content file Google Drive yang sama…');let up=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=media&supportsAllDrives=true`,{method:'PATCH',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/pdf'},body:blob});if(!up.ok){let e=await up.json().catch(()=>({}));throw new Error((e?.error?.message||'Gagal memperbarui Google Drive.')+` Backup original tetap tersimpan: ${backup.name||backup.id}.`)}say(`Optimasi berhasil via ${engine} · ${(origSize/1048576).toFixed(1)} MB → ${(newSize/1048576).toFixed(1)} MB · hemat ${Math.round((1-newSize/origSize)*100)}% · ${pages} halaman · Quality Check: Lulus · backup original: ${backup.name||'tersimpan'}.`)}catch(e){say('Optimasi dibatalkan. '+(e.message||e))}finally{btn.disabled=false}}
 
 function installPdfOptimizeButtons(root=document){root.querySelectorAll?.('.landtitle').forEach(row=>{let drive=row.querySelector('.driveUrl'),ai=row.querySelector('.land-drive-ai-btn');if(!drive||!ai||row.querySelector('.pdf-optimize-btn'))return;let b=document.createElement('button');b.type='button';b.className='secondary pdf-optimize-btn';b.setAttribute('aria-label','Optimasi PDF');b.innerHTML=pdfOptimizeIcon();b.onclick=()=>optimizeDrivePdf(b,drive);ai.after(b)})}
