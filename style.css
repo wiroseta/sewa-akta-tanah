@@ -1203,3 +1203,17 @@ textarea.compact-hover-textarea.is-expanded{
 /* v1.20.59 RC — standalone PDF optimizer dialog */
 .global-pdf-optimizer-dialog{width:min(820px,calc(100vw - 32px));max-width:820px;padding:0;border:0;border-radius:18px;overflow:hidden}
 .global-pdf-optimizer-dialog .dialog-title{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 16px;border-bottom:1px solid #e5e7eb}.global-pdf-optimizer-dialog .dialog-title h2{margin:0 0 6px;font-size:22px}.global-pdf-optimizer-dialog .dialog-title p{margin:0;line-height:1.45}.global-pdf-optimizer-body{padding:22px 24px 8px}.global-pdf-optimizer-body label{display:block;font-weight:650}.global-pdf-optimizer-body input{width:100%;margin-top:8px}.global-pdf-optimizer-actions{display:flex;gap:10px;align-items:center;margin-top:12px}.global-pdf-optimizer-actions #globalPdfOptimizerOpenBtn{min-height:46px}.global-pdf-optimizer-actions .pdf-optimize-btn{width:46px!important;min-width:46px!important;height:46px!important}.global-pdf-optimizer-dialog .drive-local-status{margin-top:16px;padding:12px 14px;min-height:44px;background:#f6f8fb;border-radius:10px;line-height:1.4}.global-pdf-optimizer-dialog>.actions{padding:14px 24px 22px}.global-optimizer-menu-icon{font-size:23px!important;font-weight:800!important;color:#1473cf!important}@media(max-width:620px){.global-pdf-optimizer-dialog{width:calc(100vw - 16px)}.global-pdf-optimizer-actions{align-items:stretch;flex-wrap:wrap}.global-pdf-optimizer-actions #globalPdfOptimizerOpenBtn{flex:1}}
+
+/* v1.20.59 RC — Property detail desktop alignment + certificate AI toolbar correction */
+@media(min-width:1000px){
+  .asset-detail-page form{width:min(1420px,calc(100% - 48px))!important;max-width:1420px!important;margin-left:auto!important;margin-right:auto!important;padding-left:20px!important;padding-right:20px!important}
+  .asset-detail-search,.asset-detail-related{width:min(1420px,calc(100% - 48px))!important;max-width:1420px!important}
+  .asset-detail-topbar{padding-left:max(24px,calc((100vw - 1420px)/2 + 20px))!important;padding-right:max(24px,calc((100vw - 1420px)/2 + 20px))!important}
+  .repeat-row.landtitle .land-ai-controls{display:grid!important;grid-template-columns:minmax(300px,1fr) 118px minmax(205px,230px) minmax(190px,220px)!important;gap:10px!important;align-items:end!important;width:100%!important}
+  .repeat-row.landtitle .land-ai-controls .land-file{min-width:0!important}
+  .repeat-row.landtitle .land-ai-controls .land-ai-btn,.repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{width:100%!important;min-width:0!important;height:46px!important}
+  .repeat-row.landtitle .land-ai-controls .pdf-optimize-btn{width:100%!important;min-width:205px!important;height:46px!important;padding:0 14px 0 44px!important;font-size:13px!important;line-height:1.15!important;white-space:nowrap!important;justify-content:center!important}
+  .repeat-row.landtitle .land-ai-controls .pdf-optimize-btn::before{inset:auto!important;left:12px!important;top:9px!important;width:28px!important;height:28px!important;background-size:26px 26px!important}
+}
+#assetForm textarea.asset-property-name{min-height:48px;resize:none;overflow:hidden;line-height:1.35}
+#assetOpenMaps .map-label-icon{display:inline-flex;vertical-align:middle;margin-right:5px}
