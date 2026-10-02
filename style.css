@@ -1119,3 +1119,7 @@ textarea.compact-hover-textarea.is-expanded{
 #form textarea[name="notes"].lease-notes-compact.is-expanded{
   height:auto!important;min-height:118px!important;max-height:none!important;overflow-y:hidden!important;
 }
+
+/* v1.20.37: unified compact/expand behavior for every multiline field in Detail Akta Sewa. */
+#form textarea.lease-dynamic-long{resize:vertical!important;overflow-y:auto!important}
+#form textarea.lease-dynamic-long.is-expanded{max-height:none!important;overflow-y:hidden!important}

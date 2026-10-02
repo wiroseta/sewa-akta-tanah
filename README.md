@@ -451,3 +451,10 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Alamat Aset dan Opsi/periode perpanjangan sekarang auto-expand mengikuti seluruh isi dan mempertahankan tinggi setelah blur/mouse keluar.
 - Menghapus perilaku compact-on-blur v1.20.34 untuk kedua field tersebut.
 - Mempertahankan perbaikan v1.20.35: format luas Indonesia, tombol hapus pembayaran aktual, deduplikasi/full-text pencarian, dan alignment halaman.
+
+
+## v1.20.37 RC
+- Nama aplikasi: Property Asset & Legal Management.
+- Audit Detail Akta Sewa: semua textarea/multiline field dinamis membesar penuh saat fokus/input dan kembali compact setelah blur.
+- Keterangan/objek sewa, Halaman sumber, dan Keterangan denah sewa diubah menjadi multiline agar teks panjang tidak terpotong.
+- Mempertahankan seluruh perbaikan v1.20.36 termasuk PBB master picker.

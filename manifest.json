@@ -1,11 +1,11 @@
 {
-  "name": "Sewa & Akta Tanah Manager",
+  "name": "Property Asset & Legal Management",
   "short_name": "Sewa Akta",
   "start_url": "./?v=1.19.77",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#f5f5f7",
-  "description": "Sewa & Akta Tanah v1.19.77 RC",
+  "description": "Property Asset & Legal Management v1.20.37 RC",
   "icons": [
     {
       "src": "icons/icon-192.png",
