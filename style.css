@@ -896,9 +896,9 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 .payrow .label,.ledger-row .ledgerNotes{height:38px!important;min-height:38px!important;max-height:38px;overflow:hidden!important;transition:max-height .12s ease,height .12s ease}
 .payrow .label.payment-text-expanded,.ledger-row .ledgerNotes.payment-text-expanded{height:auto!important;max-height:none!important;overflow:hidden!important}
 @media(max-width:900px){.payment-column-head{display:none!important}.payrow,.ledger-row{grid-template-columns:1fr 1fr!important}}
-\n\n
 
-/* v1.20.25 — Objek yang Dicakup Akta Sewa as native collapsible section */
+
+/* v1.20.26 — Objek yang Dicakup Akta Sewa as native collapsible section */
 .lease-object-details{padding:0!important;overflow:hidden;background:#fff!important;border:1px solid #dedee5!important;border-radius:14px!important}
 .lease-object-summary{list-style:none;display:grid;grid-template-columns:minmax(0,1fr) auto 20px;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:linear-gradient(115deg,rgba(8,85,165,.96),rgba(35,126,211,.86));color:#fff;font-weight:800}
 .lease-object-summary::-webkit-details-marker{display:none}.lease-object-title{font-size:16px}.lease-object-count{font-size:12px;color:rgba(255,255,255,.82);font-weight:600;text-align:right}.lease-object-chevron::after{content:'▶';font-size:14px}.lease-object-details[open]>.lease-object-summary .lease-object-chevron::after{content:'▼'}

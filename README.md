@@ -382,7 +382,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Baris Pembayaran Aktual yang baru tidak lagi hilang saat jenis diubah ke Security Deposit sebelum tanggal/jumlah diisi.
 - Hanya Sewa yang masuk rekonsiliasi harga sewa/PPh.
 
-## v1.20.25 RC — One-Line Payment Layout
+## v1.20.26 RC — One-Line Payment Layout
 - Jadwal pembayaran desktop: Jenis | Tanggal | Nominal | Keterangan dinamis | − dalam satu baris.
 - Riwayat pembayaran aktual desktop: Jenis | Tanggal | Nominal | PPh | Metode/Bank | Referensi/Bukti | Catatan dinamis | − dalam satu baris.
 - Tombol hapus memakai tanda − saja.
@@ -391,7 +391,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Tidak ada perubahan database/SQL.
 
 
-## v1.20.25 RC — Collapsible Lease Objects
+## v1.20.26 RC — Collapsible Lease Objects
 - Objek yang Dicakup Akta Sewa kini memakai header biru yang dapat hide/show.
 - Header menampilkan ringkasan jumlah sertifikat, bangunan, PBB, dan fasilitas.
 - Status buka/tutup disimpan lokal agar konsisten saat halaman dibuka kembali.
