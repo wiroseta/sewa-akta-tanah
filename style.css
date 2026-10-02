@@ -1015,3 +1015,4 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
  #payments>.payrow>.label,#payments>.payrow>.payment-row-summary,#paymentLedger>.ledger-row>.ledgerNotes{grid-column:1/-1!important}
  #payments>.payrow>.remove-payment,#paymentLedger>.ledger-row>.ledgerRemove{grid-column:2!important;justify-self:end!important}
 }
+\n\n/* v1.20.32 — dynamic asset address and Indonesian area fields */\ntextarea.asset-address-dynamic{min-height:42px!important;height:auto;overflow:hidden!important;resize:none!important;white-space:pre-wrap;overflow-wrap:anywhere}\n.area-id-input{font-variant-numeric:tabular-nums}\n

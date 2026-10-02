@@ -407,3 +407,9 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Removed the 900px stacking breakpoint that caused Mac/tablet-sized windows to become vertical; stacking now occurs only on phone widths below 600px.
 - Keterangan and Catatan stay compact at rest and expand to their full content on hover/focus, then collapse again on pointer leave/blur.
 - Keterangan no longer reserves an excessively wide fixed column; its width is proportional to the available row width.
+
+
+## v1.20.32 RC — Indonesian Area Format & Dynamic Asset Address
+- Luas tanah/bangunan Akta Sewa ditampilkan dalam format Indonesia (contoh 20.928,21 dan 14.963,96), tetap disimpan numerik.
+- Alamat aset dapat diedit dan auto-expand mengikuti seluruh isi tanpa kembali memotong teks.
+- Tidak ada perubahan database/SQL. Semua aturan payment page v1.20.31 dipertahankan.
