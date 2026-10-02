@@ -439,3 +439,15 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 ## v1.20.35 RC revision (2026-10-02)
 - Lease land/building area accepts standard-keyboard decimal point while editing (e.g. `10499.5`) and displays Indonesian format on blur (`10.499,5`).
 - Actual Payment History delete button (`−`) is explicitly kept visible without changing the desktop one-row payment layout.
+
+## v1.20.35 RC revision — Global Page Alignment
+- Standardized the horizontal content rail/gutter across Akta Sewa detail, Properti detail/master, PBB, and Akta master pages.
+- Fixed the Akta detail summary/search mismatch caused by a nested second gutter.
+- Desktop uses the existing 1180 px content rail with 20 px gutter; narrow screens use 12 px.
+
+
+## v1.20.36 RC
+- Memperbaiki regresi textarea dinamis pada Identitas & Masa Sewa.
+- Alamat Aset dan Opsi/periode perpanjangan sekarang auto-expand mengikuti seluruh isi dan mempertahankan tinggi setelah blur/mouse keluar.
+- Menghapus perilaku compact-on-blur v1.20.34 untuk kedua field tersebut.
+- Mempertahankan perbaikan v1.20.35: format luas Indonesia, tombol hapus pembayaran aktual, deduplikasi/full-text pencarian, dan alignment halaman.

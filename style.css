@@ -178,7 +178,7 @@ dialog{max-width:calc(100vw - 24px);overflow-x:hidden}dialog form{min-width:0;ov
 .utility-menu-panel button[hidden]{display:none !important;}
 
 /* v1.19.1 Document History & AI Comparison */
-.history-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.history-btn{margin-left:6px}.history-dialog{width:min(1050px,94vw);max-height:90vh}.history-item,.history-search-hit{padding:12px;margin:8px 0;border:1px solid #dedee5;border-radius:12px;background:#fff}.history-item b,.history-search-hit b{display:block;margin-bottom:5px}.history-compare-controls{display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:center;margin:14px 0}.history-comparison{padding:12px;border:1px solid #d8d8df;border-radius:14px;background:#fafaff}.compare-row,.compare-warning,.compare-ok{padding:10px;border-radius:10px;margin:7px 0;background:#fff}.compare-row>div{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px}.compare-row span{padding:7px;border-radius:8px;background:#f2f2f7}.compare-warning{background:#fff8e5;border:1px solid #f2d58b}.compare-ok{background:#eef9f0;border:1px solid #b9dfbf}#historySearchInput{width:100%;font-size:16px;padding:12px}.history-search-hit div{font-size:13px;color:#555;word-break:break-word}@media(max-width:760px){.history-compare-controls{grid-template-columns:1fr}.history-compare-controls>span{display:none}.compare-row>div{grid-template-columns:1fr}.history-btn{margin-left:0}}
+.history-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.history-btn{margin-left:0}.history-dialog{width:min(1050px,94vw);max-height:90vh}.history-item,.history-search-hit{padding:12px;margin:8px 0;border:1px solid #dedee5;border-radius:12px;background:#fff}.history-item b,.history-search-hit b{display:block;margin-bottom:5px}.history-compare-controls{display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:center;margin:14px 0}.history-comparison{padding:12px;border:1px solid #d8d8df;border-radius:14px;background:#fafaff}.compare-row,.compare-warning,.compare-ok{padding:10px;border-radius:10px;margin:7px 0;background:#fff}.compare-row>div{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px}.compare-row span{padding:7px;border-radius:8px;background:#f2f2f7}.compare-warning{background:#fff8e5;border:1px solid #f2d58b}.compare-ok{background:#eef9f0;border:1px solid #b9dfbf}#historySearchInput{width:100%;font-size:16px;padding:12px}.history-search-hit div{font-size:13px;color:#555;word-break:break-word}@media(max-width:760px){.history-compare-controls{grid-template-columns:1fr}.history-compare-controls>span{display:none}.compare-row>div{grid-template-columns:1fr}.history-btn{margin-left:0}}
 
 /* v1.19.3 AI document status */
 .ai-doc-status{display:inline-block;margin-top:8px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}.ai-read{background:#eef9f0;border:1px solid #b9dfbf}.ai-unread{background:#fff8e5;border:1px solid #f2d58b}.ai-saved{background:#f2f2f7;border:1px solid #d8d8df}
@@ -1059,3 +1059,63 @@ textarea.compact-hover-textarea.is-expanded{
 #paymentLedger>.ledger-row{overflow:visible!important}
 /* v1.20.35 search dedupe/full result text */
 .lease-search-full-text{white-space:normal;overflow:visible;text-overflow:clip;max-height:none;word-break:break-word;overflow-wrap:anywhere}
+
+/* v1.20.35 revision — one global horizontal content rail.
+   Prevent page-level controls from acquiring independent left/right gutters. */
+:root{--app-content-max:1180px;--app-content-gutter:20px}
+.lease-detail-page form,.asset-detail-page form,
+.pbb-page,.lease-master-page,.asset-master-page{
+  box-sizing:border-box!important;
+  width:min(var(--app-content-max),100%)!important;
+  max-width:var(--app-content-max)!important;
+  margin-left:auto!important;margin-right:auto!important;
+  padding-left:var(--app-content-gutter)!important;padding-right:var(--app-content-gutter)!important;
+}
+/* These controls live inside the detail form: inherit its rail, do not add a second gutter. */
+.lease-detail-page form>.lease-detail-summary,
+.lease-detail-page form>.lease-local-search{
+  box-sizing:border-box!important;width:100%!important;max-width:none!important;
+  margin-left:0!important;margin-right:0!important;
+}
+/* Property detail controls are outside/alongside the form, so use the same centered rail explicitly. */
+.asset-detail-search,.asset-detail-related{
+  box-sizing:border-box!important;
+  width:min(calc(var(--app-content-max) - (2 * var(--app-content-gutter))),calc(100% - (2 * var(--app-content-gutter))))!important;
+  margin-left:auto!important;margin-right:auto!important;
+}
+@media(max-width:760px){
+ :root{--app-content-gutter:12px}
+ .lease-detail-page form,.asset-detail-page form,.pbb-page,.lease-master-page,.asset-master-page{
+   width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;
+   padding-left:var(--app-content-gutter)!important;padding-right:var(--app-content-gutter)!important;
+ }
+ .lease-detail-page form>.lease-detail-summary,.lease-detail-page form>.lease-local-search{width:100%!important;margin-left:0!important;margin-right:0!important}
+ .asset-detail-search,.asset-detail-related{width:calc(100% - 24px)!important}
+}
+
+
+/* v1.20.36 — lease long-text regression fix: persistent content-height after blur. */
+#contractForm textarea[name="propertyAddress"],
+#contractForm textarea[name="renewalTerm"]{
+  height:auto!important;
+  min-height:58px!important;
+  max-height:none!important;
+  overflow-y:hidden!important;
+  resize:none!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.4!important;
+}
+
+
+/* v1.20.36 revision — lease history controls share the same left rail. */
+#leaseHistoryBtn,#historicalLeaseBtn{margin-left:0!important}
+#form .history-actions{margin-left:0!important;padding-left:0!important;justify-content:flex-start!important}
+
+/* Catatan Tambahan: compact after AI/read, expand only while actively reading/editing. */
+#form textarea[name="notes"].lease-notes-compact{
+  height:118px!important;min-height:118px!important;max-height:118px!important;overflow-y:auto!important;resize:vertical!important;
+}
+#form textarea[name="notes"].lease-notes-compact.is-expanded{
+  height:auto!important;min-height:118px!important;max-height:none!important;overflow-y:hidden!important;
+}

@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.35-RC";
+const APP_BUILD="1.20.36-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -180,7 +180,7 @@ function applyExtracted(x){
   if(Array.isArray(x.payments)&&x.payments.length){$('#payments').innerHTML='';x.payments.forEach(v=>pay({...v,status:'unpaid'}));paymentLedger=[];renderPaymentLedger();allocateLedger()}
   if(Array.isArray(x.clauses)&&x.clauses.length){$('#clauses').innerHTML='';x.clauses.forEach(v=>addRepeat('clauses',v,'clause'))}
   if(Array.isArray(x.validationWarnings)&&x.validationWarnings.length){let n=document.querySelector('[name="notes"]');if(n)n.value=(n.value?n.value+'\n':'')+'PERINGATAN VALIDASI AI: '+x.validationWarnings.join(' | ')}
-  renderTaxAIAnalysis(x);setField('verificationStatus','perlu_verifikasi');$('#verifyBadge').textContent='PERLU VERIFIKASI';updatePaymentCheck();syncOpenDocButton();syncOpenMapsButton();
+  renderTaxAIAnalysis(x);setField('verificationStatus','perlu_verifikasi');$('#verifyBadge').textContent='PERLU VERIFIKASI';updatePaymentCheck();syncOpenDocButton();syncOpenMapsButton();requestAnimationFrame(()=>compactLeaseNotesAfterAI());
 }
 
 async function invokeExtractLease(body){
@@ -2031,14 +2031,32 @@ function bindCompactHoverTextareas(root=document){
 }
 function refreshLeaseIdentityPresentation(root=document){
   bindIndonesianAreaInputs(root);
-  bindCompactHoverTextareas(root);
+  // v1.20.36: these long lease fields must permanently follow their content height.
+  // Do not collapse them again on mouseleave/blur.
   const a=root.querySelector?.('[name="propertyAddress"]');
-  if(a){a.readOnly=false;a.classList.add('asset-address-dynamic','compact-hover-textarea');bindCompactHoverTextareas(a);}
+  if(a){a.readOnly=false;a.classList.add('asset-address-dynamic');a.classList.remove('compact-hover-textarea','is-expanded');bindDynamicTextareas(a.parentElement||root);autoGrowTextarea(a);}
   const r=root.querySelector?.('[name="renewalTerm"]');
-  if(r){r.classList.add('compact-hover-textarea');bindCompactHoverTextareas(r);}
+  if(r){r.classList.remove('compact-hover-textarea','is-expanded');bindDynamicTextareas(r.parentElement||root);autoGrowTextarea(r);}
 }
 document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>refreshLeaseIdentityPresentation()));
 const v12034Observer=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)refreshLeaseIdentityPresentation(n)})));
 v12034Observer.observe(document.documentElement,{childList:true,subtree:true});
 document.addEventListener('change',e=>{if(e.target?.matches?.('[name="assetId"],#contractAssetSelect'))requestAnimationFrame(()=>refreshLeaseIdentityPresentation())});
 
+
+
+// v1.20.36 revision — Catatan Tambahan returns to a readable compact height after AI finishes.
+// It expands while the user is reading/editing, then returns to its original compact window.
+function compactLeaseNotesAfterAI(){
+  const el=document.querySelector('#form [name="notes"]'); if(!el)return;
+  el.classList.add('lease-notes-compact'); el.style.height='';
+}
+(function(){
+ const install=()=>{const el=document.querySelector('#form [name="notes"]');if(!el||el.dataset.notesCompactBound==='1')return;
+  el.dataset.notesCompactBound='1';
+  el.addEventListener('focus',()=>{el.classList.add('is-expanded');autoGrowTextarea(el)});
+  el.addEventListener('input',()=>{if(document.activeElement===el){el.classList.add('is-expanded');autoGrowTextarea(el)}});
+  el.addEventListener('blur',()=>{el.classList.remove('is-expanded');el.style.height=''});
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
+})();
