@@ -397,7 +397,7 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Status buka/tutup disimpan lokal agar konsisten saat halaman dibuka kembali.
 
 
-## v1.20.28 RC — Payment Header & Dynamic Notes Definitive Fix
+## v1.20.29 RC — Payment Header & Dynamic Notes Definitive Fix
 - Header Jadwal dan Riwayat memakai grid kolom yang sama persis dengan baris data.
 - Keterangan/Catatan compact normal, expand saat pointer/focus, compact kembali saat pointer keluar/blur.
 - Header Jadwal tetap biru saat ada peringatan.

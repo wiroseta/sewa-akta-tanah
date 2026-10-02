@@ -907,7 +907,7 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 .lease-object-body{padding:18px}.lease-object-details[open]>.lease-object-summary{border-bottom:1px solid rgba(0,0,0,.08)}
 @media(max-width:760px){.lease-object-summary{grid-template-columns:minmax(0,1fr) minmax(0,96px) 18px;padding:10px 11px}.lease-object-title{font-size:16px}.lease-object-count{font-size:10px;line-height:1.15}.lease-object-body{padding:10px}}
 
-/* v1.20.28 — definitive payment table headers and dynamic note behavior */
+/* v1.20.29 — definitive payment table headers and dynamic note behavior */
 .payment-column-head{display:grid!important;box-sizing:border-box!important;margin:6px 7px 5px!important;padding:0!important;column-gap:7px!important;width:calc(100% - 14px)!important;color:#5f6368!important;font-size:11px!important;font-weight:700!important;line-height:1.15!important;align-items:end!important}
 .payment-column-head>span{display:block!important;min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .payment-schedule-head{grid-template-columns:132px 112px 176px minmax(250px,1fr) 34px!important}
@@ -919,3 +919,13 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 /* warning changes border/summary only; payment section header stays blue */
 .collapsible-section.has-attention>.collapsible-header{background:linear-gradient(115deg,var(--v11969-blueGlass1),var(--v11969-blueGlass2))!important;color:#fff!important}
 @media(max-width:900px){.payment-column-head{display:none!important}.payrow,.ledger-row{grid-template-columns:1fr 1fr!important}}
+\n/* v1.20.29 — verified expanding payment notes; compact note columns */
+:root{
+  --schedule-cols-v12029:132px 112px 176px minmax(260px,420px) 34px;
+  --ledger-cols-v12029:132px 112px 178px 150px 112px 124px minmax(180px,260px) 34px;
+}
+.payment-schedule-head,.payrow{grid-template-columns:var(--schedule-cols-v12029)!important;justify-content:start!important}
+.payment-ledger-head,.ledger-row{grid-template-columns:var(--ledger-cols-v12029)!important;justify-content:start!important}
+.payrow .label,.ledger-row .ledgerNotes{height:38px!important;min-height:38px!important;max-height:38px!important;overflow:hidden!important;resize:none!important}
+.payrow .label.payment-text-expanded,.ledger-row .ledgerNotes.payment-text-expanded{max-height:none!important;overflow:hidden!important}
+@media(max-width:900px){.payrow,.ledger-row{grid-template-columns:1fr 1fr!important}.payment-column-head{display:none!important}}
