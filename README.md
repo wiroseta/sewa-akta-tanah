@@ -429,3 +429,13 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Alamat Aset dan Opsi/periode perpanjangan compact saat idle, expand penuh saat hover/focus, kembali compact saat mouse keluar/blur.
 - Alamat Aset tetap editable sebagai override Akta dan tidak mengubah master Properti.
 - testgrid.html tidak disertakan dalam release.
+
+
+## v1.20.35 RC — Stable Indonesian Area Formatting
+- Fix Luas Tanah dan Luas Bangunan agar format Indonesia bertahan setelah focus/blur dan round-trip simpan/buka.
+- Titik ribuan seperti 10.499 tidak lagi salah dibaca sebagai desimal 10,499.
+
+
+## v1.20.35 RC revision (2026-10-02)
+- Lease land/building area accepts standard-keyboard decimal point while editing (e.g. `10499.5`) and displays Indonesian format on blur (`10.499,5`).
+- Actual Payment History delete button (`−`) is explicitly kept visible without changing the desktop one-row payment layout.

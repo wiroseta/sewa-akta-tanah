@@ -1037,3 +1037,23 @@ textarea.compact-hover-textarea.is-expanded{
   overflow:hidden!important;
 }
 .area-id-input{font-variant-numeric:tabular-nums;}
+
+
+/* v1.20.35 revision — payment delete control must remain visible; desktop stays one row */
+#paymentLedger>.ledger-row>.ledgerRemove,
+#payments>.payrow>.remove-payment{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:2!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:36px!important;
+  padding:0!important;
+  overflow:visible!important;
+  font-size:20px!important;
+  line-height:34px!important;
+  text-align:center!important;
+}
+#paymentLedger>.ledger-row{overflow:visible!important}

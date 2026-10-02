@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.34-RC";
+const APP_BUILD="1.20.35-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -1943,14 +1943,19 @@ function v12025LeaseObjectSummary(){
 })();
 
 
-// v1.20.34 — Indonesian area display + compact/expand-on-hover lease text fields
+// v1.20.35 — stable Indonesian area parse/display + compact/expand-on-hover lease text fields
 function parseIndonesianArea(value){
-  let s=String(value??'').trim().replace(/\s/g,''); if(!s)return 0;
-  // When both separators exist, Indonesian display uses dots for thousands and comma for decimals.
-  if(s.includes(',')&&s.includes('.')) s=s.replace(/\./g,'').replace(',','.');
-  // Comma alone is the decimal separator. A dot alone is accepted as decimal input from stored/API values.
-  else if(s.includes(',')) s=s.replace(',','.');
-  return Number(s)||0;
+  if(typeof value==='number') return Number.isFinite(value)?value:0;
+  let s=String(value??'').trim().replace(/\s/g,'').replace(/m²|m2/gi,''); if(!s)return 0;
+  // Indonesian display/input: dot = thousands, comma = decimal.
+  if(s.includes(',')) s=s.replace(/\./g,'').replace(',','.');
+  else if(s.includes('.')){
+    // A single dot followed by exactly 3 digits is a thousands separator (10.499 => 10499).
+    // Other single-dot forms are accepted as raw/API decimal values (10499.5 => 10499.5).
+    const dots=(s.match(/\./g)||[]).length;
+    if(dots>1 || /^[-+]?\d{1,3}\.\d{3}$/.test(s)) s=s.replace(/\./g,'');
+  }
+  const n=Number(s); return Number.isFinite(n)?n:0;
 }
 function formatIndonesianArea(value){
   const n=typeof value==='number'?value:parseIndonesianArea(value);
@@ -1967,7 +1972,7 @@ function bindIndonesianAreaInputs(root=document){
   fields.forEach(el=>{
     if(el.dataset.areaIdBound!=='1'){
       el.dataset.areaIdBound='1';
-      el.addEventListener('focus',()=>{const n=parseIndonesianArea(el.value);el.value=n?String(n).replace('.',','):''});
+      el.addEventListener('focus',()=>{const n=parseIndonesianArea(el.value);el.value=n?String(n):''});
       el.addEventListener('blur',()=>normalizeAreaField(el));
     }
     if(document.activeElement!==el) normalizeAreaField(el);
