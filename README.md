@@ -489,9 +489,11 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - PDF optimizer still never replaces the Drive file until optimization and structural quality checks pass.
 
 
-## v1.20.47 RC
+## v1.20.48 RC
 - Selector Sertifikat pada Akta Sewa sekarang membaca `asset_land_titles` (many-to-many), bukan hanya `land_titles.asset_id` lama.
 - Sertifikat yang terkait Property Akta ditempatkan pada kelompok utama. Contoh HGB 120 yang terkait SBT 2 dan SBT 3 ditampilkan `SBT 2 · SBT 3`.
 - Sertifikat Property lain tetap dapat dibuka melalui tombol + dan tidak otomatis dipilih.
 - Ikon Optimasi PDF dipindahkan ke CSS pseudo-elements agar tidak dapat dikosongkan oleh legacy button rewriter.
 - OAuth Optimasi PDF tetap auto-connect dan melanjutkan optimasi setelah izin Drive berhasil.
+
+v1.20.48 RC: PDF optimizer loader diganti dari dynamic ES-module PDF.js 4.x ke classic PDF.js 3.11.174 yang kompatibel dengan Safari/GitHub Pages; main library dan worker dipin ke versi yang sama. Ikon optimizer diganti menjadi ikon dokumen + panah kompresi, dirender lewat CSS pseudo-element agar tidak dapat dihapus legacy button rewriter. Acceptance test: JS syntax PASS, optimizer mock end-to-end PASS (download -> render -> quality check -> PATCH), icon visual render PASS 46x46.
