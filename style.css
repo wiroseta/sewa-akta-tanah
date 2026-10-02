@@ -1217,3 +1217,39 @@ textarea.compact-hover-textarea.is-expanded{
 }
 #assetForm textarea.asset-property-name{min-height:48px;resize:none;overflow:hidden;line-height:1.35}
 #assetOpenMaps .map-label-icon{display:inline-flex;vertical-align:middle;margin-right:5px}
+
+/* v1.20.60 RC — verified desktop Property/Sertifikat workspace */
+@media (min-width:900px){
+  .asset-detail-page #assetForm,
+  .asset-detail-page .asset-detail-search,
+  .asset-detail-page .asset-detail-related{
+    width:calc(100vw - 48px)!important;
+    max-width:1540px!important;
+    margin-left:auto!important;margin-right:auto!important;
+  }
+  .asset-detail-page #assetForm{padding-left:0!important;padding-right:0!important}
+  .asset-detail-page #assetForm>.grid,
+  .asset-detail-page #assetForm>.master-section{width:100%!important;max-width:none!important}
+  #assetLandTitles .repeat-row.landtitle{grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;max-width:none!important}
+  #assetLandTitles .repeat-row.landtitle .land-ai-controls{
+    display:grid!important;
+    grid-template-columns:minmax(280px,1fr) 126px 230px 220px!important;
+    gap:10px!important;align-items:end!important;width:100%!important;max-width:none!important
+  }
+  #assetLandTitles .land-ai-controls .land-file{grid-column:auto!important;min-width:0!important;width:auto!important}
+  #assetLandTitles .land-ai-controls .land-ai-btn,
+  #assetLandTitles .land-ai-controls .land-drive-ai-btn,
+  #assetLandTitles .land-ai-controls .pdf-optimize-btn{grid-column:auto!important;width:100%!important;min-width:0!important;height:46px!important;margin:0!important}
+  #assetLandTitles .land-ai-controls .pdf-optimize-btn{padding:0 12px 0 42px!important;font-size:13px!important;line-height:1.15!important;white-space:nowrap!important}
+  #assetLandTitles .land-ai-controls .pdf-optimize-btn::before{left:10px!important;top:9px!important;width:28px!important;height:28px!important;inset:auto!important;background-size:26px 26px!important}
+  #assetLandTitles .repeat-row.landtitle>button:last-child{width:42px!important;height:42px!important;padding:0!important;justify-self:end!important;margin:4px 0 0!important;font-size:20px!important}
+}
+@media (min-width:900px) and (max-width:1120px){
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(230px,1fr) 112px 210px 190px!important}
+}
+/* v1.20.60 critical: remove legacy dialog-era 1000px cap from full-page Property detail. */
+#assetDlg.asset-detail-page{width:100%!important;max-width:none!important;margin:0!important}
+@media (min-width:900px){
+ #assetLandTitles .land-ai-controls .pdf-optimize-btn::before{inset:auto!important;left:10px!important;right:auto!important;top:9px!important;bottom:auto!important}
+ #assetLandTitles .repeat-row.landtitle>button:last-child{grid-column:4!important;justify-self:end!important}
+}

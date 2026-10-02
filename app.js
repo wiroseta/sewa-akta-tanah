@@ -509,10 +509,13 @@ function runAssetDetailSearch(){
   if(count)count.textContent=terms.length?`${shown} bagian cocok${rel.length?' · '+rel.length+' data terkait':''}`:'Semua data ditampilkan';
 }
 window.runAssetDetailSearch=runAssetDetailSearch;
+function formatPropertyAreaDisplay(text){
+  return String(text||'').replace(/(\d{4,})(?=\s*m²)/gi,m=>Number(m).toLocaleString('id-ID'));
+}
 async function openAssetEdit(i=-1){
   assetEdit=i;let a=i>=0?assets[i]:{};
   $('#assetForm').reset();$('#assetLandTitles').innerHTML='';$('#assetBuildings').innerHTML='';$('#assetPermits').innerHTML='';$('#assetAgents').innerHTML='';
-  for(let e of $('#assetForm').elements)if(e.name&&a[e.name]!=null)e.value=a[e.name];
+  for(let e of $('#assetForm').elements)if(e.name&&a[e.name]!=null)e.value=a[e.name];let areaEl=$('#assetForm').elements.namedItem('area');if(areaEl)areaEl.value=formatPropertyAreaDisplay(areaEl.value);
   if(a.id)try{
     const c=await getPropertyChildren(a.id);
     c.landTitles.forEach(v=>addRepeat('assetLandTitles',{id:v.id,rightType:v.right_type,certificateNo:v.certificate_no,landArea:v.land_area,validUntil:v.valid_until,address:v.address,driveUrl:v.drive_url,mapPlanUrl:v.map_plan_url,mapsUrl:v.google_maps_url,holderName:v.holder_name,surveyNo:v.survey_no,surveyDate:v.survey_date,nib:(String(v.notes||'').match(/(?:^|\n)NIB:\s*([^\n]+)/i)||[])[1]||'',notes:String(v.notes||'').replace(/(?:^|\n)NIB:\s*[^\n]+/i,'').trim(),coveredArea:v.relation_covered_area||'',relationNotes:v.relation_notes||''},'landtitle'));
