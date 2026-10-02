@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.46-RC";
+const APP_BUILD="1.20.47-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -263,10 +263,16 @@ async function getAllPropertyObjects(assetId){
   return await getPropertyChildren(assetId)
 }
 function relationAssetName(assetId){const a=assets.find(x=>String(x.id)===String(assetId));return String(a?.alias||a?.name||'Properti tidak dikenal')}
+function landTitlePropertyLabel(r){
+  const ids=Array.isArray(r?._asset_ids)?r._asset_ids:[];
+  const labels=ids.map(relationAssetName).filter(Boolean);
+  if(labels.length)return [...new Set(labels)].join(' · ');
+  return r?.asset_id?relationAssetName(r.asset_id):'Belum terhubung ke Property';
+}
 function checkListHtml(rows,type,selected=[],showAsset=false){
   let set=new Set(selected.map(String));
   if(!rows.length)return '<div class="lease-relation-empty">Belum ada data pada Properti/Lokasi ini.</div>';
-  return rows.map(r=>{let label=type==='land'?`${r.right_type||'Tanah'} ${r.certificate_no||'(tanpa nomor)'}${r.land_area?' · '+r.land_area+' m²':''}`:`${r.name||'Bangunan'}${r.building_area?' · '+r.building_area+' m²':''}`;let owner=showAsset?`<small>${historySearchEscape(relationAssetName(r.asset_id))}</small>`:'';return `<label class="check-item relation-choice"><input type="checkbox" value="${historySearchEscape(r.id)}" ${set.has(String(r.id))?'checked':''}> <span><b>${historySearchEscape(label)}</b>${owner}</span></label>`}).join('')
+  return rows.map(r=>{let label=type==='land'?`${r.right_type||'Tanah'} ${r.certificate_no||'(tanpa nomor)'}${r.land_area?' · '+formatIndonesianArea(r.land_area)+' m²':''}`:`${r.name||'Bangunan'}${r.building_area?' · '+formatIndonesianArea(r.building_area)+' m²':''}`;let owner=showAsset?`<small>${historySearchEscape(type==='land'?landTitlePropertyLabel(r):relationAssetName(r.asset_id))}</small>`:'';return `<label class="check-item relation-choice"><input type="checkbox" value="${historySearchEscape(r.id)}" ${set.has(String(r.id))?'checked':''}> <span><b>${historySearchEscape(label)}</b>${owner}</span></label>`}).join('')
 }
 let leaseLandAllRows=[],leaseLandPrimaryRows=[],leaseLandOtherRows=[],leaseLandOthersVisible=false,leaseLandOrphanIds=[];
 function renderLeaseLandPicker(selected=[],orphanIds=[]){
@@ -296,8 +302,19 @@ async function loadLeaseRelations(contractId,assetId){
     if(l.error)throw l.error;if(b.error)throw b.error;if(p.error)throw p.error;if(f.error)throw f.error;
     landIds=(l.data||[]).map(x=>x.land_title_id);buildingIds=(b.data||[]).map(x=>x.building_id);pbbIds=(p.data||[]).map(x=>x.pbb_id);fac=f.data||[]
   }
-  const allLand=await sb.from('land_titles').select('*').order('certificate_no');if(allLand.error)throw allLand.error;
-  leaseLandAllRows=allLand.data||[];leaseLandPrimaryRows=leaseLandAllRows.filter(r=>String(r.asset_id)===String(assetId));leaseLandOtherRows=leaseLandAllRows.filter(r=>String(r.asset_id)!==String(assetId));leaseLandOthersVisible=false;
+  const [allLand,allAssetLandLinks]=await Promise.all([
+    sb.from('land_titles').select('*').order('certificate_no'),
+    sb.from('asset_land_titles').select('asset_id,land_title_id,covered_area,notes')
+  ]);
+  if(allLand.error)throw allLand.error;if(allAssetLandLinks.error)throw allAssetLandLinks.error;
+  const titleAssets=new Map();
+  (allAssetLandLinks.data||[]).forEach(l=>{const k=String(l.land_title_id);if(!titleAssets.has(k))titleAssets.set(k,[]);titleAssets.get(k).push(String(l.asset_id))});
+  leaseLandAllRows=(allLand.data||[]).map(r=>{let ids=titleAssets.get(String(r.id))||[];if(!ids.length&&r.asset_id)ids=[String(r.asset_id)];return {...r,_asset_ids:[...new Set(ids)]}});
+  leaseLandPrimaryRows=leaseLandAllRows.filter(r=>r._asset_ids.includes(String(assetId)));
+  leaseLandOtherRows=leaseLandAllRows.filter(r=>!r._asset_ids.includes(String(assetId)));
+  leaseLandPrimaryRows.sort((a,b)=>String(a.certificate_no||'').localeCompare(String(b.certificate_no||''),undefined,{numeric:true}));
+  leaseLandOtherRows.sort((a,b)=>landTitlePropertyLabel(a).localeCompare(landTitlePropertyLabel(b))||String(a.certificate_no||'').localeCompare(String(b.certificate_no||''),undefined,{numeric:true}));
+  leaseLandOthersVisible=false;
   const allLandIds=new Set(leaseLandAllRows.map(t=>String(t.id)));leaseLandOrphanIds=landIds.filter(id=>!allLandIds.has(String(id)));
   renderLeaseLandPicker(landIds,leaseLandOrphanIds);
   $('#leaseBuildingChoices').innerHTML=checkListHtml(obj.buildings,'building',buildingIds,true);
@@ -868,7 +885,7 @@ async function collectBackup(){
   const r=await sb.from(t).select('*');if(r.error)throw new Error(`${t}: ${r.error.message}`);tables[t]=r.data||[];
  }
  let aiScans={};try{for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('sewa_ai_scans_'))aiScans[k]=localStorage.getItem(k)}}catch(_){}
- return {app:'Property Asset & Legal Management',version:'1.20.46-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
+ return {app:'Property Asset & Legal Management',version:'1.20.47-RC',format:1,createdAt:new Date().toISOString(),userId:(dataOwnerId||currentUser.id),userEmail:currentUser.email||'',tables,local:{aiScans}};
 }
 function downloadJson(obj,name){let blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function downloadBackup(){if(currentRole!=='administrator')return alert('Backup hanya tersedia untuk Administrator.');let b=$('#downloadBackupBtn');b.disabled=true;try{backupMessage('Menyiapkan backup…');let x=await collectBackup(),d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;downloadJson(x,`Sewa_Akta_Tanah_Backup_${stamp}.json`);backupMessage('✓ Backup selesai diunduh. Simpan file ini di tempat aman.','ok')}catch(e){backupMessage('Backup gagal: '+e.message,'error')}finally{b.disabled=false}}
@@ -2270,3 +2287,5 @@ function bindLeasePdfOptimizer(){let b=document.getElementById('leasePdfOptimize
 const palm43Obs=new MutationObserver(()=>{installPdfOptimizeButtons();bindLeasePdfOptimizer()});palm43Obs.observe(document.documentElement,{subtree:true,childList:true});document.addEventListener('DOMContentLoaded',()=>{installPdfOptimizeButtons();bindLeasePdfOptimizer()});
 
 // v1.20.46 RC — optimizer icon visibility verified with CSS geometry; optimizer initiates Drive OAuth then resumes.
+
+// v1.20.47 RC — lease certificate picker reads asset_land_titles many-to-many links and shows every linked Property.

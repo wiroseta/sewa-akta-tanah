@@ -487,3 +487,11 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - PDF optimizer icon changed from SVG to CSS-drawn layer stack + down arrow and protected from the legacy global button rewriter that caused the blank button.
 - Clicking optimizer while Drive is disconnected now starts Google Drive OAuth and resumes optimization after successful authorization.
 - PDF optimizer still never replaces the Drive file until optimization and structural quality checks pass.
+
+
+## v1.20.47 RC
+- Selector Sertifikat pada Akta Sewa sekarang membaca `asset_land_titles` (many-to-many), bukan hanya `land_titles.asset_id` lama.
+- Sertifikat yang terkait Property Akta ditempatkan pada kelompok utama. Contoh HGB 120 yang terkait SBT 2 dan SBT 3 ditampilkan `SBT 2 · SBT 3`.
+- Sertifikat Property lain tetap dapat dibuka melalui tombol + dan tidak otomatis dipilih.
+- Ikon Optimasi PDF dipindahkan ke CSS pseudo-elements agar tidak dapat dikosongkan oleh legacy button rewriter.
+- OAuth Optimasi PDF tetap auto-connect dan melanjutkan optimasi setelah izin Drive berhasil.
