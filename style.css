@@ -1138,3 +1138,5 @@ textarea.compact-hover-textarea.is-expanded{
 #form textarea[name="sourcePages"].lease-dynamic-long:not(.is-expanded),
 #form textarea[name="leasePlanNotes"].lease-dynamic-long:not(.is-expanded){height:42px!important;min-height:42px!important;max-height:42px!important;overflow-y:auto!important;resize:none!important}
 #form .history-actions + label:has(textarea[name="notes"]){margin-top:16px!important}
+/* v1.20.41 */
+#leaseDataSearchDlg{width:min(980px,94vw);max-height:88vh;padding:22px}#leaseDataSearchDlg .history-search-filters{margin:14px 0 12px;gap:10px}#leaseDataSearchResults{max-height:60vh;overflow:auto;padding:4px 2px 12px}.context-search-card{margin:10px 0;padding:12px}.context-search-snippet{white-space:pre-wrap;line-height:1.45}.lease-notes-readable{line-height:1.45;padding:8px 10px;margin:0 0 6px;border:1px solid #d9dee7;border-radius:8px;background:#fafbfc}.lease-notes-readable div+div{margin-top:4px}.lease-export-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.lease-export-grid button{min-height:44px}@media(max-width:700px){.lease-export-grid{grid-template-columns:1fr}#leaseDataSearchDlg{width:96vw;padding:16px}}
