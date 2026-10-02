@@ -475,3 +475,9 @@ Jika `OPENAI_ADMIN_KEY` belum diset, aplikasi tetap berjalan normal dan Dashboar
 - Tombol `+ Hubungkan Sertifikat` memakai selector Master Sertifikat.
 - Optimasi PDF Google Drive: ikon-only stack/layer, proses lokal browser, quality/structure check, replace file Drive yang sama hanya bila penghematan >=15%; tidak memakai OpenAI.
 - `supabase_latest.sql` berisi hanya migrasi terbaru v1.20.43.
+
+
+## v1.20.44 RC
+- Tombol Optimasi PDF dikoreksi menjadi icon-only Stack/Layer + panah ke bawah, tanpa teks dan tanpa tooltip/title.
+- Inline sizing ditambahkan agar ikon tetap icon-only walaupun browser masih memegang CSS lama.
+- Fungsi optimizeDrivePdf tetap terhubung seperti v1.20.43. Tidak ada SQL baru untuk koreksi visual ini.
