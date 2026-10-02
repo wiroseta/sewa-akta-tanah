@@ -1218,7 +1218,7 @@ textarea.compact-hover-textarea.is-expanded{
 #assetForm textarea.asset-property-name{min-height:48px;resize:none;overflow:hidden;line-height:1.35}
 #assetOpenMaps .map-label-icon{display:inline-flex;vertical-align:middle;margin-right:5px}
 
-/* v1.20.60 RC — verified desktop Property/Sertifikat workspace */
+/* v1.20.61 RC — verified desktop Property/Sertifikat workspace */
 @media (min-width:900px){
   .asset-detail-page #assetForm,
   .asset-detail-page .asset-detail-search,
@@ -1247,9 +1247,42 @@ textarea.compact-hover-textarea.is-expanded{
 @media (min-width:900px) and (max-width:1120px){
  #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(230px,1fr) 112px 210px 190px!important}
 }
-/* v1.20.60 critical: remove legacy dialog-era 1000px cap from full-page Property detail. */
+/* v1.20.61 critical: remove legacy dialog-era 1000px cap from full-page Property detail. */
 #assetDlg.asset-detail-page{width:100%!important;max-width:none!important;margin:0!important}
 @media (min-width:900px){
  #assetLandTitles .land-ai-controls .pdf-optimize-btn::before{inset:auto!important;left:10px!important;right:auto!important;top:9px!important;bottom:auto!important}
  #assetLandTitles .repeat-row.landtitle>button:last-child{grid-column:4!important;justify-self:end!important}
+}
+
+
+/* v1.20.61 RC — global compact document controls + Property auto-grow */
+#assetForm textarea.asset-property-name,
+#assetForm textarea.asset-summary-dynamic{
+  min-height:42px!important;height:42px;resize:none!important;overflow-y:hidden!important;line-height:1.35!important;
+}
+#assetOpenMaps{width:auto!important;min-width:46px!important;height:42px!important;padding:0 12px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important}
+#assetOpenMaps svg{width:19px!important;height:19px!important}
+#assetLandTitles .land-ai-controls .land-ai-btn,
+#assetLandTitles .land-ai-controls .land-drive-ai-btn{
+  width:auto!important;min-width:0!important;height:42px!important;padding:0 13px!important;font-size:12.5px!important;white-space:nowrap!important;justify-self:start!important
+}
+#assetLandTitles .land-ai-controls .pdf-optimize-btn{
+  width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:0!important;line-height:0!important;justify-self:start!important
+}
+#assetLandTitles .land-ai-controls .pdf-optimize-btn::before{inset:7px!important;left:7px!important;top:7px!important;width:auto!important;height:auto!important;background-size:24px 24px!important}
+#assetLandTitles .repeat-row.landtitle>button:last-child{
+  width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:20px!important;line-height:1!important;justify-self:end!important
+}
+@media (min-width:900px){
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls{
+   display:grid!important;grid-template-columns:minmax(260px,1fr) max-content 42px max-content!important;gap:10px!important;align-items:end!important;width:100%!important
+ }
+ #assetLandTitles .land-ai-controls .land-ai-btn,
+ #assetLandTitles .land-ai-controls .land-drive-ai-btn{width:auto!important;height:42px!important}
+ #assetLandTitles .land-ai-controls .pdf-optimize-btn{width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:0!important}
+}
+@media(max-width:800px){
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:1fr auto 42px!important}
+ #assetLandTitles .land-ai-controls .land-file{grid-column:1/-1!important}
+ #assetLandTitles .land-ai-controls .land-drive-ai-btn{grid-column:auto!important;width:auto!important}
 }
