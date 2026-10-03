@@ -1637,3 +1637,43 @@ textarea.compact-hover-textarea.is-expanded{
 #assetLandTitles .palm-file-picker input[type=file]{
  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer!important;z-index:2!important;margin:0!important;padding:0!important
 }
+
+
+/* v1.20.92 RC — verified certificate relation + local file layout. */
+#assetLandTitles .repeat-row.landtitle .land-relation-fields{
+  grid-column:1/-1!important;display:grid!important;grid-template-columns:1fr 2fr!important;gap:12px!important;
+  padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;
+}
+#assetLandTitles .repeat-row.landtitle .land-ai-bottom{display:block!important;width:100%!important;min-width:0!important;}
+#assetLandTitles .repeat-row.landtitle .land-ai-bottom .land-ai-controls{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 40px max-content!important;gap:10px!important;
+  align-items:center!important;width:100%!important;max-width:none!important;min-width:0!important;
+}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file.palm-file-picker{
+  grid-column:1!important;display:flex!important;width:100%!important;min-width:0!important;max-width:none!important;
+  height:40px!important;margin:0!important;padding:4px 10px!important;box-sizing:border-box!important;
+}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-local-optimize-btn{grid-column:2!important;}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-ai-btn{grid-column:3!important;}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{display:none!important;}
+@media(max-width:700px){
+ #assetLandTitles .repeat-row.landtitle .land-relation-fields{grid-template-columns:1fr!important;}
+ #assetLandTitles .repeat-row.landtitle .land-ai-bottom .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px!important;}
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file.palm-file-picker{grid-column:1/-1!important;}
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-local-optimize-btn{grid-column:2!important;grid-row:2!important;}
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-ai-btn{grid-column:1!important;grid-row:2!important;width:100%!important;}
+}
+/* v1.20.92 final override — use flex so Safari gives the file picker all remaining row width. */
+#assetLandTitles .repeat-row.landtitle .land-ai-bottom .land-ai-controls{
+ display:flex!important;flex-flow:row nowrap!important;align-items:center!important;gap:10px!important;width:100%!important;min-width:0!important;
+}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file.palm-file-picker{
+ flex:1 1 0!important;width:auto!important;min-width:0!important;max-width:none!important;
+}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-local-optimize-btn{flex:0 0 40px!important;}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls .land-ai-btn{flex:0 0 auto!important;width:auto!important;}
+@media(max-width:700px){
+ #assetLandTitles .repeat-row.landtitle .land-ai-bottom .land-ai-controls{flex-wrap:wrap!important;}
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file.palm-file-picker{flex:1 0 100%!important;}
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-ai-btn{flex:1 1 auto!important;}
+}
