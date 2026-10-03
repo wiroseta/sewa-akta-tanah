@@ -1757,3 +1757,11 @@ textarea.compact-hover-textarea.is-expanded{
 #form .lease-doc-drive-row>#openDocBtn,#form .lease-doc-drive-row>#leaseDocPdfOptimizeBtn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important}
 #form .lease-doc-drive-row>.lease-doc-drive-ai-btn{flex:0 0 auto!important;height:40px!important;min-height:40px!important;white-space:nowrap!important}
 @media(max-width:760px){#form .lease-local-ai-row,#form .lease-doc-drive-row{flex-wrap:wrap!important}#form .lease-local-ai-row>.lease-file-picker,#form .lease-doc-drive-row>input{flex:1 0 100%!important;width:100%!important}#form .lease-local-ai-row>#extractBtn,#form .lease-doc-drive-row>.lease-doc-drive-ai-btn{flex:1 1 auto!important}}
+\n/* v1.20.97 RC — repeat-card destructive action belongs to the card, not the AI file row. */
+.repeat-card-actions{grid-column:1/-1!important;display:flex!important;align-items:center!important;gap:10px!important;margin-top:10px!important;width:100%!important}
+.repeat-card-actions .repeat-card-add-btn,.repeat-card-actions .repeat-remove-btn{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 40px!important;font-size:20px!important;line-height:1!important}
+.repeat-row.permit .palm-local-file-row>.repeat-remove-btn,.repeat-row.agent .palm-local-file-row>.repeat-remove-btn,#assetLandTitles .land-ai-controls>.repeat-remove-btn{display:none!important}
+/* When repeat cards exist, their own + / − controls are authoritative. Keep the section-level + only for an empty section. */
+#assetLandTitles:not(:empty) + .history-actions #assetAddLandTitle{display:none!important}
+#assetPermits:not(:empty) + #assetAddPermit{display:none!important}
+#assetAgents:not(:empty) + #assetAddAgent{display:none!important}

@@ -1,4 +1,4 @@
-PALM v1.20.96 RC
+PALM v1.20.97 RC
 
 Perubahan:
 - Akta Sewa Pembacaan AI: file picker PALM + optimizer lokal + Baca File; Google Drive: Buka + optimizer + Baca dari Google Drive.
