@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.71-RC";
+const APP_BUILD="1.20.72-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2369,8 +2369,8 @@ async function optimizeDrivePdf(btn,urlInput){
   say('Menyiapkan modul pemeriksaan PDF...');await ensurePdfOptimizerReady();let source=await window.pdfjsLib.getDocument({data:original.slice(0)}).promise,pages=source.numPages;if(!pages)throw new Error('PDF tidak memiliki halaman.');let dimensions=[];for(let i=1;i<=pages;i++){let p=await source.getPage(i),v=p.getViewport({scale:1});dimensions.push([v.width*25.4/72,v.height*25.4/72])}
   const abnormalPageSize=dimensions.some(([w,h])=>Math.max(w,h)>600||Math.min(w,h)>450);
   const ratios=dimensions.map(([w,h])=>w/h),r0=ratios[0]||1,uniformRatio=ratios.every(r=>Math.abs(r-r0)/Math.max(Math.abs(r0),.001)<.015);
-  let normalizeSpec=null,validationDimensions=dimensions;
-  if(abnormalPageSize&&uniformRatio){const [w,h]=dimensions[0],shortMM=210;if(w<=h){const tw=shortMM,th=shortMM*h/w;normalizeSpec={enabled:true,widthPt:tw*72/25.4,heightPt:th*72/25.4,deskew:true};validationDimensions=dimensions.map(()=>[tw,th])}else{const th=shortMM,tw=shortMM*w/h;normalizeSpec={enabled:true,widthPt:tw*72/25.4,heightPt:th*72/25.4,deskew:true};validationDimensions=dimensions.map(()=>[tw,th])}say('Ukuran halaman scanner tidak standar. Menormalkan ukuran fisik sambil mempertahankan aspect ratio asli ±300 dpi; auto-deskew aman akan dicoba bila tersedia...')}
+  let normalizeSpec=null,validationDimensions=abnormalPageSize?dimensions.map(([w,h])=>w<=h?[210,210*h/w]:[210*w/h,210]):dimensions;
+  if(abnormalPageSize&&uniformRatio){const [w,h]=dimensions[0],shortMM=210;if(w<=h){const tw=shortMM,th=shortMM*h/w;normalizeSpec={enabled:true,widthPt:tw*72/25.4,heightPt:th*72/25.4,deskew:true}}else{const th=shortMM,tw=shortMM*w/h;normalizeSpec={enabled:true,widthPt:tw*72/25.4,heightPt:th*72/25.4,deskew:true}}say('Ukuran halaman scanner tidak standar. Menormalkan ukuran fisik sambil mempertahankan aspect ratio asli ±300 dpi; auto-deskew aman akan dicoba bila tersedia...')}
   else if(abnormalPageSize)say('Ukuran halaman scanner bervariasi. Memakai optimizer browser per halaman agar aspect ratio tiap halaman tetap dipertahankan...');
   let local=await palmLocalOptimizePdf(original,say,normalizeSpec),blob=null,engine='Optimizer PALM';
   if(abnormalPageSize&&!uniformRatio)local=null;

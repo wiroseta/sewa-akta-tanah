@@ -1,3 +1,10 @@
+# PALM v1.20.72 RC — Per-Page Quality Check Fix
+
+- Fix Quality Check for scanned PDFs whose pages have different aspect ratios.
+- Each abnormal page is validated against its own aspect-preserving normalized physical size (short edge 210 mm), instead of incorrectly comparing against the original scanner metadata size.
+- No relaxation of page-count checks; 2.5 mm physical-size tolerance remains.
+- Local Optimizer remains v1.4.
+
 # PALM v1.20.71 RC — Quality Check Rotation-Tolerant Fix
 
 Perbaikan atas v1.20.70: Quality Check tidak lagi membatalkan hasil yang ukuran fisik halamannya tetap benar tetapi width/height tertukar karena Ghostscript/ImageMagick menulis ulang metadata rotasi PDF. Toleransi rounding physical page size 2,5 mm; perubahan ukuran nyata tetap ditolak. Pesan gagal sekarang menampilkan ukuran hasil dan target per halaman.
