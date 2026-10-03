@@ -1763,5 +1763,6 @@ textarea.compact-hover-textarea.is-expanded{
 .repeat-row.permit .palm-local-file-row>.repeat-remove-btn,.repeat-row.agent .palm-local-file-row>.repeat-remove-btn,#assetLandTitles .land-ai-controls>.repeat-remove-btn{display:none!important}
 /* When repeat cards exist, their own + / − controls are authoritative. Keep the section-level + only for an empty section. */
 #assetLandTitles:not(:empty) + .history-actions #assetAddLandTitle{display:none!important}
+#assetBuildings:not(:empty) + #assetAddBuilding{display:none!important}
 #assetPermits:not(:empty) + #assetAddPermit{display:none!important}
 #assetAgents:not(:empty) + #assetAddAgent{display:none!important}
