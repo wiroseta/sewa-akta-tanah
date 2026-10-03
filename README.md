@@ -1,3 +1,10 @@
+# PALM v1.20.74 RC — Global 40px Remove + Canonical Maps Pin
+
+- All minus/remove controls are icon-only 40×40 CSS px.
+- Property and Lease Google Maps actions use one centered monochrome outline location pin, 40×40 CSS px.
+- Desktop Maps URL field and pin remain on one row.
+- Preserves v1.20.73 Google Drive auth preflight and v1.20.70–72 optimizer fixes.
+
 # PALM v1.20.73 RC — Google Drive Optimizer Auth Preflight
 
 - Tombol Optimize sekarang memeriksa sesi Google Drive sendiri. Setelah reload, user tidak perlu menekan tombol Hubungkan Google Drive terlebih dahulu.
