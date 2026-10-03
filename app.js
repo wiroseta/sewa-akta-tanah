@@ -2378,6 +2378,41 @@ async function createDriveOriginalBackup(id,original){
  let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}/copy?fields=id,name,webViewLink,md5Checksum,size,appProperties&supportsAllDrives=true`,{method:'POST',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)}),out=await r.json().catch(()=>({}));if(!r.ok)throw new Error(out?.error?.message||'Gagal membuat backup original di Google Drive.');
  try{localStorage.setItem(markerKey,JSON.stringify({backupId:out.id,sourceMd5:meta.md5Checksum||'',savedAt:new Date().toISOString()}))}catch(_){}return {...out,reused:false};
 }
+// v1.20.80 RC — resilient Google Drive download for large PDFs.
+// Safari can drop a long single media request. Download known-size files in 8 MB byte ranges,
+// retrying only the failed range, so a 60+ MB PDF does not restart from byte zero.
+async function palmDriveDownloadPdfRobust(id,driveFetchWithReauth,say){
+ const metaUrl=`https://www.googleapis.com/drive/v3/files/${id}?fields=id,name,size,mimeType&supportsAllDrives=true`;
+ let mr=await driveFetchWithReauth(metaUrl),meta=await mr.json().catch(()=>({}));
+ if(!mr.ok)throw new Error(`Gagal membaca ukuran PDF Google Drive (HTTP ${mr.status}${meta?.error?.message?': '+meta.error.message:''}).`);
+ const total=Number(meta.size||0),chunkSize=8*1024*1024;
+ if(!total){
+  say('Ukuran file Google Drive tidak tersedia. Mengunduh PDF...');
+  let r=await driveFetchWithReauth(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`);
+  if(!r.ok)throw new Error(`Gagal mengambil PDF dari Google Drive (HTTP ${r.status}).`);
+  return palmReadResponseWithProgress(r,say,'Mengambil PDF dari Google Drive...');
+ }
+ say(`Mengambil PDF dari Google Drive... 0.0 MB / ${palmFormatMB(total)} (0%)`);
+ const out=new Uint8Array(total);let loaded=0;
+ for(let start=0;start<total;start+=chunkSize){
+  const end=Math.min(total-1,start+chunkSize-1);let lastErr=null,got=null;
+  for(let attempt=1;attempt<=3;attempt++){
+   try{
+    if(attempt>1)say(`Koneksi Google Drive terputus. Mencoba ulang bagian ${palmFormatMB(start)}–${palmFormatMB(end+1)} (${attempt}/3)...`);
+    let r=await driveFetchWithReauth(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`,{headers:{Range:`bytes=${start}-${end}`}});
+    if(!(r.status===206||(r.status===200&&start===0)))throw new Error(`HTTP ${r.status}`);
+    let b=await r.arrayBuffer();
+    // Some servers may ignore Range and return the whole file on the first request.
+    if(r.status===200&&b.byteLength===total)return b;
+    const expected=end-start+1;if(b.byteLength!==expected)throw new Error(`bagian tidak lengkap (${b.byteLength} dari ${expected} byte)`);
+    got=new Uint8Array(b);break;
+   }catch(e){lastErr=e;if(attempt<3)await new Promise(res=>setTimeout(res,700*attempt));}
+  }
+  if(!got)throw new Error(`Koneksi ke Google Drive terputus saat mengunduh PDF setelah 3 percobaan (${lastErr?.message||lastErr||'network error'}). File asli tidak diubah.`);
+  out.set(got,start);loaded=end+1;const pct=Math.min(100,Math.round(loaded/total*100));say(`Mengambil PDF dari Google Drive... ${palmFormatMB(loaded)} / ${palmFormatMB(total)} (${pct}%)`);
+ }
+ return out.buffer;
+}
 async function optimizeDrivePdf(btn,urlInput){
  let url=urlInput?.value?.trim()||'',id=driveFileIdFromUrl(url),st=btn.closest('.landtitle,.ai-extract,.drive-extract,.master-section')?.querySelector('.drive-local-status,.land-ai-status,.muted');if(!id)return alert('Link Google Drive PDF tidak valid.');
  let say=(t,state='active')=>palmOptimizerStatus(st,t,state);
@@ -2401,8 +2436,7 @@ async function optimizeDrivePdf(btn,urlInput){
  }
  btn.disabled=true;try{
   await ensureOptimizerDriveAuth();
-  say('Mengambil PDF dari Google Drive...');let r=await driveFetchWithReauth(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`);if(!r.ok){let detail='';try{let j=await r.clone().json();detail=j?.error?.message||''}catch(_){}throw new Error(`Gagal mengambil PDF dari Google Drive (HTTP ${r.status}${detail?': '+detail:''}).`)}
-  let original=await palmReadResponseWithProgress(r,say,'Mengambil PDF dari Google Drive...'),origSize=original.byteLength;
+  let original=await palmDriveDownloadPdfRobust(id,driveFetchWithReauth,say),origSize=original.byteLength;
   say('Menyiapkan modul pemeriksaan PDF...');await ensurePdfOptimizerReady();let source=await window.pdfjsLib.getDocument({data:original.slice(0)}).promise,pages=source.numPages;if(!pages)throw new Error('PDF tidak memiliki halaman.');let dimensions=[];for(let i=1;i<=pages;i++){let p=await source.getPage(i),v=p.getViewport({scale:1});dimensions.push([v.width*25.4/72,v.height*25.4/72])}
   const abnormalPageSize=dimensions.some(([w,h])=>Math.max(w,h)>600||Math.min(w,h)>450);
   const ratios=dimensions.map(([w,h])=>w/h),r0=ratios[0]||1,uniformRatio=ratios.every(r=>Math.abs(r-r0)/Math.max(Math.abs(r0),.001)<.015);

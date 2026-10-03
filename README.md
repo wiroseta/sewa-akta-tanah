@@ -624,3 +624,11 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - Re-checks/reinstalls the canonical monochrome Maps pin if an older icon audit rewrites its markup.
 - Preserves 40x40 icon-only controls and v1.20.75 browser-hang fix intent.
 - Deployment files changed: `app.js`, `index.html`. No SQL/Edge Function/local-optimizer deployment required.
+
+
+## v1.20.80 RC — Resilient Large Google Drive PDF Download
+- Baseline tetap v1.20.78 freeze fix.
+- Optimize PDF Google Drive mengunduh file berukuran diketahui dalam range 8 MB.
+- Setiap range yang gagal karena koneksi dapat dicoba ulang sampai 3 kali tanpa mengulang file dari awal.
+- Progress menampilkan MB dan persen.
+- Jika tiga percobaan gagal, optimasi berhenti sebelum backup/update sehingga file asli tidak berubah.
