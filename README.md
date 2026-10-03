@@ -618,7 +618,7 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - Menambahkan menu `Optimize PDF Google Drive` tepat di bawah `Backup & Restore` pada menu `...`.
 - Membuka dialog optimizer mandiri: paste link PDF Google Drive, buka file, lalu Optimize File.
 - Menggunakan engine optimizer yang sama dengan Akta Sewa/Sertifikat/PBB: Ghostscript lokal bila tersedia, fallback browser, Quality Check, backup original, lalu update content file Google Drive dengan File ID yang sama.
-## v1.20.76 RC — SPA Navigation Click Recovery
+## v1.20.78 RC — SPA Navigation Click Recovery
 - Removes the v1.20.75 subtree MutationObserver added for global 40px/remove/Maps normalization.
 - Uses bounded post-interaction normalization after navigation/add-row actions instead, preventing observer feedback with legacy UI observers.
 - Re-checks/reinstalls the canonical monochrome Maps pin if an older icon audit rewrites its markup.
