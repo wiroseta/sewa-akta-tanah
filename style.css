@@ -1613,3 +1613,12 @@ textarea.compact-hover-textarea.is-expanded{
  #assetLandTitles .land-ai-controls .land-ai-btn{grid-column:1!important;width:100%!important}
  #assetLandTitles .land-ai-controls .land-local-optimize-btn{grid-column:2!important}
 }
+
+
+/* v1.20.90 RC — Property certificate local upload: full remaining-width file field, no redundant small label. */
+#assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px max-content!important;align-items:center!important}
+#assetLandTitles .land-ai-controls .land-file{display:block!important;margin:0!important;padding:0!important}
+#assetLandTitles .land-ai-controls .land-file input[type=file]{width:100%!important;max-width:none!important;margin:0!important}
+@media(max-width:800px){
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px!important}
+}
