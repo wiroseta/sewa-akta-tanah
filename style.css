@@ -1334,3 +1334,35 @@ textarea.compact-hover-textarea.is-expanded{
  .ai-extract-actions button,.drive-extract button,.permit-ai-toolbar button,.agent-ai-toolbar button{height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important}
  .pdf-optimize-btn{width:var(--palm-form-icon-w)!important;min-width:var(--palm-form-icon-w)!important}
 }
+
+/* v1.20.63 RC — universal 40px form-control/action standard */
+:root{--palm-form-action-h:40px;--palm-form-icon-w:40px}
+/* Text-bearing action buttons: fixed 40px height, content-driven width. */
+.ai-extract-actions button,.drive-extract button,.doc-link-row button,.mini-open,
+.land-ai-controls button,.permit-ai-toolbar button,.agent-ai-toolbar button,
+.building-ai-toolbar button,.pbb-card-drive-read,.pbb-history-icon,
+.global-pdf-optimizer-actions button,.property-linked-card button,
+#pbbEditDlg button:not(.icon-only),#form .ai-extract-actions button,#form .drive-extract button{
+  height:40px!important;min-height:40px!important;width:auto;min-width:0;padding:0 12px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;white-space:nowrap!important
+}
+/* Icon-only actions: exactly 40 x 40. */
+.pdf-optimize-btn,.icon-only,.repeat-row>button:last-child,.repeat-row.landtitle>button:last-child,
+#assetLandTitles .land-ai-controls .pdf-optimize-btn,.pbb-history-icon{
+  width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;
+  padding:0!important;flex:0 0 40px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important
+}
+.pdf-optimize-btn::before{inset:7px!important;left:7px!important;top:7px!important;background-size:24px 24px!important}
+/* Fields paired with action buttons use the exact same 40px height. */
+.doc-link-row>input,.doc-link-row>select,.drive-extract>input,.ai-extract-actions>input,
+.land-ai-controls input[type="file"],.global-pdf-optimizer-actions input,
+#pbbEditDlg .drive-extract input,#pbbEditDlg input[type="file"]{
+  height:40px!important;min-height:40px!important;box-sizing:border-box!important
+}
+#assetOpenMaps{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;gap:0!important}
+#assetOpenMaps svg{width:20px!important;height:20px!important;margin:0!important}
+#assetOpenMaps span{display:none!important}
+#assetForm [name="googleMapsUrl"]{height:40px!important;min-height:40px!important}
+#assetLandTitles .land-ai-controls .land-ai-btn,#assetLandTitles .land-ai-controls .land-drive-ai-btn{height:40px!important;min-height:40px!important;padding:0 12px!important}
+@media(min-width:900px){#assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(260px,1fr) max-content 40px max-content!important;gap:10px!important}}
+@media(max-width:800px){#assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:1fr auto 40px!important}}

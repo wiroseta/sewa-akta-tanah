@@ -2388,3 +2388,14 @@ document.addEventListener('DOMContentLoaded',()=>{
  const b=document.getElementById('assetOpenMaps'); if(b){b.innerHTML=locationPinIcon()+' <span>Buka</span>'; b.title='';}
  document.querySelectorAll('#assetForm textarea.asset-property-name,#assetForm textarea.asset-summary-dynamic').forEach(n=>{if(typeof autoGrowTextarea==='function'){autoGrowTextarea(n);if(n.dataset.assetGrowBound!=='1'){n.dataset.assetGrowBound='1';n.addEventListener('input',()=>autoGrowTextarea(n));}}});
 });
+
+/* v1.20.63 RC — normalize icon-only actions and Property Maps control */
+(function v12063ControlStandard(){
+ function normalize(){
+   document.querySelectorAll('.pdf-optimize-btn').forEach(b=>b.classList.add('icon-only'));
+   const map=document.getElementById('assetOpenMaps');
+   if(map){map.classList.add('icon-only');map.innerHTML=locationPinIcon();map.setAttribute('aria-label','Buka Google Maps');map.title='';}
+ }
+ const mo=new MutationObserver(normalize); mo.observe(document.documentElement,{childList:true,subtree:true});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',normalize);else normalize();
+})();

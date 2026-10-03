@@ -1,4 +1,4 @@
-PALM v1.20.62 RC
+PALM v1.20.63 RC
 
 UI consistency finishing: global compact form-action sizing based on Akta/Scan, icon-only optimizer sizing, Property summary one-row auto-grow, compact minus controls, consistent Property Maps action. No database/SQL or Edge Function change required.
 
