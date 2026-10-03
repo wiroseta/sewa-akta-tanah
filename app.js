@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.76-RC";
+const APP_BUILD="1.20.77-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2433,56 +2433,9 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('#assetForm textarea.asset-property-name,#assetForm textarea.asset-summary-dynamic').forEach(n=>{if(typeof autoGrowTextarea==='function'){autoGrowTextarea(n);if(n.dataset.assetGrowBound!=='1'){n.dataset.assetGrowBound='1';n.addEventListener('input',()=>autoGrowTextarea(n));}}});
 });
 
-/* v1.20.65 RC — safe 40px control normalization (no recursive MutationObserver) */
-(function v12064ControlStandard(){
- function normalize(root=document){
-   root.querySelectorAll?.('.pdf-optimize-btn').forEach(b=>b.classList.add('icon-only'));
-   const map=document.getElementById('assetOpenMaps');
-   if(map && map.dataset.palmMapIconOnly!=='1'){
-     map.dataset.palmMapIconOnly='1';
-     map.classList.add('icon-only');
-     map.innerHTML=locationPinIcon();
-     map.setAttribute('aria-label','Buka Google Maps');
-     map.title='';
-   }
- }
- if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>normalize()); else normalize();
- document.addEventListener('click',()=>requestAnimationFrame(()=>normalize()),true);
-})();
+/* v1.20.77 RC — interaction-safe control standard.
+   IMPORTANT: no document-level click/change listener and no DOM observer here.
+   Previous post-navigation normalizers could mutate the freshly rendered SPA page
+   after a navigation click and interfere with legacy render observers/event wiring.
+   40px sizing is CSS-only; icons are produced by the owning render functions. */
 
-
-/* v1.20.76 RC — navigation-safe 40px remove buttons + canonical Maps pin.
-   Deliberately NO subtree MutationObserver here. Older UI observers can rewrite icon
-   markup, and observer-on-observer feedback after SPA navigation can starve clicks. */
-(function v12076UiStandard(){
- function setRemove(b){
-   if(!b)return;
-   const isRemove=(b.textContent||'').trim()==='−'||b.classList.contains('danger-remove')||b.classList.contains('palm-remove-icon');
-   if(!isRemove)return;
-   if((b.textContent||'').trim()!=='−')b.textContent='−';
-   b.classList.add('icon-only','palm-remove-icon');
- }
- function setMapPin(b){
-   if(!b)return;
-   b.classList.add('icon-only','palm-map-pin-btn');
-   const hasPin=!!b.querySelector?.('.location-pin-icon');
-   if(!hasPin)b.innerHTML=locationPinIcon();
-   b.dataset.palmCanonicalPin='1';
-   b.setAttribute('aria-label','Buka Google Maps');
- }
- function normalize(root=document){
-   root.querySelectorAll?.('.repeat-row>button:last-child,.remove-payment,.ledgerRemove').forEach(setRemove);
-   ['assetOpenMaps','openMapsBtn'].forEach(id=>setMapPin(document.getElementById(id)));
-   root.querySelectorAll?.('button.asset-map-approved').forEach(setMapPin);
- }
- function schedule(){
-   requestAnimationFrame(()=>normalize(document));
-   setTimeout(()=>normalize(document),80);
-   setTimeout(()=>normalize(document),350);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
- // SPA navigation/add-row actions originate from user interaction; normalize only after
- // those bounded events instead of continuously observing the whole DOM.
- document.addEventListener('click',schedule,true);
- document.addEventListener('change',schedule,true);
-})();
