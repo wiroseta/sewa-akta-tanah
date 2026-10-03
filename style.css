@@ -1366,3 +1366,10 @@ textarea.compact-hover-textarea.is-expanded{
 #assetLandTitles .land-ai-controls .land-ai-btn,#assetLandTitles .land-ai-controls .land-drive-ai-btn{height:40px!important;min-height:40px!important;padding:0 12px!important}
 @media(min-width:900px){#assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(260px,1fr) max-content 40px max-content!important;gap:10px!important}}
 @media(max-width:800px){#assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:1fr auto 40px!important}}
+
+/* v1.20.66 RC — full-width live optimizer progress */
+.palm-optimizer-status{display:flex!important;align-items:flex-start!important;gap:8px!important;width:100%!important;max-width:none!important;min-width:0!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.45!important;min-height:24px!important}
+.palm-optimizer-status-text{display:block!important;min-width:0!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important}
+.palm-optimizer-spinner{width:15px;height:15px;min-width:15px;margin-top:2px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:palmOptimizerSpin .75s linear infinite}
+.palm-optimizer-check{font-weight:800}.palm-optimizer-error{font-weight:900}
+@keyframes palmOptimizerSpin{to{transform:rotate(360deg)}}

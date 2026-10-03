@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.65-RC";
+const APP_BUILD="1.20.66-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2284,35 +2284,37 @@ async function ensurePdfOptimizerReady(){if(window.__palmPdfReady)await window._
 // v1.20.42 RC — safe PDF optimizer. User-triggered only; never runs OpenAI.
 function driveFileIdFromUrl(u){let m=String(u||'').match(/\/d\/([A-Za-z0-9_-]+)/)||String(u||'').match(/[?&]id=([A-Za-z0-9_-]+)/);return m?.[1]||''}
 function pdfOptimizeIcon(){return '<span class="pdf-opt-icon" aria-hidden="true"></span>'}
+function palmFormatMB(n){return (Number(n||0)/1048576).toFixed(1)+' MB'}
+function palmOptimizerStatus(el,message,state='active'){
+ if(!el)return;
+ el.classList.add('palm-optimizer-status');el.dataset.state=state;
+ const icon=state==='active'?'<span class="palm-optimizer-spinner" aria-hidden="true"></span>':state==='done'?'<span class="palm-optimizer-check" aria-hidden="true">✓</span>':state==='error'?'<span class="palm-optimizer-error" aria-hidden="true">!</span>':'';
+ el.innerHTML=icon+'<span class="palm-optimizer-status-text"></span>';
+ const t=el.querySelector('.palm-optimizer-status-text');if(t)t.textContent=message;
+}
+async function palmReadResponseWithProgress(r,say,label){
+ const total=Number(r.headers.get('content-length')||0);
+ if(!r.body?.getReader){let b=await r.arrayBuffer();say(`${label} ${palmFormatMB(b.byteLength)}${total?' / '+palmFormatMB(total)+' (100%)':''}`);return b}
+ const reader=r.body.getReader(),chunks=[];let loaded=0;
+ while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);loaded+=value.byteLength;const pct=total?Math.min(100,Math.round(loaded/total*100)):null;say(`${label} ${palmFormatMB(loaded)}${total?' / '+palmFormatMB(total)+` (${pct}%)`:''}`)}
+ const out=new Uint8Array(loaded);let off=0;for(const c of chunks){out.set(c,off);off+=c.byteLength}return out.buffer;
+}
+function palmXhrBlob(url,method,headers,body,onUploadDone,say){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();x.open(method,url,true);x.responseType='blob';for(const [k,v] of Object.entries(headers||{}))x.setRequestHeader(k,v);x.upload.onprogress=e=>{const total=e.lengthComputable?e.total:(body?.byteLength||body?.size||0),pct=total?Math.min(100,Math.round(e.loaded/total*100)):null;say(`Mengirim PDF ke Ghostscript... ${palmFormatMB(e.loaded)}${total?' / '+palmFormatMB(total)+(pct!==null?` (${pct}%)`:''):''}`)};x.upload.onload=()=>onUploadDone?.();x.onload=()=>x.status>=200&&x.status<300?resolve(x.response):reject(new Error(`helper lokal gagal (${x.status})`));x.onerror=()=>reject(new Error('koneksi ke helper lokal gagal'));x.send(body)})}
 async function palmLocalOptimizePdf(original,say){
  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),3500);
  try{
-  say('Mengecek PALM Local PDF Optimizer di HTTPS localhost:8765…');
+  say('Mengecek PALM Local PDF Optimizer di HTTPS localhost:8765...');
   console.info('[PALM Optimizer] checking local helper');
-  let health=await fetch('https://localhost:8765/health',{method:'GET',cache:'no-store',signal:ctl.signal});
-  clearTimeout(timer);
-  if(!health.ok)throw new Error('helper lokal tidak siap');
-  let info=await health.json().catch(()=>({}));
-  if(!info.ok||!info.ghostscript)throw new Error('Ghostscript lokal tidak tersedia');
-  say('Ghostscript lokal terhubung. Mengirim PDF ke Ghostscript…');
-  console.info('[PALM Optimizer] local helper healthy; POST /optimize');
-  let r=await fetch('https://localhost:8765/optimize',{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8','Accept':'application/pdf'},body:original.slice(0)});
-  if(!r.ok){let msg=await r.text().catch(()=> '');throw new Error(msg||`helper lokal gagal (${r.status})`)}
-  let blob=await r.blob();if(!blob.size)throw new Error('hasil Ghostscript kosong');
-  return {blob,engine:'Ghostscript lokal'};
- }catch(e){
-  clearTimeout(timer);console.warn('[PALM Optimizer] local helper unavailable:',e);
-  const msg=String(e?.message||e||'');
-  const hint=(e?.name==='TypeError'||/fetch|network|load failed|certificate|ssl|tls/i.test(msg))
-   ? 'Helper HTTPS localhost tidak dapat diakses. Pastikan helper sedang berjalan dan sertifikat PALM localhost sudah dipercaya di Keychain.'
-   : 'Ghostscript lokal tidak dapat dipakai ('+msg+').' ;
-  say(hint+' Menggunakan optimizer PALM browser…');return null
- }
+  let health=await fetch('https://localhost:8765/health',{method:'GET',cache:'no-store',signal:ctl.signal});clearTimeout(timer);
+  if(!health.ok)throw new Error('helper lokal tidak siap');let info=await health.json().catch(()=>({}));if(!info.ok||!info.ghostscript)throw new Error('Ghostscript lokal tidak tersedia');
+  say(`Ghostscript lokal terhubung. Mengirim PDF ke Ghostscript... 0.0 MB / ${palmFormatMB(original.byteLength)} (0%)`);console.info('[PALM Optimizer] local helper healthy; POST /optimize');
+  let blob=await palmXhrBlob('https://localhost:8765/optimize','POST',{'Content-Type':'text/plain;charset=UTF-8','Accept':'application/pdf'},original.slice(0),()=>say('Ghostscript sedang mengoptimalkan PDF...'),say);
+  if(!blob?.size)throw new Error('hasil Ghostscript kosong');return {blob,engine:'Ghostscript lokal'};
+ }catch(e){clearTimeout(timer);console.warn('[PALM Optimizer] local helper unavailable:',e);const msg=String(e?.message||e||'');const hint=(e?.name==='TypeError'||/fetch|network|load failed|certificate|ssl|tls|koneksi/i.test(msg))?'Helper HTTPS localhost tidak dapat diakses. Pastikan helper sedang berjalan dan sertifikat PALM localhost sudah dipercaya di Keychain.':'Ghostscript lokal tidak dapat dipakai ('+msg+').' ;say(hint+' Menggunakan optimizer PALM browser...');return null}
 }
-async function validateOptimizedPdf(blob,pages,dimensions){
- let check=await window.pdfjsLib.getDocument({data:await blob.arrayBuffer()}).promise;
- if(check.numPages!==pages)throw new Error('Quality Check gagal: jumlah halaman berubah.');
- for(let i=1;i<=pages;i++){let p=await check.getPage(i),v=p.getViewport({scale:1}),w=v.width*25.4/72,h=v.height*25.4/72,[ow,oh]=dimensions[i-1];if(Math.abs(w-ow)>1||Math.abs(h-oh)>1)throw new Error('Quality Check gagal: ukuran halaman berubah.')}
+async function validateOptimizedPdf(blob,pages,dimensions,onProgress){
+ let check=await window.pdfjsLib.getDocument({data:await blob.arrayBuffer()}).promise;if(check.numPages!==pages)throw new Error('Quality Check gagal: jumlah halaman berubah.');
+ for(let i=1;i<=pages;i++){onProgress?.(i,pages);let p=await check.getPage(i),v=p.getViewport({scale:1}),w=v.width*25.4/72,h=v.height*25.4/72,[ow,oh]=dimensions[i-1];if(Math.abs(w-ow)>1||Math.abs(h-oh)>1)throw new Error('Quality Check gagal: ukuran halaman berubah.')}
  return true;
 }
 async function palmSha256Hex(data){
@@ -2349,13 +2351,23 @@ async function createDriveOriginalBackup(id,original){
  let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}/copy?fields=id,name,webViewLink,md5Checksum,size,appProperties&supportsAllDrives=true`,{method:'POST',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)}),out=await r.json().catch(()=>({}));if(!r.ok)throw new Error(out?.error?.message||'Gagal membuat backup original di Google Drive.');
  try{localStorage.setItem(markerKey,JSON.stringify({backupId:out.id,sourceMd5:meta.md5Checksum||'',savedAt:new Date().toISOString()}))}catch(_){}return {...out,reused:false};
 }
-async function optimizeDrivePdf(btn,urlInput){let url=urlInput?.value?.trim()||'',id=driveFileIdFromUrl(url),st=btn.closest('.landtitle,.ai-extract,.drive-extract,.master-section')?.querySelector('.drive-local-status,.land-ai-status,.muted');if(!id)return alert('Link Google Drive PDF tidak valid.');let say=t=>{if(st)st.textContent=t};if(!googleDriveToken&&!restoreDriveToken()){say('Menghubungkan Google Drive…');const ok=await connectDriveFromButton(btn);if(!ok){say('Optimasi belum dimulai karena Google Drive belum terhubung. File asli tidak berubah.');return}say('Google Drive terhubung. Melanjutkan optimasi PDF…')}btn.disabled=true;try{say('Mengambil PDF dari Google Drive…');let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});if(!r.ok)throw new Error('Gagal mengambil PDF dari Google Drive.');let original=await r.arrayBuffer(),origSize=original.byteLength;say('Menyiapkan modul pemeriksaan PDF…');await ensurePdfOptimizerReady();let source=await window.pdfjsLib.getDocument({data:original.slice(0)}).promise,pages=source.numPages;if(!pages)throw new Error('PDF tidak memiliki halaman.');let dimensions=[];for(let i=1;i<=pages;i++){let p=await source.getPage(i),v=p.getViewport({scale:1});dimensions.push([v.width*25.4/72,v.height*25.4/72])}
- let local=await palmLocalOptimizePdf(original,say),blob=null,engine='Optimizer PALM';
- if(local){blob=local.blob;engine=local.engine;try{say('Memeriksa hasil Ghostscript…');await validateOptimizedPdf(blob,pages,dimensions)}catch(e){say('Hasil Ghostscript tidak lolos pemeriksaan. Menggunakan optimizer PALM…');blob=null;engine='Optimizer PALM'}}
- if(!blob){let outDoc=null;for(let i=1;i<=pages;i++){say(`Mengoptimalkan halaman ${i} dari ${pages}…`);let page=await source.getPage(i),base=page.getViewport({scale:1}),dpi=180,scale=dpi/72,vp=page.getViewport({scale}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);let ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);await page.render({canvasContext:ctx,viewport:vp}).promise;let mmW=base.width*25.4/72,mmH=base.height*25.4/72,img=canvas.toDataURL('image/jpeg',0.82);if(!outDoc)outDoc=new window.jspdf.jsPDF({unit:'mm',format:[mmW,mmH],orientation:mmW>mmH?'landscape':'portrait',compress:true});else outDoc.addPage([mmW,mmH],mmW>mmH?'landscape':'portrait');outDoc.addImage(img,'JPEG',0,0,mmW,mmH,undefined,'FAST');canvas.width=canvas.height=1}blob=outDoc.output('blob');say('Memeriksa kualitas dan struktur…');await validateOptimizedPdf(blob,pages,dimensions)}
- let newSize=blob.size;if(newSize>=origSize*.85){say(`File sudah cukup optimal (${(origSize/1048576).toFixed(1)} MB → ${(newSize/1048576).toFixed(1)} MB). File asli tidak diubah dan backup tidak dibuat.`);return}
- say('Quality Check lulus. Memastikan backup original di Google Drive…');let backup=await createDriveOriginalBackup(id,original);
- say(backup.reused?'Backup original identik dari percobaan sebelumnya ditemukan; tidak membuat backup kedua. Memperbarui content file Google Drive yang sama…':'Backup original selesai. Memperbarui content file Google Drive yang sama…');let up=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=media&supportsAllDrives=true`,{method:'PATCH',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/pdf'},body:blob});if(!up.ok){let e=await up.json().catch(()=>({}));throw new Error((e?.error?.message||'Gagal memperbarui Google Drive.')+` Backup original tetap tersimpan: ${backup.name||backup.id}.`)}say(`Optimasi berhasil via ${engine} · ${(origSize/1048576).toFixed(1)} MB → ${(newSize/1048576).toFixed(1)} MB · hemat ${Math.round((1-newSize/origSize)*100)}% · ${pages} halaman · Quality Check: Lulus · backup original: ${backup.name||'tersimpan'}.`)}catch(e){say('Optimasi dibatalkan. '+(e.message||e))}finally{btn.disabled=false}}
+async function optimizeDrivePdf(btn,urlInput){
+ let url=urlInput?.value?.trim()||'',id=driveFileIdFromUrl(url),st=btn.closest('.landtitle,.ai-extract,.drive-extract,.master-section')?.querySelector('.drive-local-status,.land-ai-status,.muted');if(!id)return alert('Link Google Drive PDF tidak valid.');
+ let say=(t,state='active')=>palmOptimizerStatus(st,t,state);
+ if(!googleDriveToken&&!restoreDriveToken()){say('Menghubungkan Google Drive...');const ok=await connectDriveFromButton(btn);if(!ok){say('Optimasi belum dimulai karena Google Drive belum terhubung. File asli tidak berubah.','error');return}say('Google Drive terhubung. Melanjutkan optimasi PDF...')}
+ btn.disabled=true;try{
+  say('Mengambil PDF dari Google Drive...');let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});if(!r.ok)throw new Error('Gagal mengambil PDF dari Google Drive.');
+  let original=await palmReadResponseWithProgress(r,say,'Mengambil PDF dari Google Drive...'),origSize=original.byteLength;
+  say('Menyiapkan modul pemeriksaan PDF...');await ensurePdfOptimizerReady();let source=await window.pdfjsLib.getDocument({data:original.slice(0)}).promise,pages=source.numPages;if(!pages)throw new Error('PDF tidak memiliki halaman.');let dimensions=[];for(let i=1;i<=pages;i++){let p=await source.getPage(i),v=p.getViewport({scale:1});dimensions.push([v.width*25.4/72,v.height*25.4/72])}
+  let local=await palmLocalOptimizePdf(original,say),blob=null,engine='Optimizer PALM';
+  if(local){blob=local.blob;engine=local.engine;try{say('Memvalidasi hasil optimasi... 0%');await validateOptimizedPdf(blob,pages,dimensions,(i,n)=>say(`Memvalidasi hasil optimasi... ${Math.round(i/n*100)}% (${i}/${n} halaman)`))}catch(e){say('Hasil Ghostscript tidak lolos pemeriksaan. Menggunakan optimizer PALM...');blob=null;engine='Optimizer PALM'}}
+  if(!blob){let outDoc=null;for(let i=1;i<=pages;i++){say(`Mengoptimalkan halaman ${i} dari ${pages}... ${Math.round((i-1)/pages*100)}%`);let page=await source.getPage(i),base=page.getViewport({scale:1}),dpi=180,scale=dpi/72,vp=page.getViewport({scale}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);let ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);await page.render({canvasContext:ctx,viewport:vp}).promise;let mmW=base.width*25.4/72,mmH=base.height*25.4/72,img=canvas.toDataURL('image/jpeg',0.82);if(!outDoc)outDoc=new window.jspdf.jsPDF({unit:'mm',format:[mmW,mmH],orientation:mmW>mmH?'landscape':'portrait',compress:true});else outDoc.addPage([mmW,mmH],mmW>mmH?'landscape':'portrait');outDoc.addImage(img,'JPEG',0,0,mmW,mmH,undefined,'FAST');canvas.width=canvas.height=1}blob=outDoc.output('blob');say('Memvalidasi hasil optimasi... 0%');await validateOptimizedPdf(blob,pages,dimensions,(i,n)=>say(`Memvalidasi hasil optimasi... ${Math.round(i/n*100)}% (${i}/${n} halaman)`))}
+  let newSize=blob.size;if(newSize>=origSize*.85){say(`File sudah cukup optimal (${palmFormatMB(origSize)} → ${palmFormatMB(newSize)}). File asli tidak diubah dan backup tidak dibuat.`,'done');return}
+  say('Quality Check lulus. Memastikan backup original di Google Drive...');let backup=await createDriveOriginalBackup(id,original);
+  say(backup.reused?'Backup original identik dari percobaan sebelumnya ditemukan; tidak membuat backup kedua. Memperbarui content file Google Drive yang sama...':'Backup original selesai. Memperbarui content file Google Drive yang sama...');let up=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=media&supportsAllDrives=true`,{method:'PATCH',headers:{Authorization:`Bearer ${googleDriveToken}`,'Content-Type':'application/pdf'},body:blob});if(!up.ok){let e=await up.json().catch(()=>({}));throw new Error((e?.error?.message||'Gagal memperbarui Google Drive.')+` Backup original tetap tersimpan: ${backup.name||backup.id}.`)}
+  say(`Optimasi berhasil via ${engine} · ${palmFormatMB(origSize)} → ${palmFormatMB(newSize)} · hemat ${Math.round((1-newSize/origSize)*100)}% · ${pages} halaman · Quality Check: Lulus · backup original: ${backup.name||'tersimpan'}.`,'done')
+ }catch(e){say('Optimasi dibatalkan. '+(e.message||e),'error')}finally{btn.disabled=false}
+}
 
 function installPdfOptimizeButtons(root=document){root.querySelectorAll?.('.landtitle').forEach(row=>{let drive=row.querySelector('.driveUrl'),ai=row.querySelector('.land-drive-ai-btn');if(!drive||!ai||row.querySelector('.pdf-optimize-btn'))return;let b=document.createElement('button');b.type='button';b.className='secondary pdf-optimize-btn';b.setAttribute('aria-label','Optimize File Google Drive');b.innerHTML=pdfOptimizeIcon();b.onclick=()=>optimizeDrivePdf(b,drive);ai.before(b)})}
 function bindLeasePdfOptimizer(){let b=document.getElementById('leasePdfOptimizeBtn'),u=document.getElementById('driveUrl');if(b&&u&&!b.dataset.bound){b.dataset.bound='1';b.addEventListener('click',()=>optimizeDrivePdf(b,u))}}

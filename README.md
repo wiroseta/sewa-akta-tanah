@@ -1,4 +1,12 @@
-PALM v1.20.63 RC
+PALM v1.20.66 RC
+
+## v1.20.66 RC — Full Live Optimizer Progress
+- Status Google Drive, upload ke Ghostscript, proses Ghostscript, dan validasi ditampilkan penuh tanpa truncation.
+- Spinner aktif selama proses. Download/upload menampilkan byte/MB dan persen bila total aktual tersedia.
+- Validasi menampilkan persen aktual berdasarkan halaman yang sudah diperiksa.
+- Tahap Ghostscript menampilkan teks penuh; tidak membuat persen palsu karena Ghostscript helper saat ini tidak menyediakan progress internal numerik.
+- Tidak ada perubahan database/SQL atau Edge Function.
+
 
 UI consistency finishing: global compact form-action sizing based on Akta/Scan, icon-only optimizer sizing, Property summary one-row auto-grow, compact minus controls, consistent Property Maps action. No database/SQL or Edge Function change required.
 
