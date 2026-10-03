@@ -1,3 +1,12 @@
+PALM v1.20.70 RC
+
+## v1.20.70 RC — Aspect-Preserving Legal Optimizer + Safe Auto-Deskew
+- Abnormal scanner PDFs are no longer forced to exact A4. Physical page size is normalized around 300 dpi while preserving the original scan aspect ratio, avoiding full-width white bands and avoiding crop/distortion.
+- Local helper v1.4 can apply conservative auto-deskew when ImageMagick is installed. If unavailable, optimization continues safely without deskew.
+- Deskew is applied only to abnormal scanned PDFs; normal PDFs are not rasterized merely for deskew.
+- Legal quality remains 300 dpi color/grayscale and 600 dpi monochrome.
+- Original Google Drive backup behavior is unchanged.
+
 PALM v1.20.69 RC
 
 ## v1.20.69 RC — Certificate File Inside Collapsible Body

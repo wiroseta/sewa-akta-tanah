@@ -25,3 +25,10 @@ KEAMANAN
 - PALM otomatis mengecek https://localhost:8765/health lalu POST /optimize.
 - Jika helper/Ghostscript tidak tersedia atau gagal, PALM tetap dapat fallback ke optimizer browser.
 - File Drive baru dibuat backup setelah hasil optimasi lebih kecil dan lolos Quality Check. File original tetap memakai Drive File ID yang sama.
+
+PALM v1.20.70 — Safe Auto-Deskew
+----------------------------------
+Auto-deskew is optional and conservative. It requires ImageMagick (`magick`).
+On the PALM Mac with Homebrew, install once with: brew install imagemagick
+If ImageMagick is absent, helper v1.4 continues Legal Document Quality optimization without deskew.
+The /health response reports `deskew: true/false`.

@@ -7,17 +7,18 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 CERT=os.path.join(HERE,'palm-localhost.crt')
 KEY=os.path.join(HERE,'palm-localhost.key')
 GS=shutil.which('gs') or '/opt/homebrew/bin/gs'
+MAGICK=shutil.which('magick') or ('/opt/homebrew/bin/magick' if os.path.exists('/opt/homebrew/bin/magick') else '')
 MAX_BYTES=500*1024*1024
 
 class H(BaseHTTPRequestHandler):
-    server_version='PALMLocalPDFOptimizer/1.3'
+    server_version='PALMLocalPDFOptimizer/1.4'
     protocol_version='HTTP/1.1'
     def log_message(self, fmt, *args): print('[PALM]', fmt%args, flush=True)
     def cors(self):
         self.send_header('Access-Control-Allow-Origin','https://wiroseta.github.io')
         self.send_header('Vary','Origin')
         self.send_header('Access-Control-Allow-Methods','GET,POST,OPTIONS')
-        self.send_header('Access-Control-Allow-Headers','Content-Type, Accept, X-PALM-Normalize-A4')
+        self.send_header('Access-Control-Allow-Headers','Content-Type, Accept, X-PALM-Normalize-Aspect, X-PALM-Target-Width-PT, X-PALM-Target-Height-PT, X-PALM-Auto-Deskew')
         self.send_header('Connection','close')
         self.send_header('Access-Control-Allow-Private-Network','true')
     def do_OPTIONS(self):
@@ -27,7 +28,7 @@ class H(BaseHTTPRequestHandler):
         print('[PALM] GET', self.path, 'Origin=', self.headers.get('Origin'), flush=True)
         if self.path!='/health': self.send_error(404); return
         ok=os.path.isfile(GS) and os.access(GS,os.X_OK)
-        b=json.dumps({'ok':ok,'ghostscript':ok,'version':'1.3','https':True}).encode()
+        b=json.dumps({'ok':ok,'ghostscript':ok,'imagemagick':bool(MAGICK and os.path.isfile(MAGICK)),'deskew':bool(MAGICK and os.path.isfile(MAGICK)),'version':'1.4','https':True}).encode()
         self.send_response(200 if ok else 503); self.cors(); self.send_header('Content-Type','application/json'); self.send_header('Content-Length',str(len(b))); self.end_headers(); self.wfile.write(b); self.close_connection=True
     def do_POST(self):
         print('[PALM] POST', self.path, 'Origin=', self.headers.get('Origin'), 'Bytes=', self.headers.get('Content-Length'), flush=True)
@@ -41,18 +42,39 @@ class H(BaseHTTPRequestHandler):
             with tempfile.TemporaryDirectory(prefix='palm-pdf-') as d:
                 src=os.path.join(d,'input.pdf'); out=os.path.join(d,'output.pdf')
                 open(src,'wb').write(data)
-                normalize_a4=self.headers.get('X-PALM-Normalize-A4','0')=='1'
-                # PALM Legal Document Quality: 300 dpi for color/gray scans, 600 dpi for monochrome.
-                # Some scanner PDFs incorrectly use image pixels as PDF points (e.g. ~70 x 90 inch pages).
-                # Only those abnormal pages are normalized to A4; normal PDF page sizes are preserved.
-                cmd=[GS,'-sDEVICE=pdfwrite','-dCompatibilityLevel=1.6','-dNOPAUSE','-dQUIET','-dBATCH',
-                     '-dDetectDuplicateImages=true','-dCompressFonts=true','-dSubsetFonts=true',
-                     '-dDownsampleColorImages=true','-dColorImageResolution=300','-dColorImageDownsampleThreshold=1.0',
-                     '-dDownsampleGrayImages=true','-dGrayImageResolution=300','-dGrayImageDownsampleThreshold=1.0',
-                     '-dDownsampleMonoImages=true','-dMonoImageResolution=600','-dMonoImageDownsampleThreshold=1.0']
-                if normalize_a4: cmd += ['-dFIXEDMEDIA','-sPAPERSIZE=a4','-dPDFFitPage']
-                cmd += ['-sOutputFile='+out,src]
-                p=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=300)
+                normalize_aspect=self.headers.get('X-PALM-Normalize-Aspect','0')=='1'
+                auto_deskew=self.headers.get('X-PALM-Auto-Deskew','0')=='1'
+                try:
+                    target_w=float(self.headers.get('X-PALM-Target-Width-PT','0') or 0)
+                    target_h=float(self.headers.get('X-PALM-Target-Height-PT','0') or 0)
+                except ValueError:
+                    target_w=target_h=0
+                # PALM Legal Document Quality: preserve the scan's aspect ratio, 300 dpi color/gray, 600 dpi mono.
+                # Abnormal scanner page sizes are mapped to a sane physical size WITHOUT forcing A4, avoiding
+                # full-width white bands and avoiding crop/distortion. Optional conservative deskew is applied
+                # only when ImageMagick is available; the original Drive backup remains untouched.
+                def gs_cmd(inp, output, fixed=False):
+                    c=[GS,'-sDEVICE=pdfwrite','-dCompatibilityLevel=1.6','-dNOPAUSE','-dQUIET','-dBATCH',
+                       '-dDetectDuplicateImages=true','-dCompressFonts=true','-dSubsetFonts=true',
+                       '-dDownsampleColorImages=true','-dColorImageResolution=300','-dColorImageDownsampleThreshold=1.0',
+                       '-dDownsampleGrayImages=true','-dGrayImageResolution=300','-dGrayImageDownsampleThreshold=1.0',
+                       '-dDownsampleMonoImages=true','-dMonoImageResolution=600','-dMonoImageDownsampleThreshold=1.0']
+                    if fixed and target_w>0 and target_h>0:
+                        c += ['-dFIXEDMEDIA',f'-dDEVICEWIDTHPOINTS={target_w:.3f}',f'-dDEVICEHEIGHTPOINTS={target_h:.3f}','-dPDFFitPage','-dModifiesPageSize=true']
+                    c += ['-sOutputFile='+output,inp]
+                    return c
+                first=os.path.join(d,'normalized.pdf') if normalize_aspect else out
+                p=subprocess.run(gs_cmd(src,first,normalize_aspect),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=300)
+                if p.returncode==0 and auto_deskew and normalize_aspect and MAGICK and os.path.isfile(MAGICK):
+                    desk=os.path.join(d,'deskew.pdf')
+                    # 60% is intentionally conservative. ImageMagick only rotates when it detects a useful skew.
+                    m=subprocess.run([MAGICK,'-density','300',first,'-background','white','-deskew','60%','-quality','92',desk],stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=300)
+                    if m.returncode==0 and os.path.exists(desk):
+                        p=subprocess.run(gs_cmd(desk,out,False),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=300)
+                    else:
+                        shutil.copyfile(first,out)
+                elif p.returncode==0 and first!=out:
+                    shutil.copyfile(first,out)
                 if p.returncode!=0 or not os.path.exists(out): raise RuntimeError('Ghostscript gagal: '+p.stderr.decode('utf-8','replace')[-1000:])
                 result=open(out,'rb').read()
                 if not result.startswith(b'%PDF-'): raise RuntimeError('Output Ghostscript bukan PDF valid.')
