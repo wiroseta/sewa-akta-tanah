@@ -1622,3 +1622,18 @@ textarea.compact-hover-textarea.is-expanded{
 @media(max-width:800px){
  #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px!important}
 }
+\n\n/* v1.20.91 RC — Safari-safe full-width PALM file picker. */
+#assetLandTitles .land-ai-controls .land-file.palm-file-picker{
+ position:relative!important;display:flex!important;align-items:center!important;gap:10px!important;
+ width:100%!important;min-width:0!important;height:40px!important;padding:4px 10px!important;
+ border:1px solid #c9ced8!important;border-radius:10px!important;background:#fff!important;box-sizing:border-box!important;overflow:hidden!important;cursor:pointer!important
+}
+#assetLandTitles .palm-file-picker .palm-file-choose{
+ flex:0 0 auto!important;padding:5px 12px!important;border-radius:7px!important;background:#f0f0f0!important;color:#222!important;white-space:nowrap!important;line-height:20px!important
+}
+#assetLandTitles .palm-file-picker .palm-file-name{
+ flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;color:#222!important;font-weight:400!important
+}
+#assetLandTitles .palm-file-picker input[type=file]{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer!important;z-index:2!important;margin:0!important;padding:0!important
+}

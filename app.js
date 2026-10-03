@@ -2512,7 +2512,7 @@ async function optimizeLandTitleLocalFile(btn,row){
   if(blob.size>=file.size*.98){say(`File lokal sudah cukup optimal (${palmFormatMB(file.size)} → ${palmFormatMB(blob.size)}). File asli tetap dipakai.`,'done');return}
   const outName=file.name.replace(/\.pdf$/i,'')+' - PALM Optimized.pdf';
   const optimized=new File([blob],outName,{type:'application/pdf',lastModified:Date.now()});
-  const dt=new DataTransfer();dt.items.add(optimized);input.files=dt.files;
+  const dt=new DataTransfer();dt.items.add(optimized);input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}));
   say(`File lokal siap dibaca AI · ${palmFormatMB(file.size)} → ${palmFormatMB(blob.size)} · hemat ${Math.round((1-blob.size/file.size)*100)}% · file asli di komputer tidak diubah.`,'done');
  }catch(e){say('Optimasi file lokal dibatalkan. '+(e?.message||e),'error')}finally{btn.disabled=false}
 }
@@ -2535,7 +2535,16 @@ function installLandTitleWorkflowV12088(root=document){
    const read=controls.querySelector('.land-ai-btn');read?.before(local);
   }
   const title=row.querySelector('.land-ai-section-title');if(title&&title.textContent!=='Baca Otomatis dengan AI — File Sertifikat (PDF / Foto)')title.textContent='Baca Otomatis dengan AI — File Sertifikat (PDF / Foto)';
-  const fileLabel=file.closest('label');if(fileLabel){for(const n of [...fileLabel.childNodes]){if(n.nodeType===3&&n.textContent.trim())n.textContent=''}}
+  const fileLabel=file.closest('label');if(fileLabel){
+   for(const n of [...fileLabel.childNodes]){if(n.nodeType===3&&n.textContent.trim())n.textContent=''}
+   if(!fileLabel.classList.contains('palm-file-picker')){
+    fileLabel.classList.add('palm-file-picker');
+    const choose=document.createElement('span');choose.className='palm-file-choose';choose.textContent='Choose File';
+    const name=document.createElement('span');name.className='palm-file-name';name.textContent=file.files?.[0]?.name||'No file selected';
+    fileLabel.insertBefore(choose,file);fileLabel.insertBefore(name,file);
+    file.addEventListener('change',()=>{name.textContent=file.files?.[0]?.name||'No file selected'});
+   }
+  }
   row.dataset.v12089Workflow='1';
  });
 }
