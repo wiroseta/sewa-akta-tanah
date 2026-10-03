@@ -1,3 +1,12 @@
+PALM v1.20.69 RC
+
+## v1.20.69 RC — Certificate File Inside Collapsible Body
+- Header sertifikat hanya identitas sertifikat + chevron.
+- File Sertifikat dan semua tombol AI/optimizer berada di dalam isi collapsible, bukan header.
+- Saat collapsed seluruh File Sertifikat/tombol/status tersembunyi.
+- Saat expanded, Baca Otomatis dengan AI tampil paling atas sebelum Data Sertifikat.
+- Mempertahankan Legal Document Quality Optimizer/helper v1.3 dari v1.20.67.
+
 PALM v1.20.67 RC
 
 ## v1.20.67 RC — Legal Document Quality PDF Optimization
