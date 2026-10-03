@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.70-RC";
+const APP_BUILD="1.20.71-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2314,7 +2314,15 @@ async function palmLocalOptimizePdf(original,say,normalizeSpec=null){
 }
 async function validateOptimizedPdf(blob,pages,dimensions,onProgress){
  let check=await window.pdfjsLib.getDocument({data:await blob.arrayBuffer()}).promise;if(check.numPages!==pages)throw new Error('Quality Check gagal: jumlah halaman berubah.');
- for(let i=1;i<=pages;i++){onProgress?.(i,pages);let p=await check.getPage(i),v=p.getViewport({scale:1}),w=v.width*25.4/72,h=v.height*25.4/72,[ow,oh]=dimensions[i-1];if(Math.abs(w-ow)>1||Math.abs(h-oh)>1)throw new Error('Quality Check gagal: ukuran halaman berubah.')}
+ // v1.20.71: Ghostscript/ImageMagick may rewrite PDF rotation metadata while preserving the same physical sheet.
+ // Accept portrait/landscape metadata swaps, but still reject a real physical-size change.
+ const tolMM=2.5;
+ for(let i=1;i<=pages;i++){
+  onProgress?.(i,pages);let p=await check.getPage(i),v=p.getViewport({scale:1}),w=v.width*25.4/72,h=v.height*25.4/72,[ow,oh]=dimensions[i-1];
+  const direct=Math.abs(w-ow)<=tolMM&&Math.abs(h-oh)<=tolMM;
+  const rotated=Math.abs(w-oh)<=tolMM&&Math.abs(h-ow)<=tolMM;
+  if(!direct&&!rotated)throw new Error(`Quality Check gagal: ukuran halaman ${i} berubah (${w.toFixed(1)} × ${h.toFixed(1)} mm; target ${ow.toFixed(1)} × ${oh.toFixed(1)} mm).`)
+ }
  return true;
 }
 async function palmSha256Hex(data){

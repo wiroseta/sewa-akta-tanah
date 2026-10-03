@@ -1,3 +1,9 @@
+# PALM v1.20.71 RC — Quality Check Rotation-Tolerant Fix
+
+Perbaikan atas v1.20.70: Quality Check tidak lagi membatalkan hasil yang ukuran fisik halamannya tetap benar tetapi width/height tertukar karena Ghostscript/ImageMagick menulis ulang metadata rotasi PDF. Toleransi rounding physical page size 2,5 mm; perubahan ukuran nyata tetap ditolak. Pesan gagal sekarang menampilkan ukuran hasil dan target per halaman.
+
+Local Optimizer tetap v1.4; tidak perlu mengganti helper, ImageMagick, SQL, atau Edge Function. Deploy GitHub: index.html + app.js.
+
 PALM v1.20.70 RC
 
 ## v1.20.70 RC — Aspect-Preserving Legal Optimizer + Safe Auto-Deskew
