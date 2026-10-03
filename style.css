@@ -1519,3 +1519,71 @@ textarea.compact-hover-textarea.is-expanded{
   #landTitlePickerDlg .land-picker-row>span{grid-template-columns:max-content minmax(0,1fr)!important;column-gap:7px!important}
   #landTitlePickerDlg .land-picker-row>span>b{white-space:nowrap!important}
 }
+
+
+/* v1.20.85 RC — show every linked Property alias in certificate picker */
+#landTitlePickerList .land-picker-row > span{display:flex;align-items:center;gap:10px;min-width:0;width:100%}
+#landTitlePickerList .land-picker-row .land-picker-alias{font-size:13px;line-height:1.25;white-space:nowrap;color:#1769c2;font-weight:800;flex:0 0 auto}
+#landTitlePickerList .land-picker-row small{min-width:0;flex:1 1 auto}
+@media(max-width:700px){#landTitlePickerList .land-picker-row > span{gap:7px;flex-wrap:wrap}#landTitlePickerList .land-picker-row .land-picker-alias{white-space:normal}#landTitlePickerList .land-picker-row small{flex-basis:100%;padding-left:0}}
+
+/* v1.20.86 RC — manually resizable certificate picker on desktop + fluid contents */
+@media (min-width:701px){
+  #landTitlePickerDlg.history-dialog{
+    width:min(1280px,calc(100vw - 64px))!important;
+    height:min(760px,calc(100dvh - 48px))!important;
+    min-width:min(620px,calc(100vw - 32px))!important;
+    min-height:420px!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    resize:both!important;
+    overflow:auto!important;
+  }
+  #landTitlePickerDlg .land-title-picker-list{
+    max-height:none!important;
+    height:calc(100% - 235px)!important;
+    min-height:150px!important;
+  }
+}
+/* The certificate row remains fluid at every dialog width. */
+#landTitlePickerList .land-picker-row{
+  grid-template-columns:22px minmax(0,1fr)!important;
+}
+#landTitlePickerList .land-picker-row>span{
+  display:grid!important;
+  grid-template-columns:max-content max-content minmax(0,1fr)!important;
+  align-items:center!important;
+  column-gap:10px!important;
+  min-width:0!important;
+  width:100%!important;
+}
+#landTitlePickerList .land-picker-row>span>b,
+#landTitlePickerList .land-picker-row .land-picker-alias{white-space:nowrap!important}
+#landTitlePickerList .land-picker-row small{min-width:0!important;overflow-wrap:anywhere!important}
+@media(max-width:700px){
+  #landTitlePickerDlg.history-dialog{resize:none!important;height:auto!important;overflow:hidden!important}
+  #landTitlePickerList .land-picker-row>span{
+    grid-template-columns:max-content minmax(0,1fr)!important;
+    column-gap:7px!important;
+  }
+  #landTitlePickerList .land-picker-row .land-picker-alias{white-space:normal!important}
+  #landTitlePickerList .land-picker-row small{grid-column:1/-1!important}
+}
+
+/* v1.20.87 RC — Akta AI reader: explicit text actions, one-row desktop layout */
+@media (min-width:900px){
+  #form .ai-extract>.ai-extract-actions{
+    display:grid!important;
+    grid-template-columns:minmax(260px,1fr) max-content!important;
+    gap:10px!important;
+    align-items:center!important;
+  }
+  #form .ai-extract>.ai-extract-actions #aiFile{min-width:0!important;width:100%!important}
+  #form .drive-extract.drive-compact{
+    grid-template-columns:auto minmax(220px,1fr) max-content 40px max-content!important;
+    gap:8px!important;
+    align-items:center!important;
+  }
+  #form .drive-compact #driveUrl{min-width:0!important;width:100%!important}
+  #form #extractBtn,#form #driveExtractBtn{width:auto!important;white-space:nowrap!important}
+}
