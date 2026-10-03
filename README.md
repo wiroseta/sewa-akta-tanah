@@ -1,4 +1,13 @@
-PALM v1.20.66 RC
+PALM v1.20.67 RC
+
+## v1.20.67 RC — Legal Document Quality PDF Optimization
+- Ghostscript local optimizer now uses explicit legal-document quality: 300 dpi color/grayscale and 600 dpi monochrome.
+- Detects abnormal scanner PDFs whose image pixels were incorrectly stored as PDF points (very large physical page sizes). Only those abnormal pages are normalized to A4 while preserving orientation.
+- Normal-sized PDFs keep their original physical page dimensions.
+- Browser fallback uses 300 dpi / JPEG 0.88 for abnormal scanner PDFs and normalizes them to A4.
+- Quality Check validates the expected normalized A4 dimensions when normalization is required.
+- Goal: materially reduce oversized scan PDFs while preserving small text, handwriting, stamps, signatures, table lines, and survey drawings for clear A4 printing.
+- Local helper version 1.3.
 
 ## v1.20.66 RC — Full Live Optimizer Progress
 - Status Google Drive, upload ke Ghostscript, proses Ghostscript, dan validasi ditampilkan penuh tanpa truncation.

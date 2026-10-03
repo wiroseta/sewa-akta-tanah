@@ -10,14 +10,14 @@ GS=shutil.which('gs') or '/opt/homebrew/bin/gs'
 MAX_BYTES=500*1024*1024
 
 class H(BaseHTTPRequestHandler):
-    server_version='PALMLocalPDFOptimizer/1.2'
+    server_version='PALMLocalPDFOptimizer/1.3'
     protocol_version='HTTP/1.1'
     def log_message(self, fmt, *args): print('[PALM]', fmt%args, flush=True)
     def cors(self):
         self.send_header('Access-Control-Allow-Origin','https://wiroseta.github.io')
         self.send_header('Vary','Origin')
         self.send_header('Access-Control-Allow-Methods','GET,POST,OPTIONS')
-        self.send_header('Access-Control-Allow-Headers','Content-Type, Accept')
+        self.send_header('Access-Control-Allow-Headers','Content-Type, Accept, X-PALM-Normalize-A4')
         self.send_header('Connection','close')
         self.send_header('Access-Control-Allow-Private-Network','true')
     def do_OPTIONS(self):
@@ -27,7 +27,7 @@ class H(BaseHTTPRequestHandler):
         print('[PALM] GET', self.path, 'Origin=', self.headers.get('Origin'), flush=True)
         if self.path!='/health': self.send_error(404); return
         ok=os.path.isfile(GS) and os.access(GS,os.X_OK)
-        b=json.dumps({'ok':ok,'ghostscript':ok,'version':'1.2','https':True}).encode()
+        b=json.dumps({'ok':ok,'ghostscript':ok,'version':'1.3','https':True}).encode()
         self.send_response(200 if ok else 503); self.cors(); self.send_header('Content-Type','application/json'); self.send_header('Content-Length',str(len(b))); self.end_headers(); self.wfile.write(b); self.close_connection=True
     def do_POST(self):
         print('[PALM] POST', self.path, 'Origin=', self.headers.get('Origin'), 'Bytes=', self.headers.get('Content-Length'), flush=True)
@@ -41,7 +41,17 @@ class H(BaseHTTPRequestHandler):
             with tempfile.TemporaryDirectory(prefix='palm-pdf-') as d:
                 src=os.path.join(d,'input.pdf'); out=os.path.join(d,'output.pdf')
                 open(src,'wb').write(data)
-                cmd=[GS,'-sDEVICE=pdfwrite','-dCompatibilityLevel=1.6','-dPDFSETTINGS=/ebook','-dNOPAUSE','-dQUIET','-dBATCH','-dDetectDuplicateImages=true','-dCompressFonts=true','-dSubsetFonts=true','-sOutputFile='+out,src]
+                normalize_a4=self.headers.get('X-PALM-Normalize-A4','0')=='1'
+                # PALM Legal Document Quality: 300 dpi for color/gray scans, 600 dpi for monochrome.
+                # Some scanner PDFs incorrectly use image pixels as PDF points (e.g. ~70 x 90 inch pages).
+                # Only those abnormal pages are normalized to A4; normal PDF page sizes are preserved.
+                cmd=[GS,'-sDEVICE=pdfwrite','-dCompatibilityLevel=1.6','-dNOPAUSE','-dQUIET','-dBATCH',
+                     '-dDetectDuplicateImages=true','-dCompressFonts=true','-dSubsetFonts=true',
+                     '-dDownsampleColorImages=true','-dColorImageResolution=300','-dColorImageDownsampleThreshold=1.0',
+                     '-dDownsampleGrayImages=true','-dGrayImageResolution=300','-dGrayImageDownsampleThreshold=1.0',
+                     '-dDownsampleMonoImages=true','-dMonoImageResolution=600','-dMonoImageDownsampleThreshold=1.0']
+                if normalize_a4: cmd += ['-dFIXEDMEDIA','-sPAPERSIZE=a4','-dPDFFitPage']
+                cmd += ['-sOutputFile='+out,src]
                 p=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=300)
                 if p.returncode!=0 or not os.path.exists(out): raise RuntimeError('Ghostscript gagal: '+p.stderr.decode('utf-8','replace')[-1000:])
                 result=open(out,'rb').read()
