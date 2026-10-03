@@ -1677,3 +1677,11 @@ textarea.compact-hover-textarea.is-expanded{
  #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file.palm-file-picker{flex:1 0 100%!important;}
  #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-ai-btn{flex:1 1 auto!important;}
 }
+
+/* v1.20.93 RC — actual PALM runtime: explicit full-width local certificate file row. */
+#assetLandTitles .repeat-row.landtitle .land-ai-bottom{grid-column:1/-1!important;width:100%!important;min-width:0!important;display:block!important}
+#assetLandTitles .repeat-row.landtitle .palm-local-file-row{display:flex!important;flex-flow:row nowrap!important;width:100%!important;min-width:0!important;max-width:none!important;align-items:center!important;gap:10px!important}
+#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.palm-file-picker{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important}
+#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.land-local-optimize-btn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important}
+#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.land-ai-btn{flex:0 0 auto!important;width:auto!important;height:40px!important;white-space:nowrap!important}
+@media(max-width:700px){#assetLandTitles .repeat-row.landtitle .palm-local-file-row{flex-wrap:wrap!important}#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.palm-file-picker{flex:1 0 100%!important;width:100%!important}#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.land-ai-btn{flex:1 1 auto!important}}
