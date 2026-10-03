@@ -1,4 +1,10 @@
-PALM v1.20.99 RC
+PALM v1.20.100 RC
+
+Perubahan v1.20.100 RC:
+- Tombol + Tambah Sertifikat dipindahkan dari dalam setiap kartu Sertifikat ke area aksi level daftar di bawah seluruh kartu, bersama tombol Hubungkan Sertifikat dan Riwayat.
+- Tombol − tetap berada di dalam kartu Sertifikat dan tetap menghapus kartu/relasi yang tepat.
+- Seluruh fix v1.20.99 RC dan sebelumnya dipertahankan.
+
 
 Perubahan:
 - Akta Sewa Pembacaan AI: file picker PALM + optimizer lokal + Baca File; Google Drive: Buka + optimizer + Baca dari Google Drive.
