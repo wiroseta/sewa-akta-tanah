@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.87-RC";
+const APP_BUILD="1.20.88-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2494,3 +2494,49 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 /* v1.20.78 RC — freeze fix: legacy remove-button MutationObserver is idempotent and added-node scoped. */
+
+// v1.20.88 RC — Property certificate workflow split: Google Drive actions beside certificate link; local file optimizer beside upload.
+async function optimizeLandTitleLocalFile(btn,row){
+ const input=row?.querySelector('.landAiFile'), st=row?.querySelector('.land-ai-status');
+ const file=input?.files?.[0];
+ const say=(m,s='active')=>palmOptimizerStatus(st,m,s);
+ if(!file){say('Pilih file PDF dari perangkat terlebih dahulu.','error');return}
+ if(file.type!=='application/pdf'&&!/\.pdf$/i.test(file.name)){say('Optimizer file lokal hanya untuk PDF.','error');return}
+ btn.disabled=true;
+ try{
+  const original=await file.arrayBuffer();
+  let result=await palmLocalOptimizePdf(original,say,null);
+  if(!result?.blob){say('Optimizer lokal tidak tersedia. File asli tetap dipilih dan tidak diubah.','error');return}
+  const blob=result.blob;
+  if(blob.size>=file.size*.98){say(`File lokal sudah cukup optimal (${palmFormatMB(file.size)} → ${palmFormatMB(blob.size)}). File asli tetap dipakai.`,'done');return}
+  const outName=file.name.replace(/\.pdf$/i,'')+' - PALM Optimized.pdf';
+  const optimized=new File([blob],outName,{type:'application/pdf',lastModified:Date.now()});
+  const dt=new DataTransfer();dt.items.add(optimized);input.files=dt.files;
+  say(`File lokal siap dibaca AI · ${palmFormatMB(file.size)} → ${palmFormatMB(blob.size)} · hemat ${Math.round((1-blob.size/file.size)*100)}% · file asli di komputer tidak diubah.`,'done');
+ }catch(e){say('Optimasi file lokal dibatalkan. '+(e?.message||e),'error')}finally{btn.disabled=false}
+}
+function installLandTitleWorkflowV12088(root=document){
+ root.querySelectorAll?.('#assetLandTitles .repeat-row.landtitle').forEach(row=>{
+  const drive=row.querySelector('.driveUrl'), driveAi=row.querySelector('.land-drive-ai-btn'), file=row.querySelector('.landAiFile');
+  if(!drive||!driveAi||!file)return;
+  const driveLabel=drive.closest('label');
+  let openBtn=driveLabel?.nextElementSibling;
+  if(!driveLabel||!openBtn)return;
+  let wrap=row.querySelector('.land-drive-workflow');
+  if(!wrap){wrap=document.createElement('div');wrap.className='land-drive-workflow';driveLabel.before(wrap);wrap.append(driveLabel);wrap.append(openBtn)}
+  let driveOpt=row.querySelector('.pdf-optimize-btn:not(.land-local-optimize-btn)');
+  if(!driveOpt){driveOpt=document.createElement('button');driveOpt.type='button';driveOpt.className='secondary pdf-optimize-btn';driveOpt.setAttribute('aria-label','Optimize File Google Drive');driveOpt.innerHTML=pdfOptimizeIcon();driveOpt.onclick=()=>optimizeDrivePdf(driveOpt,drive)}
+  if(driveOpt.parentElement!==wrap)wrap.append(driveOpt);
+  if(driveAi.parentElement!==wrap)wrap.append(driveAi);
+  const controls=row.querySelector('.land-ai-controls');
+  if(controls&&!controls.querySelector('.land-local-optimize-btn')){
+   const local=document.createElement('button');local.type='button';local.className='secondary pdf-optimize-btn land-local-optimize-btn';local.setAttribute('aria-label','Optimize File Lokal');local.innerHTML=pdfOptimizeIcon();local.onclick=()=>optimizeLandTitleLocalFile(local,row);
+   const read=controls.querySelector('.land-ai-btn');read?.before(local);
+  }
+  const title=row.querySelector('.land-ai-section-title');if(title)title.textContent='Baca Otomatis dengan AI — File Sertifikat (PDF / Foto)';
+  const fileLabel=file.closest('label');if(fileLabel)fileLabel.childNodes[0].textContent='File Sertifikat (PDF / Foto)';
+ });
+}
+const palm12088Obs=new MutationObserver(()=>installLandTitleWorkflowV12088());
+palm12088Obs.observe(document.documentElement,{subtree:true,childList:true});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>installLandTitleWorkflowV12088(),0));

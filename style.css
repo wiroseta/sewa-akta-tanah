@@ -1587,3 +1587,29 @@ textarea.compact-hover-textarea.is-expanded{
   #form .drive-compact #driveUrl{min-width:0!important;width:100%!important}
   #form #extractBtn,#form #driveExtractBtn{width:auto!important;white-space:nowrap!important}
 }
+
+/* v1.20.88 RC — Property Detail / Certificate: source-specific one-row workflows. */
+#assetLandTitles .repeat-row.landtitle .land-drive-workflow{grid-column:1/-1!important;display:grid!important;grid-template-columns:minmax(0,1fr) max-content 40px max-content!important;gap:10px!important;align-items:end!important;width:100%!important;min-width:0!important}
+#assetLandTitles .land-drive-workflow .land-link{grid-column:auto!important;min-width:0!important;width:100%!important}
+#assetLandTitles .land-drive-workflow .land-link input{width:100%!important;min-width:0!important;height:40px!important}
+#assetLandTitles .land-drive-workflow>button{height:40px!important;min-height:40px!important;margin:0!important;white-space:nowrap!important}
+#assetLandTitles .land-drive-workflow>.pdf-optimize-btn{width:40px!important;min-width:40px!important;max-width:40px!important;padding:0!important;font-size:0!important}
+#assetLandTitles .land-ai-section-title{white-space:nowrap!important}
+#assetLandTitles .repeat-row.landtitle .land-ai-controls{display:grid!important;grid-template-columns:minmax(0,1fr) 40px max-content!important;gap:10px!important;align-items:end!important;width:100%!important}
+#assetLandTitles .land-ai-controls .land-file{grid-column:auto!important;min-width:0!important;width:100%!important}
+#assetLandTitles .land-ai-controls .land-file input[type=file]{display:block!important;width:100%!important;min-width:0!important;height:40px!important;box-sizing:border-box!important}
+#assetLandTitles .land-ai-controls .land-local-optimize-btn{grid-column:auto!important;width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;padding:0!important;font-size:0!important}
+#assetLandTitles .land-ai-controls .land-ai-btn{grid-column:auto!important;width:auto!important;min-width:max-content!important;height:40px!important;white-space:nowrap!important}
+@media(max-width:800px){
+ #assetLandTitles .repeat-row.landtitle .land-drive-workflow{grid-template-columns:minmax(0,1fr) 40px 40px!important;align-items:end!important}
+ #assetLandTitles .land-drive-workflow .land-link{grid-column:1/-1!important}
+ #assetLandTitles .land-drive-workflow .mini-open{grid-column:1!important;width:100%!important}
+ #assetLandTitles .land-drive-workflow>.pdf-optimize-btn{grid-column:2!important}
+ #assetLandTitles .land-drive-workflow>.land-drive-ai-btn{grid-column:3!important;width:40px!important;min-width:40px!important;padding:0!important;font-size:0!important;overflow:hidden!important}
+ #assetLandTitles .land-drive-workflow>.land-drive-ai-btn::before{content:'✨'!important;font-size:18px!important}
+ #assetLandTitles .land-ai-section-title{white-space:normal!important}
+ #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px!important}
+ #assetLandTitles .land-ai-controls .land-file{grid-column:1/-1!important}
+ #assetLandTitles .land-ai-controls .land-ai-btn{grid-column:1!important;width:100%!important}
+ #assetLandTitles .land-ai-controls .land-local-optimize-btn{grid-column:2!important}
+}
