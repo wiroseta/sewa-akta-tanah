@@ -1335,7 +1335,7 @@ textarea.compact-hover-textarea.is-expanded{
  .pdf-optimize-btn{width:var(--palm-form-icon-w)!important;min-width:var(--palm-form-icon-w)!important}
 }
 
-/* v1.20.64 RC — universal 40px form-control/action standard */
+/* v1.20.65 RC — universal 40px form-control/action standard */
 :root{--palm-form-action-h:40px;--palm-form-icon-w:40px}
 /* Text-bearing action buttons: fixed 40px height, content-driven width. */
 .ai-extract-actions button,.drive-extract button,.doc-link-row button,.mini-open,

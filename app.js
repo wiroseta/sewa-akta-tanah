@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.54-RC";
+const APP_BUILD="1.20.65-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2389,7 +2389,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('#assetForm textarea.asset-property-name,#assetForm textarea.asset-summary-dynamic').forEach(n=>{if(typeof autoGrowTextarea==='function'){autoGrowTextarea(n);if(n.dataset.assetGrowBound!=='1'){n.dataset.assetGrowBound='1';n.addEventListener('input',()=>autoGrowTextarea(n));}}});
 });
 
-/* v1.20.64 RC — safe 40px control normalization (no recursive MutationObserver) */
+/* v1.20.65 RC — safe 40px control normalization (no recursive MutationObserver) */
 (function v12064ControlStandard(){
  function normalize(root=document){
    root.querySelectorAll?.('.pdf-optimize-btn').forEach(b=>b.classList.add('icon-only'));
