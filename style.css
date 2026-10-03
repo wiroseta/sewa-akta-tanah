@@ -1766,3 +1766,54 @@ textarea.compact-hover-textarea.is-expanded{
 #assetBuildings:not(:empty) + #assetAddBuilding{display:none!important}
 #assetPermits:not(:empty) + #assetAddPermit{display:none!important}
 #assetAgents:not(:empty) + #assetAddAgent{display:none!important}
+
+
+/* v1.20.99 RC — Akta Sewa AI / Dokumen desktop layout regression fix.
+   Use an explicit grid so generic form-label/grid rules cannot collapse the file picker. */
+#form .ai-extract>.lease-local-ai-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 40px max-content!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#form .ai-extract>.lease-local-ai-row>.lease-file-picker{
+  grid-column:1!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:40px!important;
+  margin:0!important;
+}
+#form .ai-extract>.lease-local-ai-row>#leaseLocalPdfOptimizeBtn{
+  grid-column:2!important;width:40px!important;min-width:40px!important;max-width:40px!important;
+  height:40px!important;min-height:40px!important;max-height:40px!important;margin:0!important;padding:0!important;
+}
+#form .ai-extract>.lease-local-ai-row>#extractBtn{
+  grid-column:3!important;width:auto!important;min-width:max-content!important;height:40px!important;min-height:40px!important;
+  margin:0!important;padding-left:16px!important;padding-right:16px!important;white-space:nowrap!important;
+}
+#form .ai-extract>.drive-extract.drive-compact{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) 40px 40px max-content!important;
+  align-items:center!important;gap:10px!important;width:100%!important;min-width:0!important;
+}
+#form .drive-extract.drive-compact>#driveOpenCompactBtn,
+#form .drive-extract.drive-compact>#leasePdfOptimizeBtn{
+  width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;
+  padding:0!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+}
+#form .drive-extract.drive-compact>#driveExtractBtn{
+  width:auto!important;min-width:max-content!important;height:40px!important;min-height:40px!important;margin:0!important;
+  padding-left:16px!important;padding-right:16px!important;white-space:nowrap!important;
+}
+@media(max-width:760px){
+  #form .ai-extract>.lease-local-ai-row{grid-template-columns:40px minmax(0,1fr)!important}
+  #form .ai-extract>.lease-local-ai-row>.lease-file-picker{grid-column:1/-1!important}
+  #form .ai-extract>.lease-local-ai-row>#leaseLocalPdfOptimizeBtn{grid-column:1!important}
+  #form .ai-extract>.lease-local-ai-row>#extractBtn{grid-column:2!important;width:100%!important}
+  #form .ai-extract>.drive-extract.drive-compact{grid-template-columns:minmax(0,1fr) 40px 40px!important}
+  #form .drive-extract.drive-compact>.drive-label,#form .drive-extract.drive-compact>#driveUrl,#form .drive-extract.drive-compact>.drive-state{grid-column:1/-1!important}
+  #form .drive-extract.drive-compact>#driveExtractBtn{grid-column:1/-1!important;width:100%!important}
+}
