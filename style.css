@@ -1144,7 +1144,7 @@ textarea.compact-hover-textarea.is-expanded{
 #assetLandTitles .landtitle{position:relative}
 .landtitle-summary{grid-column:1/-1!important;display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;min-height:44px!important;text-align:left!important;background:#f6f8fb!important;color:#20242c!important;border:1px solid #dce2ea!important;border-radius:10px!important;padding:9px 12px!important}
 .landtitle-summary-text{font-size:14px}.landtitle-chevron{font-size:16px;min-width:16px}
-.landtitle.landtitle-collapsed>:not(.landtitle-summary){display:none!important}
+.landtitle.landtitle-collapsed>:not(.landtitle-header){display:none!important}
 .land-relation-fields{grid-column:1/-1;display:grid;grid-template-columns:1fr 2fr;gap:12px;padding:10px;border:1px dashed #ccd4df;border-radius:10px;background:#fff}
 .land-relation-fields label{display:flex;flex-direction:column;gap:6px}
 .land-title-picker-list{max-height:55vh;overflow:auto;margin:12px 0;border:1px solid #dde2e8;border-radius:12px}
@@ -1373,3 +1373,11 @@ textarea.compact-hover-textarea.is-expanded{
 .palm-optimizer-spinner{width:15px;height:15px;min-width:15px;margin-top:2px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:palmOptimizerSpin .75s linear infinite}
 .palm-optimizer-check{font-weight:800}.palm-optimizer-error{font-weight:900}
 @keyframes palmOptimizerSpin{to{transform:rotate(360deg)}}
+
+/* v1.20.68 — Certificate file controls live inside each certificate header */
+#assetLandTitles .landtitle-header{grid-column:1/-1!important;display:grid!important;grid-template-columns:1fr!important;gap:10px!important;width:100%!important;background:#f6f8fb!important;border:1px solid #dce2ea!important;border-radius:12px!important;padding:10px!important}
+#assetLandTitles .landtitle-header .landtitle-summary{border:0!important;background:transparent!important;padding:2px 4px!important;min-height:40px!important;box-shadow:none!important}
+#assetLandTitles .landtitle-header .land-ai-controls{width:100%!important;margin:0!important}
+#assetLandTitles .landtitle-header .land-ai-status{width:100%!important;margin:0!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+#assetLandTitles .landtitle:not(.landtitle-collapsed)>.landtitle-header{margin-bottom:2px!important}
+@media(max-width:520px){#assetLandTitles .landtitle-header{padding:8px!important;gap:8px!important}}
