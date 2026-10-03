@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.75-RC";
+const APP_BUILD="1.20.76-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2451,10 +2451,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 
-/* v1.20.75 RC — global 40px remove buttons + canonical centered Maps pin.
-   IMPORTANT: idempotent writes prevent the subtree MutationObserver from observing
-   its own innerHTML/textContent changes and locking the browser main thread. */
-(function v12075UiStandard(){
+/* v1.20.76 RC — navigation-safe 40px remove buttons + canonical Maps pin.
+   Deliberately NO subtree MutationObserver here. Older UI observers can rewrite icon
+   markup, and observer-on-observer feedback after SPA navigation can starve clicks. */
+(function v12076UiStandard(){
  function setRemove(b){
    if(!b)return;
    const isRemove=(b.textContent||'').trim()==='−'||b.classList.contains('danger-remove')||b.classList.contains('palm-remove-icon');
@@ -2465,19 +2465,24 @@ document.addEventListener('DOMContentLoaded',()=>{
  function setMapPin(b){
    if(!b)return;
    b.classList.add('icon-only','palm-map-pin-btn');
-   if(b.dataset.palmCanonicalPin!=='1'){
-     b.innerHTML=locationPinIcon();
-     b.dataset.palmCanonicalPin='1';
-   }
-   if(b.getAttribute('aria-label')!=='Buka Google Maps')b.setAttribute('aria-label','Buka Google Maps');
+   const hasPin=!!b.querySelector?.('.location-pin-icon');
+   if(!hasPin)b.innerHTML=locationPinIcon();
+   b.dataset.palmCanonicalPin='1';
+   b.setAttribute('aria-label','Buka Google Maps');
  }
  function normalize(root=document){
-   if(root?.matches?.('.repeat-row>button:last-child,.remove-payment,.ledgerRemove'))setRemove(root);
    root.querySelectorAll?.('.repeat-row>button:last-child,.remove-payment,.ledgerRemove').forEach(setRemove);
    ['assetOpenMaps','openMapsBtn'].forEach(id=>setMapPin(document.getElementById(id)));
-   if(root?.matches?.('button.asset-map-approved'))setMapPin(root);
    root.querySelectorAll?.('button.asset-map-approved').forEach(setMapPin);
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>normalize());else normalize();
- new MutationObserver(m=>{for(const x of m)for(const n of x.addedNodes)if(n.nodeType===1)normalize(n)}).observe(document.body,{childList:true,subtree:true});
+ function schedule(){
+   requestAnimationFrame(()=>normalize(document));
+   setTimeout(()=>normalize(document),80);
+   setTimeout(()=>normalize(document),350);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
+ // SPA navigation/add-row actions originate from user interaction; normalize only after
+ // those bounded events instead of continuously observing the whole DOM.
+ document.addEventListener('click',schedule,true);
+ document.addEventListener('change',schedule,true);
 })();
