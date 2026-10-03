@@ -1274,8 +1274,27 @@ async function extractPermitRow(btn){let row=btn.closest('.permit'),f=row.queryS
 async function extractAgentRow(btn){let row=btn.closest('.agent'),f=row.querySelector('.agentAiFile')?.files?.[0],st=row.querySelector('.agent-ai-status');if(!f)return alert('Pilih file perjanjian agen terlebih dahulu.');btn.disabled=true;try{let x=await invokeDocumentAI(f,'agent_agreement',m=>aiProgress(st,m));applyAIObjectToRow(row,x,{agencyName:'agencyName',brokerName:'brokerName',businessLicenseNo:'businessLicenseNo',competencyNo:'competencyNo',agreementNo:'agreementNo',agreementDate:'agreementDate',startDate:'startDate',endDate:'endDate',transactionType:'transactionType',exclusivity:'exclusivity',transactionValue:'transactionValue',commissionPct:'commissionPct',commissionAmount:'commissionAmount',commissionPayer:'commissionPayer',commissionStatus:'commissionStatus',commissionPaidDate:'commissionPaidDate',paymentTerms:'paymentTerms',importantClauses:'importantClauses'});recordAIScan();aiProgressDone(st,'Selesai. Periksa komisi, periode, eksklusivitas dan klausul sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal: '+e.message)}finally{btn.disabled=false}} window.extractAgentRow=extractAgentRow;
 async function extractPermitDriveRow(btn){let row=btn.closest('.permit'),url=row.querySelector('.driveUrl')?.value?.trim(),st=row.querySelector('.permit-ai-status');if(!driveFileId(url))return alert('Masukkan link Google Drive izin/dokumen terlebih dahulu.');btn.disabled=true;try{let r=await invokeDriveAIAutoAuth(url,'permit',m=>aiProgress(st,m));applyAIObjectToRow(row,r.data,{category:'category',documentType:'documentType',documentNo:'documentNo',issuer:'issuer',holder:'holder',issueDate:'issueDate',validFrom:'validFrom',validUntil:'validUntil',status:'status',relatedObject:'relatedObject',notes:'notes'});if(r.webViewLink)row.querySelector('.driveUrl').value=r.webViewLink;recordAIScan();aiProgressDone(st,'Dokumen legal dari Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal: '+e.message)}finally{btn.disabled=false}} window.extractPermitDriveRow=extractPermitDriveRow;
 async function extractAgentDriveRow(btn){let row=btn.closest('.agent'),url=row.querySelector('.driveUrl')?.value?.trim(),st=row.querySelector('.agent-ai-status');if(!driveFileId(url))return alert('Masukkan link Google Drive perjanjian agen terlebih dahulu.');btn.disabled=true;try{let r=await invokeDriveAIAutoAuth(url,'agent_agreement',m=>aiProgress(st,m));applyAIObjectToRow(row,r.data,{agencyName:'agencyName',brokerName:'brokerName',businessLicenseNo:'businessLicenseNo',competencyNo:'competencyNo',agreementNo:'agreementNo',agreementDate:'agreementDate',startDate:'startDate',endDate:'endDate',transactionType:'transactionType',exclusivity:'exclusivity',transactionValue:'transactionValue',commissionPct:'commissionPct',commissionAmount:'commissionAmount',commissionPayer:'commissionPayer',commissionStatus:'commissionStatus',commissionPaidDate:'commissionPaidDate',paymentTerms:'paymentTerms',importantClauses:'importantClauses'});if(r.webViewLink)row.querySelector('.driveUrl').value=r.webViewLink;recordAIScan();aiProgressDone(st,'Perjanjian agen dari Google Drive selesai dibaca. Periksa hasil sebelum menyimpan.')}catch(e){aiProgressError(st,'Gagal: '+e.message)}finally{btn.disabled=false}} window.extractAgentDriveRow=extractAgentDriveRow;
-function v11957ClarifyRemoveButtons(){document.querySelectorAll('.repeat-row>button:last-child,.remove-payment,.ledgerRemove').forEach(b=>{if(b.textContent.trim()==='−'||b.classList.contains('danger-remove')){b.textContent='−';b.classList.add('danger-remove','icon-only');b.setAttribute('aria-label',b.closest('.permit')?'Hapus Izin':b.closest('.agent')?'Hapus Perjanjian':b.closest('.building')?'Hapus Bangunan':b.closest('.landtitle')?'Hapus Sertifikat':b.classList.contains('remove-payment')?'Hapus termin':b.classList.contains('ledgerRemove')?'Hapus pembayaran':'Hapus');}})}
-document.addEventListener('DOMContentLoaded',()=>{v11957ClarifyRemoveButtons();new MutationObserver(v11957ClarifyRemoveButtons).observe(document.body,{childList:true,subtree:true})});
+function v11957ClarifyRemoveButtons(root=document){
+ const selector='.repeat-row>button:last-child,.remove-payment,.ledgerRemove';
+ const buttons=[];
+ if(root?.nodeType===1&&root.matches?.(selector))buttons.push(root);
+ root?.querySelectorAll?.(selector).forEach(b=>buttons.push(b));
+ buttons.forEach(b=>{
+  if(!(b.textContent.trim()==='−'||b.classList.contains('danger-remove')))return;
+  const label=b.closest('.permit')?'Hapus Izin':b.closest('.agent')?'Hapus Perjanjian':b.closest('.building')?'Hapus Bangunan':b.closest('.landtitle')?'Hapus Sertifikat':b.classList.contains('remove-payment')?'Hapus termin':b.classList.contains('ledgerRemove')?'Hapus pembayaran':'Hapus';
+  // v1.20.78: idempotent. Never rewrite an already-correct text node from inside a MutationObserver.
+  if(b.textContent.trim()!=='−')b.textContent='−';
+  if(!b.classList.contains('danger-remove'))b.classList.add('danger-remove');
+  if(!b.classList.contains('icon-only'))b.classList.add('icon-only');
+  if(b.getAttribute('aria-label')!==label)b.setAttribute('aria-label',label);
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ v11957ClarifyRemoveButtons(document);
+ const obs=new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)v11957ClarifyRemoveButtons(n)});
+ obs.observe(document.body,{childList:true,subtree:true});
+ window.__v12078RemoveButtonObserver=obs;
+});
 
 
 // ============================================================
@@ -2433,9 +2452,11 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('#assetForm textarea.asset-property-name,#assetForm textarea.asset-summary-dynamic').forEach(n=>{if(typeof autoGrowTextarea==='function'){autoGrowTextarea(n);if(n.dataset.assetGrowBound!=='1'){n.dataset.assetGrowBound='1';n.addEventListener('input',()=>autoGrowTextarea(n));}}});
 });
 
-/* v1.20.77 RC — interaction-safe control standard.
+/* v1.20.78 RC — interaction-safe control standard.
    IMPORTANT: no document-level click/change listener and no DOM observer here.
    Previous post-navigation normalizers could mutate the freshly rendered SPA page
    after a navigation click and interfere with legacy render observers/event wiring.
    40px sizing is CSS-only; icons are produced by the owning render functions. */
 
+
+/* v1.20.78 RC — freeze fix: legacy remove-button MutationObserver is idempotent and added-node scoped. */
