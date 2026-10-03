@@ -1385,3 +1385,53 @@ textarea.compact-hover-textarea.is-expanded{
  width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;
  padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;justify-self:start!important;font-size:20px!important;line-height:1!important;flex:0 0 40px!important
 }
+
+/* v1.20.82 RC — Certificate AI row full width + single-line optimizer progress on desktop. */
+@media (min-width:900px){
+  #assetLandTitles .repeat-row.landtitle .land-ai-controls{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) max-content 40px max-content!important;
+    gap:10px!important;
+    align-items:end!important;
+    width:100%!important;
+  }
+  #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file{
+    min-width:0!important;
+    width:100%!important;
+  }
+  #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-file input[type="file"]{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-ai-btn,
+  #assetLandTitles .repeat-row.landtitle .land-ai-controls .land-drive-ai-btn{
+    width:auto!important;
+    min-width:max-content!important;
+  }
+  #assetLandTitles .repeat-row.landtitle .land-ai-status .palm-optimizer-status{
+    align-items:center!important;
+    flex-wrap:nowrap!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    min-height:24px!important;
+  }
+  #assetLandTitles .repeat-row.landtitle .land-ai-status .palm-optimizer-status-text{
+    display:block!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    overflow-wrap:normal!important;
+  }
+  #assetLandTitles .repeat-row.landtitle .land-ai-status .palm-optimizer-spinner{margin-top:0!important}
+}
+/* Narrow screens may wrap naturally so controls and progress remain readable. */
+@media (max-width:899px){
+  #assetLandTitles .repeat-row.landtitle .land-ai-status .palm-optimizer-status,
+  #assetLandTitles .repeat-row.landtitle .land-ai-status .palm-optimizer-status-text{
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+}
