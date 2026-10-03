@@ -1741,3 +1741,19 @@ textarea.compact-hover-textarea.is-expanded{
 @media(max-width:800px){.repeat-row.permit .permit-drive-row,.repeat-row.agent .agent-drive-row{grid-template-columns:minmax(0,1fr) 40px 40px!important}.repeat-row.permit .permit-drive-ai-btn,.repeat-row.agent .agent-drive-ai-btn{grid-column:1/-1!important;width:100%!important}.repeat-row.permit .permit-ai-toolbar,.repeat-row.agent .agent-ai-toolbar{flex-wrap:wrap!important}.repeat-row.permit .permit-ai-toolbar>.palm-file-picker,.repeat-row.agent .agent-ai-toolbar>.palm-file-picker{flex:1 0 100%!important}}
 /* v1.20.95 validation fix — generic PALM file pickers must override form label column direction. */
 .repeat-row.permit .permit-ai-toolbar>.palm-file-picker,.repeat-row.agent .agent-ai-toolbar>.palm-file-picker{flex-direction:row!important;flex-wrap:nowrap!important}
+/* v1.20.96 RC — Akta Sewa PALM-standard AI/Drive workflows */
+#form .lease-local-ai-row{display:flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;width:100%!important}
+#form .lease-local-ai-row>.lease-file-picker{flex:1 1 0!important;min-width:0!important;width:0!important;height:40px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;border:1px solid #c7ccd4!important;border-radius:10px!important;padding:0 10px!important;box-sizing:border-box!important;position:relative!important;overflow:hidden!important;background:#fff!important}
+#form .lease-file-picker>.palm-file-choose{flex:0 0 auto!important;background:#eee!important;border-radius:6px!important;padding:5px 9px!important;font-weight:600!important;white-space:nowrap!important}
+#form .lease-file-picker>.palm-file-name{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important}
+#form .lease-file-picker>input[type=file]{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer!important}
+#form .lease-local-ai-row>.pdf-optimize-btn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important}
+#form .lease-local-ai-row>#extractBtn{flex:0 0 auto!important;height:40px!important;min-height:40px!important;white-space:nowrap!important}
+#form .drive-extract.drive-compact{grid-template-columns:auto minmax(0,1fr) 40px 40px auto!important}
+#form .drive-extract.drive-compact #driveOpenCompactBtn,#form .drive-extract.drive-compact #leasePdfOptimizeBtn{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important}
+#form .drive-extract.drive-compact #driveExtractBtn{height:40px!important;min-height:40px!important;white-space:nowrap!important}
+#form .lease-doc-drive-row{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;width:100%!important}
+#form .lease-doc-drive-row>input{flex:1 1 0!important;min-width:0!important;height:40px!important}
+#form .lease-doc-drive-row>#openDocBtn,#form .lease-doc-drive-row>#leaseDocPdfOptimizeBtn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important}
+#form .lease-doc-drive-row>.lease-doc-drive-ai-btn{flex:0 0 auto!important;height:40px!important;min-height:40px!important;white-space:nowrap!important}
+@media(max-width:760px){#form .lease-local-ai-row,#form .lease-doc-drive-row{flex-wrap:wrap!important}#form .lease-local-ai-row>.lease-file-picker,#form .lease-doc-drive-row>input{flex:1 0 100%!important;width:100%!important}#form .lease-local-ai-row>#extractBtn,#form .lease-doc-drive-row>.lease-doc-drive-ai-btn{flex:1 1 auto!important}}

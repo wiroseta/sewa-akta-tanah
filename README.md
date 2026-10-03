@@ -1,11 +1,9 @@
-PALM v1.20.95 RC — Property / Permit / Agent UI normalization
+PALM v1.20.96 RC
 
-Changes:
-- Data Properti/Lokasi: initial Alias and Nama/Deskripsi height normalized to 40px; description can grow when multiline. Address and area remain auto-grow.
-- Perizinan & Legalitas: Google Drive row = flexible field + 40px Open + 40px Optimizer + Baca dari Google Drive. Local row = custom full-width file picker + 40px local optimizer + Baca File + 40px remove at right.
-- Agen/Broker: same Google Drive workflow; payment proof = flexible field + 40px Open; local file row standardized; remove at right.
-- Removed duplicate Baca Drive from local-file rows.
-- Keeps v1.20.89 anti-freeze approach; no new MutationObserver introduced by this release.
+Perubahan:
+- Akta Sewa Pembacaan AI: file picker PALM + optimizer lokal + Baca File; Google Drive: Buka + optimizer + Baca dari Google Drive.
+- Akta Sewa Link dokumen/Google Drive: tombol centang diganti Buka + optimizer PALM + Baca dari Google Drive.
+- Mempertahankan normalisasi v1.20.95 untuk Data Properti, Perizinan/Legalitas, dan Agen/Broker.
+- Tidak ada SQL/Edge Function/helper lokal yang berubah.
 
-Deploy to GitHub: index.html, app.js, style.css only.
-No SQL / Edge Function / local helper redeploy required.
+Deploy GitHub: index.html, app.js, style.css.
