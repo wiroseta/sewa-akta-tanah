@@ -1,4 +1,4 @@
-# PALM v1.20.74 RC — Global 40px Remove + Canonical Maps Pin
+# PALM v1.20.75 RC — Global 40px Remove + Canonical Maps Pin
 
 - All minus/remove controls are icon-only 40×40 CSS px.
 - Property and Lease Google Maps actions use one centered monochrome outline location pin, 40×40 CSS px.

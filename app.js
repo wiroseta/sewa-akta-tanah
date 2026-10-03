@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.74-RC";
+const APP_BUILD="1.20.75-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2451,15 +2451,33 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 
-/* v1.20.74 RC — global 40px remove buttons + canonical centered Maps pin */
-(function v12074UiStandard(){
+/* v1.20.75 RC — global 40px remove buttons + canonical centered Maps pin.
+   IMPORTANT: idempotent writes prevent the subtree MutationObserver from observing
+   its own innerHTML/textContent changes and locking the browser main thread. */
+(function v12075UiStandard(){
+ function setRemove(b){
+   if(!b)return;
+   const isRemove=(b.textContent||'').trim()==='−'||b.classList.contains('danger-remove')||b.classList.contains('palm-remove-icon');
+   if(!isRemove)return;
+   if((b.textContent||'').trim()!=='−')b.textContent='−';
+   b.classList.add('icon-only','palm-remove-icon');
+ }
+ function setMapPin(b){
+   if(!b)return;
+   b.classList.add('icon-only','palm-map-pin-btn');
+   if(b.dataset.palmCanonicalPin!=='1'){
+     b.innerHTML=locationPinIcon();
+     b.dataset.palmCanonicalPin='1';
+   }
+   if(b.getAttribute('aria-label')!=='Buka Google Maps')b.setAttribute('aria-label','Buka Google Maps');
+ }
  function normalize(root=document){
-   root.querySelectorAll?.('.repeat-row>button:last-child,.remove-payment,.ledgerRemove').forEach(b=>{
-     if((b.textContent||'').trim()==='−'||b.classList.contains('danger-remove')){b.textContent='−';b.classList.add('icon-only','palm-remove-icon');}
-   });
-   ['assetOpenMaps','openMapsBtn'].forEach(id=>{const b=document.getElementById(id);if(!b)return;b.classList.add('icon-only','palm-map-pin-btn');b.innerHTML=locationPinIcon();b.setAttribute('aria-label','Buka Google Maps');});
-   root.querySelectorAll?.('button.asset-map-approved').forEach(b=>{b.classList.add('palm-map-pin-btn');b.innerHTML=locationPinIcon();});
+   if(root?.matches?.('.repeat-row>button:last-child,.remove-payment,.ledgerRemove'))setRemove(root);
+   root.querySelectorAll?.('.repeat-row>button:last-child,.remove-payment,.ledgerRemove').forEach(setRemove);
+   ['assetOpenMaps','openMapsBtn'].forEach(id=>setMapPin(document.getElementById(id)));
+   if(root?.matches?.('button.asset-map-approved'))setMapPin(root);
+   root.querySelectorAll?.('button.asset-map-approved').forEach(setMapPin);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>normalize());else normalize();
- new MutationObserver(m=>{for(const x of m)for(const n of x.addedNodes)if(n.nodeType===1)normalize(n.parentElement||document)}).observe(document.body,{childList:true,subtree:true});
+ new MutationObserver(m=>{for(const x of m)for(const n of x.addedNodes)if(n.nodeType===1)normalize(n)}).observe(document.body,{childList:true,subtree:true});
 })();
