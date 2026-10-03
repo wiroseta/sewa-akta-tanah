@@ -626,9 +626,15 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - Deployment files changed: `app.js`, `index.html`. No SQL/Edge Function/local-optimizer deployment required.
 
 
-## v1.20.80 RC — Resilient Large Google Drive PDF Download
+## v1.20.81 RC — Resilient Large Google Drive PDF Download
 - Baseline tetap v1.20.78 freeze fix.
 - Optimize PDF Google Drive mengunduh file berukuran diketahui dalam range 8 MB.
 - Setiap range yang gagal karena koneksi dapat dicoba ulang sampai 3 kali tanpa mengulang file dari awal.
 - Progress menampilkan MB dan persen.
 - Jika tiga percobaan gagal, optimasi berhenti sebelum backup/update sehingga file asli tidak berubah.
+
+
+## v1.20.81 RC — Certificate AI Workflow Layout
+- Detail Properti / Sertifikat: Baca Otomatis dengan AI dipindahkan ke bagian bawah kartu setelah Dokumen & Lokasi dan field relasi Property.
+- Tombol minus/remove memakai class eksplisit dan ukuran icon-only 40×40 agar tidak kembali melebar ketika blok relasi/AI ditambahkan setelah render.
+- Mempertahankan freeze fix v1.20.78 dan robust Google Drive chunk download v1.20.80.
