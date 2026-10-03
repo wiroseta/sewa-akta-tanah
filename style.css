@@ -1286,3 +1286,51 @@ textarea.compact-hover-textarea.is-expanded{
  #assetLandTitles .land-ai-controls .land-file{grid-column:1/-1!important}
  #assetLandTitles .land-ai-controls .land-drive-ai-btn{grid-column:auto!important;width:auto!important}
 }
+
+
+/* v1.20.62 RC — global form action standard based on Akta/Scan controls */
+:root{--palm-form-action-h:46px;--palm-form-icon-w:46px}
+/* In-form document/navigation/AI controls: one consistent 46px control height. */
+.ai-extract-actions button,.drive-extract button,.doc-link-row button,.mini-open,
+.land-ai-controls button,.permit-ai-toolbar button,.agent-ai-toolbar button,
+.building-ai-toolbar button,.pbb-card-drive-read,.pbb-history-icon,
+.global-pdf-optimizer-actions button{
+  min-height:var(--palm-form-action-h)!important;height:var(--palm-form-action-h)!important;
+  padding:0 14px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  gap:7px!important;line-height:1.15!important;white-space:nowrap!important
+}
+/* Optimizer is always icon-only and exactly matches the action-row height. */
+.pdf-optimize-btn{
+  width:var(--palm-form-icon-w)!important;min-width:var(--palm-form-icon-w)!important;max-width:var(--palm-form-icon-w)!important;
+  height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important;padding:0!important;font-size:0!important;
+  flex:0 0 var(--palm-form-icon-w)!important;position:relative!important
+}
+.pdf-optimize-btn::before{inset:9px!important;left:9px!important;top:9px!important;width:auto!important;height:auto!important;background-size:26px 26px!important}
+/* Property summary fields start as one control row and grow only when content needs it. */
+#assetForm textarea.asset-property-name,#assetForm textarea.asset-summary-dynamic{
+  min-height:42px!important;height:42px;max-height:none!important;resize:none!important;overflow-y:hidden!important;line-height:1.35!important;padding-top:10px!important;padding-bottom:10px!important
+}
+/* Property Google Maps uses the same compact action family, without a second decorative map glyph. */
+#assetOpenMaps{height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important;width:auto!important;min-width:var(--palm-form-action-h)!important;padding:0 14px!important}
+#assetOpenMaps .map-label-icon{margin-right:0!important}
+/* Certificate AI row: file -> Baca File -> icon-only optimizer -> Google Drive, same height as Akta/Scan. */
+#assetLandTitles .land-ai-controls .land-ai-btn,#assetLandTitles .land-ai-controls .land-drive-ai-btn{
+  width:auto!important;min-width:0!important;height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important;padding:0 14px!important;font-size:13px!important
+}
+#assetLandTitles .land-ai-controls .pdf-optimize-btn{width:var(--palm-form-icon-w)!important;min-width:var(--palm-form-icon-w)!important;height:var(--palm-form-action-h)!important;padding:0!important;font-size:0!important}
+@media(min-width:900px){#assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(260px,1fr) max-content var(--palm-form-icon-w) max-content!important;gap:10px!important}}
+/* Every generated remove/minus control is compact; never a long horizontal bar. */
+.repeat-row>button:last-child,.repeat-row.landtitle>button:last-child{
+  width:var(--palm-form-action-h)!important;min-width:var(--palm-form-action-h)!important;max-width:var(--palm-form-action-h)!important;
+  height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important;padding:0!important;font-size:20px!important;line-height:1!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;justify-self:end!important
+}
+/* PBB AI/Drive follows Akta/Scan sizing, including optimizer. */
+#pbbEditDlg #pbbExtractBtn,#pbbEditDlg #pbbDriveOpenBtn,#pbbEditDlg #pbbDriveExtractBtn,
+#pbbEditDlg #pbbPdfOptimizeBtn{height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important}
+#pbbEditDlg #pbbPdfOptimizeBtn{width:var(--palm-form-icon-w)!important;min-width:var(--palm-form-icon-w)!important;padding:0!important}
+/* Keep destructive/list/top-navigation categories untouched; this standard is for form actions. */
+@media(max-width:760px){
+ .ai-extract-actions button,.drive-extract button,.permit-ai-toolbar button,.agent-ai-toolbar button{height:var(--palm-form-action-h)!important;min-height:var(--palm-form-action-h)!important}
+ .pdf-optimize-btn{width:var(--palm-form-icon-w)!important;min-width:var(--palm-form-icon-w)!important}
+}

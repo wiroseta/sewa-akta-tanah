@@ -1979,7 +1979,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>v11975Canonical
 
 
 // v1.20.15: all multiline text fields grow with their content.
-function autoGrowTextarea(el){if(!el||el.tagName!=="TEXTAREA")return;el.style.height="auto";el.style.height=Math.max(el.scrollHeight,58)+"px"}
+function autoGrowTextarea(el){if(!el||el.tagName!=="TEXTAREA")return;el.style.height="auto";const compact=el.classList.contains("asset-property-name")||el.classList.contains("asset-summary-dynamic");el.style.height=Math.max(el.scrollHeight,compact?42:58)+"px"}
 function bindDynamicTextareas(root=document){root.querySelectorAll("textarea").forEach(el=>{if(el.dataset.autoGrow==="1")return;el.dataset.autoGrow="1";el.classList.add("auto-grow-textarea");el.addEventListener("input",()=>autoGrowTextarea(el));autoGrowTextarea(el)})}
 document.addEventListener("DOMContentLoaded",()=>{bindDynamicTextareas();requestAnimationFrame(()=>bindDynamicTextareas())});
 const dynamicTextareaObserver=new MutationObserver(muts=>{muts.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1){if(n.matches?.("textarea"))bindDynamicTextareas(n.parentElement||document);else bindDynamicTextareas(n)}}))});
@@ -2386,5 +2386,5 @@ document.addEventListener('DOMContentLoaded',()=>{bindGlobalPdfOptimizer();setTi
 // v1.20.59 RC — canonical Property Maps icon + dynamic long Property text
 document.addEventListener('DOMContentLoaded',()=>{
  const b=document.getElementById('assetOpenMaps'); if(b){b.innerHTML=locationPinIcon()+' <span>Buka</span>'; b.title='';}
- const n=document.querySelector('#assetForm textarea.asset-property-name'); if(n&&typeof autoGrowTextarea==='function'){autoGrowTextarea(n);n.addEventListener('input',()=>autoGrowTextarea(n));}
+ document.querySelectorAll('#assetForm textarea.asset-property-name,#assetForm textarea.asset-summary-dynamic').forEach(n=>{if(typeof autoGrowTextarea==='function'){autoGrowTextarea(n);if(n.dataset.assetGrowBound!=='1'){n.dataset.assetGrowBound='1';n.addEventListener('input',()=>autoGrowTextarea(n));}}});
 });

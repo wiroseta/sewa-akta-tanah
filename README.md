@@ -1,3 +1,7 @@
+PALM v1.20.62 RC
+
+UI consistency finishing: global compact form-action sizing based on Akta/Scan, icon-only optimizer sizing, Property summary one-row auto-grow, compact minus controls, consistent Property Maps action. No database/SQL or Edge Function change required.
+
 # v1.19.77 RC — Header/Tooltip Hotfix
 
 # Sewa & Akta Tanah v1.19.52 RC — PBB Relation by NOP
