@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.72-RC";
+const APP_BUILD="1.20.73-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2362,9 +2362,27 @@ async function createDriveOriginalBackup(id,original){
 async function optimizeDrivePdf(btn,urlInput){
  let url=urlInput?.value?.trim()||'',id=driveFileIdFromUrl(url),st=btn.closest('.landtitle,.ai-extract,.drive-extract,.master-section')?.querySelector('.drive-local-status,.land-ai-status,.muted');if(!id)return alert('Link Google Drive PDF tidak valid.');
  let say=(t,state='active')=>palmOptimizerStatus(st,t,state);
- if(!googleDriveToken&&!restoreDriveToken()){say('Menghubungkan Google Drive...');const ok=await connectDriveFromButton(btn);if(!ok){say('Optimasi belum dimulai karena Google Drive belum terhubung. File asli tidak berubah.','error');return}say('Google Drive terhubung. Melanjutkan optimasi PDF...')}
+ // v1.20.73: Optimize has its own Drive-auth preflight. A page reload must not require
+ // the user to remember to press the separate Drive-connect button first.
+ async function ensureOptimizerDriveAuth(){
+  if(googleDriveToken||restoreDriveToken())return googleDriveToken;
+  say('Google Drive belum terhubung. Membuka izin Google Drive...');
+  try{await requestDriveToken()}catch(e){throw new Error('Google Drive belum terhubung: '+(e?.message||e))}
+  say('Google Drive terhubung. Melanjutkan optimasi PDF...');return googleDriveToken;
+ }
+ async function driveFetchWithReauth(input,init={}){
+  await ensureOptimizerDriveAuth();
+  const makeInit=()=>{let h=new Headers(init.headers||{});h.set('Authorization',`Bearer ${googleDriveToken}`);return {...init,headers:h}};
+  let r=await fetch(input,makeInit());
+  if(r.status!==401)return r;
+  clearStoredDriveToken();say('Sesi Google Drive berakhir. Menghubungkan ulang...');
+  try{await requestDriveToken()}catch(e){throw new Error('Sesi Google Drive berakhir dan koneksi ulang gagal: '+(e?.message||e))}
+  say('Google Drive terhubung kembali. Melanjutkan optimasi PDF...');
+  return fetch(input,makeInit());
+ }
  btn.disabled=true;try{
-  say('Mengambil PDF dari Google Drive...');let r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${googleDriveToken}`}});if(!r.ok)throw new Error('Gagal mengambil PDF dari Google Drive.');
+  await ensureOptimizerDriveAuth();
+  say('Mengambil PDF dari Google Drive...');let r=await driveFetchWithReauth(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&supportsAllDrives=true`);if(!r.ok){let detail='';try{let j=await r.clone().json();detail=j?.error?.message||''}catch(_){}throw new Error(`Gagal mengambil PDF dari Google Drive (HTTP ${r.status}${detail?': '+detail:''}).`)}
   let original=await palmReadResponseWithProgress(r,say,'Mengambil PDF dari Google Drive...'),origSize=original.byteLength;
   say('Menyiapkan modul pemeriksaan PDF...');await ensurePdfOptimizerReady();let source=await window.pdfjsLib.getDocument({data:original.slice(0)}).promise,pages=source.numPages;if(!pages)throw new Error('PDF tidak memiliki halaman.');let dimensions=[];for(let i=1;i<=pages;i++){let p=await source.getPage(i),v=p.getViewport({scale:1});dimensions.push([v.width*25.4/72,v.height*25.4/72])}
   const abnormalPageSize=dimensions.some(([w,h])=>Math.max(w,h)>600||Math.min(w,h)>450);

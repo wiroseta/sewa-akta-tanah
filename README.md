@@ -1,3 +1,12 @@
+# PALM v1.20.73 RC — Google Drive Optimizer Auth Preflight
+
+- Tombol Optimize sekarang memeriksa sesi Google Drive sendiri. Setelah reload, user tidak perlu menekan tombol Hubungkan Google Drive terlebih dahulu.
+- Bila belum ada sesi Drive, Optimize membuka OAuth lalu melanjutkan proses setelah berhasil.
+- Bila Google Drive mengembalikan HTTP 401, token lama dibersihkan, koneksi ulang dicoba sekali, lalu proses dilanjutkan.
+- Error download Drive sekarang menampilkan HTTP status dan pesan API bila tersedia.
+- Tidak ada perubahan Local Optimizer v1.4, SQL, Supabase, atau Edge Function.
+- Paket final dibersihkan dari file pengujian internal.
+
 # PALM v1.20.72 RC — Per-Page Quality Check Fix
 
 - Fix Quality Check for scanned PDFs whose pages have different aspect ratios.
