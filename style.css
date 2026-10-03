@@ -1685,3 +1685,36 @@ textarea.compact-hover-textarea.is-expanded{
 #assetLandTitles .repeat-row.landtitle .palm-local-file-row>.land-local-optimize-btn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important}
 #assetLandTitles .repeat-row.landtitle .palm-local-file-row>.land-ai-btn{flex:0 0 auto!important;width:auto!important;height:40px!important;white-space:nowrap!important}
 @media(max-width:700px){#assetLandTitles .repeat-row.landtitle .palm-local-file-row{flex-wrap:wrap!important}#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.palm-file-picker{flex:1 0 100%!important;width:100%!important}#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.land-ai-btn{flex:1 1 auto!important}}
+
+/* v1.20.94 RC — certificate source rows: explicit Drive AI action, left-aligned file chooser, remove at far right. */
+#assetLandTitles .repeat-row.landtitle .land-drive-workflow{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) max-content 40px max-content!important;
+  gap:10px!important;align-items:end!important;width:100%!important;min-width:0!important;
+}
+#assetLandTitles .land-drive-workflow>.land-link{grid-column:1!important;min-width:0!important;width:100%!important}
+#assetLandTitles .land-drive-workflow>.mini-open{grid-column:2!important;width:auto!important;height:40px!important;white-space:nowrap!important}
+#assetLandTitles .land-drive-workflow>.land-drive-optimize-btn,
+#assetLandTitles .land-drive-workflow>.pdf-optimize-btn{grid-column:3!important;width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;padding:0!important;font-size:0!important}
+#assetLandTitles .land-drive-workflow>.land-drive-ai-btn{grid-column:4!important;width:auto!important;height:40px!important;white-space:nowrap!important}
+
+#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.palm-file-picker{
+  display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;
+  flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;
+  gap:10px!important;text-align:left!important;
+}
+#assetLandTitles .palm-file-picker>.palm-file-choose{order:1!important;flex:0 0 auto!important;margin:0!important;align-self:center!important}
+#assetLandTitles .palm-file-picker>.palm-file-name{order:2!important;display:block!important;flex:1 1 auto!important;min-width:0!important;text-align:left!important;margin:0!important}
+#assetLandTitles .palm-file-picker>input[type=file]{order:3!important}
+#assetLandTitles .repeat-row.landtitle .palm-local-file-row>.repeat-remove-btn{
+  flex:0 0 40px!important;width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;
+  margin:0!important;padding:0!important;align-self:center!important;
+}
+@media(max-width:800px){
+ #assetLandTitles .repeat-row.landtitle .land-drive-workflow{grid-template-columns:minmax(0,1fr) 40px!important}
+ #assetLandTitles .land-drive-workflow>.land-link{grid-column:1/-1!important}
+ #assetLandTitles .land-drive-workflow>.mini-open{grid-column:1!important;width:100%!important}
+ #assetLandTitles .land-drive-workflow>.land-drive-optimize-btn,#assetLandTitles .land-drive-workflow>.pdf-optimize-btn{grid-column:2!important}
+ #assetLandTitles .land-drive-workflow>.land-drive-ai-btn{grid-column:1/-1!important;width:100%!important}
+}

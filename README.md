@@ -638,3 +638,9 @@ v1.20.55 RC — Google Drive existing-file write authorization & backup retry sa
 - Detail Properti / Sertifikat: Baca Otomatis dengan AI dipindahkan ke bagian bawah kartu setelah Dokumen & Lokasi dan field relasi Property.
 - Tombol minus/remove memakai class eksplisit dan ukuran icon-only 40×40 agar tidak kembali melebar ketika blok relasi/AI ditambahkan setelah render.
 - Mempertahankan freeze fix v1.20.78 dan robust Google Drive chunk download v1.20.80.
+
+v1.20.94 RC
+- Certificate local file picker: Choose File is pinned to the far left, followed by selected filename / No file selected.
+- Restored Baca dari Google Drive beside Buka Sertifikat and Google Drive optimizer.
+- Certificate remove (minus) button moved to the far right of the local AI row.
+- Keeps v1.20.89 freeze-safe observer behavior and v1.20.92 relation-field cleanup.
