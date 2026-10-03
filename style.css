@@ -1588,7 +1588,7 @@ textarea.compact-hover-textarea.is-expanded{
   #form #extractBtn,#form #driveExtractBtn{width:auto!important;white-space:nowrap!important}
 }
 
-/* v1.20.88 RC — Property Detail / Certificate: source-specific one-row workflows. */
+/* v1.20.89 RC — Property Detail / Certificate: source-specific one-row workflows. */
 #assetLandTitles .repeat-row.landtitle .land-drive-workflow{grid-column:1/-1!important;display:grid!important;grid-template-columns:minmax(0,1fr) max-content 40px max-content!important;gap:10px!important;align-items:end!important;width:100%!important;min-width:0!important}
 #assetLandTitles .land-drive-workflow .land-link{grid-column:auto!important;min-width:0!important;width:100%!important}
 #assetLandTitles .land-drive-workflow .land-link input{width:100%!important;min-width:0!important;height:40px!important}

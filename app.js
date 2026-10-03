@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.88-RC";
+const APP_BUILD="1.20.89-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -2495,7 +2495,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 /* v1.20.78 RC — freeze fix: legacy remove-button MutationObserver is idempotent and added-node scoped. */
 
-// v1.20.88 RC — Property certificate workflow split: Google Drive actions beside certificate link; local file optimizer beside upload.
+// v1.20.89 RC — Property certificate workflow split + interaction freeze fix: Google Drive actions beside certificate link; local file optimizer beside upload.
 async function optimizeLandTitleLocalFile(btn,row){
  const input=row?.querySelector('.landAiFile'), st=row?.querySelector('.land-ai-status');
  const file=input?.files?.[0];
@@ -2533,10 +2533,18 @@ function installLandTitleWorkflowV12088(root=document){
    const local=document.createElement('button');local.type='button';local.className='secondary pdf-optimize-btn land-local-optimize-btn';local.setAttribute('aria-label','Optimize File Lokal');local.innerHTML=pdfOptimizeIcon();local.onclick=()=>optimizeLandTitleLocalFile(local,row);
    const read=controls.querySelector('.land-ai-btn');read?.before(local);
   }
-  const title=row.querySelector('.land-ai-section-title');if(title)title.textContent='Baca Otomatis dengan AI — File Sertifikat (PDF / Foto)';
-  const fileLabel=file.closest('label');if(fileLabel)fileLabel.childNodes[0].textContent='File Sertifikat (PDF / Foto)';
+  const title=row.querySelector('.land-ai-section-title');if(title&&title.textContent!=='Baca Otomatis dengan AI — File Sertifikat (PDF / Foto)')title.textContent='Baca Otomatis dengan AI — File Sertifikat (PDF / Foto)';
+  const fileLabel=file.closest('label');if(fileLabel&&fileLabel.childNodes[0]?.nodeType===3&&fileLabel.childNodes[0].textContent!=='File Sertifikat (PDF / Foto)')fileLabel.childNodes[0].textContent='File Sertifikat (PDF / Foto)';
+  row.dataset.v12089Workflow='1';
  });
 }
-const palm12088Obs=new MutationObserver(()=>installLandTitleWorkflowV12088());
-palm12088Obs.observe(document.documentElement,{subtree:true,childList:true});
+let palm12089Queued=false;
+const palm12089Obs=new MutationObserver(ms=>{
+ let relevant=false;
+ for(const m of ms){for(const n of m.addedNodes){if(n.nodeType===1){relevant=true;break}}if(relevant)break}
+ if(!relevant||palm12089Queued)return;
+ palm12089Queued=true;
+ requestAnimationFrame(()=>{palm12089Queued=false;installLandTitleWorkflowV12088()});
+});
+palm12089Obs.observe(document.documentElement,{subtree:true,childList:true});
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>installLandTitleWorkflowV12088(),0));
