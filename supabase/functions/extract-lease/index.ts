@@ -123,23 +123,34 @@ ${JSON.stringify(pageResults)}`;
        if(proposed && proposed!==vals[0])data[keyName]="";
      }
    }
-   // Notes must preserve the factual chain that explains the current holder. Build it from
-   // extracted events when the final model omitted it; never invent missing names/dates.
+   // v1.21.8: deterministic certificate-note formatter. The UI must not depend on
+   // the model's prose style for legal chronology. Keep the three agreed sections fixed.
    const factualEvents=allEvents.filter(ev=>String(ev.eventType||'').trim()||String(ev.evidence||'').trim());
-   if(!String(data.notes||'').trim()&&factualEvents.length){
-     const seen=new Set<string>(); const lines:string[]=[];
-     for(const ev of factualEvents){
-       const typ=String(ev.eventType||'pencatatan').replaceAll('_',' ');
-       const dt=String(ev.date||'').trim(); const fr=String(ev.from||'').trim(); const to=String(ev.to||'').trim();
-       let line=[dt,typ].filter(Boolean).join(' · ');
-       if(fr&&to)line+=` · ${fr} → ${to}`; else if(to)line+=` · kepada ${to}`;
-       const evidence=String(ev.evidence||'').trim(); if(evidence)line+=` · ${evidence}`;
-       if(ev._page)line+=` · halaman ${ev._page}`;
-       const key=line.toLowerCase(); if(line&&!seen.has(key)){seen.add(key);lines.push(line)}
-     }
-     data.notes=lines.join('\n');
+   const originalNotes=String(data.notes||'').trim();
+   const initial=factualEvents.find(ev=>String(ev.eventType||'').toLowerCase()==='pemegang_awal');
+   const initialHolder=String(initial?.to||initial?.from||'').trim();
+   const asalLines=originalNotes.split(/\n+/).map((v:string)=>v.trim()).filter((v:string)=>/^(?:asal\s*\/\s*penunjuk|asal|penunjuk)\s*:/i.test(v));
+   const asal=asalLines.map((v:string)=>v.replace(/^[^:]+:\s*/,'').trim()).filter(Boolean).join(' | ');
+   const transferEvents=factualEvents.filter(ev=>ev?.ownershipChanged===true);
+   transferEvents.sort((a,b)=>dateValue(a.date)-dateValue(b.date)||(Number(a._page)||0)-(Number(b._page)||0));
+   const transitionLines:string[]=[]; const transitionSeen=new Set<string>();
+   for(const ev of transferEvents){
+     const dt=String(ev.date||'').trim(),typ=String(ev.eventType||'peralihan').replaceAll('_',' '),fr=String(ev.from||'').trim(),to=String(ev.to||'').trim();
+     let line=[dt,typ].filter(Boolean).join(' · ');
+     if(fr&&to)line+=` · ${fr} → ${to}`; else if(to)line+=` · kepada ${to}`; else if(fr)line+=` · dari ${fr}`;
+     if(ev._page)line+=` · halaman ${ev._page}`;
+     const key=line.toLowerCase(); if(line&&!transitionSeen.has(key)){transitionSeen.add(key);transitionLines.push(`• ${line}`)}
    }
-   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   if(String(data.holderName||'').trim())transitionLines.push(`• Pemegang terakhir: ${String(data.holderName).trim()}`);
+   const verifyLines=originalNotes.split(/\n+/).map((v:string)=>v.trim()).filter((v:string)=>/^PERLU VERIFIKASI\s*:/i.test(v));
+   for(const v of verifyLines)transitionLines.push(`• ${v}`);
+   data.notes=[
+     `PEMEGANG AWAL: ${initialHolder||'-'}`,
+     `ASAL / PENUNJUK: ${asal||'-'}`,
+     'RIWAYAT PERALIHAN:',
+     ...(transitionLines.length?transitionLines:['• Tidak ada peralihan kepemilikan yang terverifikasi.'])
+   ].join('\n');
+   console.log("[extract-lease v1.21.8] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
 
  if(documentType==='whole_document_consolidate'){
@@ -178,7 +189,7 @@ HASIL SEMUA HALAMAN (${pageResults.length} halaman/batch):\n${JSON.stringify(pag
    }
    const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
    if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
-   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.8] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(documentType==='history_compare'){
    stage="openai-compare";
@@ -194,7 +205,7 @@ ${JSON.stringify(comparisonData.new)}`;
    const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:comparePrompt})});
    const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan perbandingan yang bukan JSON valid")}
-   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.8] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
@@ -245,5 +256,5 @@ ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untu
  let clean=String(text).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan hasil yang bukan JSON valid")}
  const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
  if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
- console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+ console.log("[extract-lease v1.21.8] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
 }catch(e){const message=e?.message||String(e);console.error("[extract-lease] failed",{stage,message});return new Response(JSON.stringify({error:message,stage}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});
