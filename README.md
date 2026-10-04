@@ -1,4 +1,4 @@
-PALM v1.21.6 RC — Certificate Summary Address + v1.21.5 Land Title False-Conflict Fix
+PALM v1.21.7 RC — Land Title Survey-Date Cross-Check + Global 40px Field Height
 
 Perbaikan pembacaan AI Sertifikat berdasarkan pengujian D4/D5: pisahkan Penunjuk/asal tanah dari peralihan hak, isi alamat dari lokasi fisik paling lengkap, notes kronologis terstruktur, dan pertahankan PERLU VERIFIKASI untuk konflik literal.
 
