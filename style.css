@@ -2256,3 +2256,27 @@ body.asset-master-header-mode #assetPage .asset-actionbar{
   .asset-detail-page .asset-detail-actions .pill{display:none!important;}
   .asset-detail-page{padding-top:calc(var(--global-nav-h,56px) + 58px)!important;}
 }
+
+/* v1.21.2 RC — final global dynamic textarea behavior.
+   Idle = exactly one PALM control row. Focus/tap = grow only as much as content needs. */
+textarea.palm-dynamic-text,
+textarea.palm-dynamic-text:not(:focus){
+  box-sizing:border-box!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+  padding-top:9px!important;
+  padding-bottom:9px!important;
+  line-height:20px!important;
+  overflow:hidden!important;
+  resize:none!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+}
+textarea.palm-dynamic-text.palm-dynamic-text-expanded,
+textarea.palm-dynamic-text:focus{
+  min-height:40px!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  resize:none!important;
+}

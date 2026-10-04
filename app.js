@@ -2579,3 +2579,63 @@ const palm12089Obs=new MutationObserver(ms=>{
 });
 palm12089Obs.observe(document.documentElement,{subtree:true,childList:true});
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>installLandTitleWorkflowV12088(),0));
+
+// v1.21.2 RC — GLOBAL DYNAMIC TEXT FIELD STANDARD
+// Every PALM textarea starts as one 40px row, expands to its content on focus/tap,
+// and collapses back to one row when focus leaves. Works for existing and dynamic rows.
+(function palmGlobalDynamicTextFields(){
+  const SEL='textarea';
+  function collapse(el){
+    if(!el||!el.matches?.(SEL))return;
+    el.classList.add('palm-dynamic-text');
+    el.classList.remove('palm-dynamic-text-expanded','is-expanded');
+    el.style.setProperty('height','40px','important');
+    el.style.setProperty('min-height','40px','important');
+    el.style.setProperty('max-height','40px','important');
+    el.style.setProperty('overflow-y','hidden','important');
+    el.style.setProperty('resize','none','important');
+  }
+  function expand(el){
+    if(!el||!el.matches?.(SEL))return;
+    el.classList.add('palm-dynamic-text','palm-dynamic-text-expanded');
+    el.style.setProperty('height','auto','important');
+    el.style.setProperty('min-height','40px','important');
+    el.style.setProperty('max-height','none','important');
+    el.style.setProperty('overflow-y','hidden','important');
+    el.style.setProperty('resize','none','important');
+    const h=Math.max(40,el.scrollHeight||40);
+    el.style.setProperty('height',h+'px','important');
+  }
+  function bind(root=document){
+    const list=[];
+    if(root.matches?.(SEL))list.push(root);
+    root.querySelectorAll?.(SEL).forEach(el=>list.push(el));
+    list.forEach(el=>{
+      el.setAttribute('rows','1');
+      el.classList.add('palm-dynamic-text');
+      if(el.dataset.palmGlobalDynamicBound!=='1'){
+        el.dataset.palmGlobalDynamicBound='1';
+        el.addEventListener('input',()=>{if(document.activeElement===el)expand(el)});
+      }
+      if(document.activeElement===el)expand(el); else collapse(el);
+    });
+  }
+  const install=()=>{
+    bind(document);
+    // Capture phase makes this final behavior independent of older per-page handlers.
+    document.addEventListener('focusin',e=>{if(e.target?.matches?.(SEL))requestAnimationFrame(()=>expand(e.target))},true);
+    document.addEventListener('focusout',e=>{if(e.target?.matches?.(SEL))setTimeout(()=>collapse(e.target),0)},true);
+    // Neutralize legacy hover-to-expand handlers: expansion is focus/tap only.
+    document.addEventListener('mouseenter',e=>{if(e.target?.matches?.(SEL)&&document.activeElement!==e.target)setTimeout(()=>collapse(e.target),0)},true);
+    document.addEventListener('mouseleave',e=>{if(e.target?.matches?.(SEL)&&document.activeElement!==e.target)setTimeout(()=>collapse(e.target),0)},true);
+    document.addEventListener('pointerdown',e=>{
+      document.querySelectorAll(SEL+'.palm-dynamic-text-expanded').forEach(el=>{
+        if(el!==e.target&&!el.contains(e.target))collapse(el);
+      });
+    },true);
+    const ob=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)bind(n)})));
+    ob.observe(document.documentElement,{childList:true,subtree:true});
+    requestAnimationFrame(()=>bind(document));
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true}); else install();
+})();
