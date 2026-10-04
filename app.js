@@ -394,41 +394,38 @@ async function captureLeaseVersion(contractId,label='Disimpan'){let r=await sb.f
 async function captureAssetLandVersion(assetId,label='Sertifikat disimpan'){let a=await sb.from('assets').select('*').eq('id',assetId).single(),l=await sb.from('land_titles').select('*').eq('asset_id',assetId).order('created_at');if(a.error)throw a.error;if(l.error)throw l.error;await saveHistorySnapshot('land',assetId,assetId,{asset:a.data,landTitles:l.data||[]},'save',label)}
 async function openHistorySearch(){
  $('#historySearchInput').value='';
- let sel=$('#historySearchAsset');
- if(sel){sel.innerHTML='<option value="">Semua Properti</option>'+assets.map(a=>`<option value="${historySearchEscape(a.id)}">${historySearchEscape(a.alias||a.name||a.address||'Properti')}</option>`).join('');sel.value=''}
- $('#historySearchResults').innerHTML='<div class="muted">Pilih properti bila ingin membatasi pencarian, lalu ketik kata pencarian.</div>';$('#historySearchDlg').showModal()
+ let scope=$('#historySearchScope');if(scope)scope.value='all';
+ $('#historySearchResults').innerHTML='<div class="muted">Ketik minimal 2 karakter untuk mencari di seluruh database PALM.</div>';
+ $('#historySearchDlg').showModal();
 }
 function historySearchEscape(v=''){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function fetchAllDocumentHistory(){
  const pageSize=1000,all=[];let from=0;
- while(true){
-  let r=await sb.from('document_history').select('*').order('created_at',{ascending:false}).range(from,from+pageSize-1);
-  if(r.error)throw r.error;
-  let rows=r.data||[];all.push(...rows);
-  if(rows.length<pageSize)break;
-  from+=pageSize;
- }
+ while(true){let r=await sb.from('document_history').select('*').order('created_at',{ascending:false}).range(from,from+pageSize-1);if(r.error)throw r.error;let rows=r.data||[];all.push(...rows);if(rows.length<pageSize)break;from+=pageSize}
  return all;
 }
 function historySearchLeaseIndex(entityId){return data.findIndex(v=>String(v.id)===String(entityId))}
-async function openLeaseFromHistorySearch(entityId){let i=historySearchLeaseIndex(entityId);if(i<0)return alert('Akta aktif untuk riwayat ini tidak ditemukan. Riwayatnya tetap dapat dibuka melalui tombol Riwayat & Bandingkan.');$('#historySearchDlg').close();await openEdit(i)}
+async function openLeaseFromHistorySearch(entityId){let i=historySearchLeaseIndex(entityId);if(i<0)return alert('Akta aktif untuk riwayat ini tidak ditemukan.');$('#historySearchDlg').close();await openEdit(i)}
 async function compareLeaseFromHistorySearch(entityId){let i=historySearchLeaseIndex(entityId),x=i>=0?data[i]:null;$('#historySearchDlg').close();await openHistory('lease',entityId,x?.tenant||'Akta Sewa')}
 window.openLeaseFromHistorySearch=openLeaseFromHistorySearch;window.compareLeaseFromHistorySearch=compareLeaseFromHistorySearch;
-function historySearchIdentity(x){let s=x.snapshot||{};if(x.entity_type==='lease')return {title:s.tenant||s.lessee||'Akta Sewa',sub:[s.asset,s.deedNo?`Akta ${s.deedNo}`:'',s.deedDate||'',s.start&&s.end?`${s.start} s/d ${s.end}`:''].filter(Boolean).join(' · ')};let lands=s.landTitles||[];let first=lands[0]||{};return {title:s.asset?.alias||s.asset?.name||'Sertifikat Tanah',sub:[first.right_type||first.rightType,first.certificate_no||first.certificateNo].filter(Boolean).join(' · ')}}
+function globalSearchText(v){try{return JSON.stringify(v||{}).toLowerCase()}catch(e){return String(v||'').toLowerCase()}}
+function globalSearchSnippet(v,q){let text;try{text=JSON.stringify(v||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', ')}catch(e){text=String(v||'')}let low=text.toLowerCase(),i=low.indexOf(q);if(i<0)return '';let a=Math.max(0,i-120),b=Math.min(text.length,i+q.length+240);return (a?'…':'')+historySearchEscape(text.slice(a,i))+'<mark>'+historySearchEscape(text.slice(i,i+q.length))+'</mark>'+historySearchEscape(text.slice(i+q.length,b))+(b<text.length?'…':'')}
+function globalSearchCard(h,q){let badge=h.kind==='property'?'PROPERTI / SERTIFIKAT':h.kind==='pbb'?'PBB':'AKTA SEWA';let hist=h.historical?' · HISTORIS':'';return `<div class="history-search-hit"><div class="history-search-head"><div><b>${historySearchEscape(h.title)}</b><div class="muted">${badge}${hist}${h.sub?' · '+historySearchEscape(h.sub):''}</div></div><span class="pill ${h.historical?'warn':''}">${h.historical?'HISTORIS':'AKTIF'}</span></div><div class="history-search-snippet">${globalSearchSnippet(h.payload,q)}</div>${h.kind==='lease'&&!h.historical&&h.entityId?`<div class="history-search-actions"><button type="button" onclick="openLeaseFromHistorySearch('${historySearchEscape(h.entityId)}')">Buka Akta</button><button type="button" class="secondary" onclick="compareLeaseFromHistorySearch('${historySearchEscape(h.entityId)}')">Riwayat &amp; Bandingkan</button></div>`:''}</div>`}
 async function runHistorySearch(){
- let q=$('#historySearchInput').value.trim().toLowerCase(),box=$('#historySearchResults'),assetId=$('#historySearchAsset')?.value||'';
+ let q=$('#historySearchInput').value.trim().toLowerCase(),box=$('#historySearchResults'),scope=$('#historySearchScope')?.value||'all';
  if(q.length<2){box.innerHTML='<div class="muted">Ketik minimal 2 karakter.</div>';return}
- box.innerHTML='<div class="muted">Mencari di seluruh riwayat database…</div>';
+ box.innerHTML='<div class="muted">Mencari di Properti/Sertifikat, PBB, Akta Sewa, dan riwayat…</div>';
  try{
-  let rows=await fetchAllDocumentHistory(),latest=new Map();
-  if(assetId)rows=rows.filter(x=>String(x.asset_id||x.snapshot?.assetId||x.snapshot?.asset?.id||'')===String(assetId));
-  rows.forEach(x=>{let k=`${x.entity_type}:${x.entity_id}`;if(!latest.has(k))latest.set(k,x.id)});
-  let hits=rows.filter(x=>JSON.stringify(x.snapshot||{}).toLowerCase().includes(q));
-  let shown=hits.slice(0,200);
-  box.innerHTML=`<div class="history-search-summary"><b>${hits.length} hasil</b> dari ${rows.length} versi riwayat diperiksa${assetId?` · properti: ${historySearchEscape(assets.find(a=>String(a.id)===String(assetId))?.alias||assets.find(a=>String(a.id)===String(assetId))?.name||'terpilih')}`:''}${hits.length>shown.length?` · menampilkan ${shown.length} teratas`:''}</div>`+(shown.length?shown.map(x=>{let id=historySearchIdentity(x),isLatest=latest.get(`${x.entity_type}:${x.entity_id}`)===x.id,isLease=x.entity_type==='lease',date=new Date(x.created_at).toLocaleString('id-ID');return `<div class="history-search-hit"><div class="history-search-head"><div><b>${historySearchEscape(id.title)}</b><div class="muted">${isLease?'Akta Sewa':'Sertifikat Tanah'} · ${isLatest?'VERSI TERBARU':'HISTORIS'} · ${historySearchEscape(date)}</div>${id.sub?`<div class="history-search-sub">${historySearchEscape(id.sub)}</div>`:''}</div><span class="pill ${isLatest?'':'warn'}">${isLatest?'TERBARU':'HISTORIS'}</span></div><div class="history-search-snippet">${highlightHistoryHit(x.snapshot,q)}</div>${isLease?`<div class="history-search-actions"><button type="button" onclick="openLeaseFromHistorySearch('${historySearchEscape(x.entity_id)}')">Buka Akta</button><button type="button" class="secondary" onclick="compareLeaseFromHistorySearch('${historySearchEscape(x.entity_id)}')">Riwayat & Bandingkan</button></div>`:''}</div>`}).join(''):'<div class="muted">Tidak ditemukan di seluruh riwayat database.</div>');
+  let hits=[];
+  if(scope==='all'||scope==='property')assets.forEach(a=>{if(globalSearchText(a).includes(q))hits.push({kind:'property',title:a.alias||a.name||a.address||'Properti / Sertifikat',sub:a.address||'',payload:a,historical:false})});
+  if(scope==='all'||scope==='pbb')pbbData.forEach(r=>{if(globalSearchText(r).includes(q))hits.push({kind:'pbb',title:`${r.property_alias||'PBB'} · NOP ${r.nop||'-'}`,sub:r.tax_year?`SPPT ${r.tax_year}`:'',payload:r,historical:false})});
+  if(scope==='all'||scope==='lease')data.forEach(x=>{if(globalSearchText(x).includes(q))hits.push({kind:'lease',title:x.tenant||x.asset||'Akta Sewa',sub:[x.deedNo?`Akta ${x.deedNo}`:'',x.asset].filter(Boolean).join(' · '),payload:x,historical:false,entityId:x.id})});
+  let rows=await fetchAllDocumentHistory();
+  rows.forEach(x=>{let kind=x.entity_type==='lease'?'lease':'property';if(scope!=='all'&&scope!==kind)return;if(!globalSearchText(x.snapshot).includes(q))return;let s=x.snapshot||{},lands=s.landTitles||[],first=lands[0]||{};hits.push({kind,title:kind==='lease'?(s.tenant||s.lessee||'Akta Sewa historis'):(s.asset?.alias||s.asset?.name||'Sertifikat historis'),sub:kind==='lease'?(s.deedNo?`Akta ${s.deedNo}`:''):[first.right_type||first.rightType,first.certificate_no||first.certificateNo].filter(Boolean).join(' '),payload:s,historical:true,entityId:x.entity_id})});
+  let shown=hits.slice(0,250),scopeLabel={all:'Semua Database',property:'Properti & Sertifikat',pbb:'PBB',lease:'Akta Sewa'}[scope]||'Semua Database';
+  box.innerHTML=`<div class="history-search-summary"><b>${hits.length} hasil</b> · ${historySearchEscape(scopeLabel)}${hits.length>shown.length?` · menampilkan ${shown.length} teratas`:''}</div>`+(shown.length?shown.map(h=>globalSearchCard(h,q)).join(''):'<div class="muted">Tidak ditemukan di cakupan database yang dipilih.</div>');
  }catch(e){box.innerHTML=`<div class="compare-warning">Pencarian gagal: ${historySearchEscape(e.message)}</div>`}
 }
-function highlightHistoryHit(s,q){let text=JSON.stringify(s||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', '),low=text.toLowerCase(),i=low.indexOf(q);if(i<0)return '';let a=Math.max(0,i-140),b=Math.min(text.length,i+q.length+260),before=historySearchEscape(text.slice(a,i)),match=historySearchEscape(text.slice(i,i+q.length)),after=historySearchEscape(text.slice(i+q.length,b));return (a?'…':'')+before+'<mark>'+match+'</mark>'+after+(b<text.length?'…':'')}
 
 function leaseSearchFullText(obj,q){
  let text=JSON.stringify(obj||{}).replace(/[{}\[\]"]/g,' ').replace(/,/g,', '),low=text.toLowerCase();
@@ -947,7 +944,7 @@ $('#leasePbbToggle').onclick=()=>{leasePbbOthersVisible=!leasePbbOthersVisible;r
 $('#leaseLandMoreBtn').onclick=()=>{leaseLandOthersVisible=!leaseLandOthersVisible;const selected=checkedValues('#leaseLandChoices');renderLeaseLandPicker(selected,leaseLandOrphanIds)};
 $('#leaseHistoryBtn').onclick=()=>{let x=edit>=0?data[edit]:null;if(!x?.id)return alert('Simpan Akta Sewa terlebih dahulu.');openHistory('lease',x.id,`Akta ${x.deedNo||'-'} · ${x.tenant||''}`)};
 $('#landHistoryBtn').onclick=()=>{let a=assetEdit>=0?assets[assetEdit]:null;if(!a?.id)return alert('Simpan Properti/Sertifikat terlebih dahulu.');openHistory('land',a.id,a.name||'Sertifikat Tanah')};
-$('#historyCompareBtn').onclick=compareHistoryAI;$('#historyCloseBtn').onclick=()=>$('#historyDlg').close();$('#historySearchBtn').onclick=openHistorySearch;$('#historySearchCloseBtn').onclick=()=>$('#historySearchDlg').close();$('#historySearchInput').addEventListener('input',()=>{clearTimeout(window.__hs);window.__hs=setTimeout(runHistorySearch,250)});$('#historySearchAsset')?.addEventListener('change',()=>{if($('#historySearchInput').value.trim().length>=2)runHistorySearch();else $('#historySearchResults').innerHTML='<div class="muted">Ketik minimal 2 karakter untuk mencari pada properti yang dipilih.</div>'});
+$('#historyCompareBtn').onclick=compareHistoryAI;$('#historyCloseBtn').onclick=()=>$('#historyDlg').close();$('#historySearchBtn').onclick=openHistorySearch;$('#historySearchCloseBtn').onclick=()=>$('#historySearchDlg').close();$('#historySearchInput').addEventListener('input',()=>{clearTimeout(window.__hs);window.__hs=setTimeout(runHistorySearch,250)});$('#historySearchScope')?.addEventListener('change',()=>{if($('#historySearchInput').value.trim().length>=2)runHistorySearch();else $('#historySearchResults').innerHTML='<div class="muted">Ketik minimal 2 karakter untuk mencari di cakupan yang dipilih.</div>'});
 
 
 // v1.19.2 — Akta Lama / Dokumen Historis (separate from active contract)

@@ -1,3 +1,3 @@
-PALM v1.20.114 RC
+PALM v1.21.0 RC
 
-Changes: Backup & Restore Data modal redesigned to match the approved PDF Optimizer visual system; centered modal; DATA SAFETY and 40x40 close control in header; structured Backup and Restore sections; clear Download Backup and Restore Data actions; data-safety information panel; responsive mobile layout. All v1.20.112 fixed Global Header / Master Property Action Bar behavior is preserved.
+Major search update: Cari Seluruh Database & Riwayat now searches active Property/Sertifikat, PBB, Akta Sewa and stored historical versions. Scope filter replaces property-only filter. Explicit 40x40 X close control.

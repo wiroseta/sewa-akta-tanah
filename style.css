@@ -2203,3 +2203,10 @@ body.asset-master-header-mode #assetPage .asset-actionbar{
   .users-standard-dialog .user-form{grid-template-columns:1fr!important;gap:10px!important;}
   .users-standard-dialog .user-form button{width:100%!important;}
 }
+
+/* v1.21.0 RC — global database search + explicit close icon */
+#historySearchDlg .history-search-x{font-size:0!important;}
+#historySearchDlg .history-search-x svg{display:block!important;width:20px!important;height:20px!important;fill:none!important;stroke:currentColor!important;stroke-width:2.4!important;stroke-linecap:round!important;pointer-events:none!important;}
+#historySearchDlg .history-search-x::before,#historySearchDlg .history-search-x::after{content:none!important;display:none!important;}
+#historySearchDlg .optimizer-search-filters{grid-template-columns:minmax(180px,.72fr) minmax(0,1.8fr)!important;}
+@media(max-width:700px){#historySearchDlg .optimizer-search-filters{grid-template-columns:1fr!important;}}
