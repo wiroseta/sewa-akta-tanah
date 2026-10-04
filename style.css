@@ -1837,5 +1837,7 @@ textarea.compact-hover-textarea.is-expanded{
   display:inline-flex!important;align-items:center!important;justify-content:center!important;
   border-radius:10px!important;
 }
-#assetPage .asset-page-head #assetBack>span:last-child,
 #assetPage .asset-page-head #newAssetBtn>span:not(:first-child){display:none!important}
+
+/* v1.20.104 RC — regression fix: keep the authored back-arrow span visible after v1.19.78 normalizes assetBack. */
+#assetPage .asset-page-head #assetBack>span{display:inline-flex!important;font-size:21px!important;line-height:1!important;align-items:center!important;justify-content:center!important;}

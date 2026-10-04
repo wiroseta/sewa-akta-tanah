@@ -1,3 +1,14 @@
+PALM v1.20.104 RC
+
+Perubahan v1.20.104 RC:
+- Memperbaiki regresi v1.20.103: ikon panah Kembali ke Dashboard pada Master Properti / Lokasi kembali terlihat.
+- Tombol Kembali tetap memakai fungsi showDashboard yang sama.
+- Seluruh perubahan v1.20.103/v1.20.102/v1.20.101 dipertahankan.
+
+Ukuran tombol icon-only pada halaman Master Properti tetap 40 x 40 CSS px.
+
+Deploy GitHub: index.html dan style.css. Tidak perlu SQL Supabase atau redeploy Edge Function.
+
 PALM v1.20.103 RC
 
 Perubahan v1.20.103 RC:
