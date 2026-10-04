@@ -1,4 +1,15 @@
-PALM v1.20.100 RC
+PALM v1.20.101 RC
+
+Perubahan v1.20.101 RC:
+- Akta Sewa dapat disimpan walaupun Aset / Tanah belum dipilih, sehingga hasil scan AI tidak tertahan atau hilang hanya karena relasi Property belum ditentukan.
+- Jika Aset / Tanah kosong saat Save, status verifikasi dipaksa menjadi PERLU VERIFIKASI.
+- Form memberi keterangan bahwa relasi Property / Tanah dapat dilengkapi setelah penyimpanan.
+- Tambah Akta Sewa tidak lagi diblokir ketika Master Property masih kosong; scan dan penyimpanan draft tetap dapat dilakukan.
+- Tidak ada perubahan schema Supabase, Edge Function, atau local optimizer.
+- Seluruh fix v1.20.100 RC dan sebelumnya dipertahankan.
+
+Deploy GitHub untuk v1.20.101: index.html, app.js.
+Tidak perlu deploy ulang: style.css, config.js, local-optimizer, SQL, Edge Function.
 
 Perubahan v1.20.100 RC:
 - Tombol + Tambah Sertifikat dipindahkan dari dalam setiap kartu Sertifikat ke area aksi level daftar di bawah seluruh kartu, bersama tombol Hubungkan Sertifikat dan Riwayat.
