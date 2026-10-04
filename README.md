@@ -1,3 +1,7 @@
+PALM v1.20.111 RC
+
+Changes: centered PDF Optimizer dialog; close X in dialog header; removed bottom Optimize File action; Google Drive link/open/optimizer controls aligned in one row; restored visible Dashboard back arrow in Master Property sticky action bar.
+
 PALM v1.20.106 RC
 
 Perubahan v1.20.106 RC:

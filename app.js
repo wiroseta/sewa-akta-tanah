@@ -2477,7 +2477,7 @@ const palm43Obs=new MutationObserver(()=>{installPdfOptimizeButtons();bindLeaseP
 function bindGlobalPdfOptimizer(){
  const menuBtn=document.getElementById('globalPdfOptimizerBtn'),dlg=document.getElementById('globalPdfOptimizerDlg'),url=document.getElementById('globalPdfOptimizerUrl'),run=document.getElementById('globalPdfOptimizerRunBtn'),runText=document.getElementById('globalPdfOptimizerRunTextBtn'),open=document.getElementById('globalPdfOptimizerOpenBtn'),close=document.getElementById('globalPdfOptimizerCloseBtn'),st=document.getElementById('globalPdfOptimizerStatus');
  if(!menuBtn||!dlg||!url||!run||menuBtn.dataset.bound)return; menuBtn.dataset.bound='1';
- const show=()=>{if(st)st.textContent='Siap. Tempel link PDF Google Drive lalu tekan Optimize File.';dlg.showModal();setTimeout(()=>url.focus(),40)};
+ const show=()=>{if(st)st.textContent='Siap. Tempel link PDF Google Drive lalu tekan tombol Optimizer.';dlg.showModal();setTimeout(()=>url.focus(),40)};
  const doRun=()=>optimizeDrivePdf(run,url);
  menuBtn.addEventListener('click',show); close?.addEventListener('click',()=>dlg.close()); run.addEventListener('click',doRun); runText?.addEventListener('click',doRun);
  open?.addEventListener('click',()=>{const u=url.value.trim();if(!driveFileIdFromUrl(u))return alert('Link Google Drive tidak valid.');window.open(u,'_blank','noopener')});

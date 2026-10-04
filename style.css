@@ -2050,3 +2050,58 @@ html,body,#appShell{max-width:100%;}
   #assetPage .asset-actionbar .asset-searchbar{grid-template-columns:minmax(0,1fr) 42px!important;gap:3px!important;}
   #assetPage .asset-actionbar #assetSearchCount{max-width:42px!important;font-size:9px!important;}
 }
+
+
+/* v1.20.111 RC — approved PDF Optimizer modal + restored Master Property dashboard control. */
+#assetPage .asset-actionbar #assetBack{
+  display:inline-flex!important;visibility:visible!important;opacity:1!important;
+  color:#1d1d1f!important;background:#fff!important;border:1px solid #c7c7cc!important;
+}
+#assetPage .asset-actionbar #assetBack::before{
+  content:'←'!important;display:block!important;font-size:26px!important;font-weight:600!important;line-height:1!important;
+}
+#assetPage .asset-actionbar #assetBack .dashboard-return-icon,
+#assetPage .asset-actionbar #assetBack>span{display:none!important;}
+.global-pdf-optimizer-dialog{
+  width:min(760px,calc(100vw - 32px))!important;max-width:760px!important;max-height:min(82vh,720px)!important;
+  margin:auto!important;padding:0!important;border:0!important;border-radius:18px!important;overflow:auto!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.28)!important;
+}
+.global-pdf-optimizer-dialog::backdrop{background:rgba(0,0,0,.48)!important;}
+.global-pdf-optimizer-head{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 40px!important;gap:18px!important;align-items:start!important;
+  padding:24px 24px 20px!important;border-bottom:1px solid #e5e5ea!important;
+}
+.global-pdf-optimizer-head h2{margin:0 0 8px!important;font-size:28px!important;}
+.global-pdf-optimizer-head p{margin:0!important;line-height:1.45!important;}
+.global-pdf-optimizer-close{
+  width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;
+  padding:0!important;margin:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  font-size:26px!important;line-height:1!important;background:#fff!important;color:#1d1d1f!important;
+}
+.global-pdf-optimizer-body{padding:22px 24px 24px!important;}
+.global-pdf-optimizer-body>label{display:block!important;margin:0 0 8px!important;font-weight:700!important;}
+.global-pdf-optimizer-linkrow{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto 40px!important;gap:10px!important;align-items:center!important;min-width:0!important;
+}
+.global-pdf-optimizer-linkrow input{width:100%!important;min-width:0!important;height:40px!important;min-height:40px!important;margin:0!important;}
+.global-pdf-optimizer-linkrow button{height:40px!important;min-height:40px!important;margin:0!important;}
+.global-pdf-optimizer-linkrow .global-pdf-open-btn{white-space:nowrap!important;padding:0 14px!important;}
+.global-pdf-optimizer-linkrow .global-pdf-optimize-icon{width:40px!important;min-width:40px!important;max-width:40px!important;padding:0!important;}
+.global-pdf-optimizer-dialog>.actions{display:none!important;}
+.global-pdf-optimizer-dialog .drive-local-status{margin-top:16px!important;}
+/* Keep document Drive controls in one row: field | open | optimizer. */
+.doc-link-row.lease-doc-drive-row{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:nowrap!important;min-width:0!important;}
+.doc-link-row.lease-doc-drive-row>input{flex:1 1 auto!important;min-width:0!important;height:40px!important;}
+.doc-link-row.lease-doc-drive-row>.open-doc-btn,
+.doc-link-row.lease-doc-drive-row>.pdf-optimize-btn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;}
+@media(max-width:620px){
+  .global-pdf-optimizer-dialog{width:calc(100vw - 16px)!important;max-height:84vh!important;border-radius:16px!important;}
+  .global-pdf-optimizer-head{padding:18px 16px 16px!important;gap:10px!important;}
+  .global-pdf-optimizer-head h2{font-size:23px!important;}
+  .global-pdf-optimizer-body{padding:18px 16px 20px!important;}
+  .global-pdf-optimizer-linkrow{grid-template-columns:minmax(0,1fr) 40px 40px!important;gap:6px!important;}
+  .global-pdf-optimizer-linkrow .global-pdf-open-btn{width:40px!important;min-width:40px!important;max-width:40px!important;padding:0!important;font-size:0!important;}
+  .global-pdf-optimizer-linkrow .global-pdf-open-btn::first-letter{font-size:20px!important;}
+  .global-pdf-optimizer-linkrow .global-pdf-open-btn span{display:none!important;}
+}
