@@ -1,3 +1,13 @@
+PALM v1.20.106 RC
+
+Perubahan v1.20.106 RC:
+- Koreksi sticky Master Properti: Back, judul Master Properti / Lokasi, tombol Tambah, petunjuk pencarian (desktop), dan Search kini berada dalam SATU sticky control block.
+- Saat daftar Property di-scroll, tombol kembali Dashboard dan tombol tambah tidak dapat terpisah/scroll keluar dari control block.
+- Mobile/iPhone dibuat compact: petunjuk panjang dan jumlah hasil disembunyikan; baris judul 44px + search 42px, di bawah global header 48px.
+- Seluruh perubahan v1.20.101–v1.20.105 dipertahankan.
+
+Deploy GitHub: index.html dan style.css. Tidak perlu SQL Supabase atau redeploy Edge Function.
+
 PALM v1.20.105 RC
 
 Perubahan v1.20.105 RC:
