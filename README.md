@@ -1,11 +1,13 @@
-PALM v1.20.102 RC
+PALM v1.20.103 RC
 
-Perubahan v1.20.102 RC:
-- Master Properti / Lokasi: petunjuk pencarian dipindahkan dari bawah judul menjadi tepat di atas field pencarian.
-- Tombol Hapus Properti menggunakan simbol minus (−), icon-only 40×40 sesuai standar PALM; fungsi/konfirmasi hapus tidak diubah.
-- Daftar Properti disortir dengan prioritas: Alias A–Z; bila alias kosong, Alamat A–Z; bila alias dan alamat kosong, identitas Sertifikat/Akta Tanah teratas A–Z.
-- Sorting hanya memengaruhi tampilan dan tidak mengubah data atau relasi.
-- Seluruh perubahan v1.20.101 tetap dipertahankan, termasuk Save Akta Sewa tanpa Aset/Tanah dengan status PERLU VERIFIKASI.
+Perubahan v1.20.103 RC:
+- Master Properti / Lokasi: seluruh tombol aksi pada halaman master diseragamkan mengikuti ukuran tombol minus yang disetujui, yaitu 40 × 40 CSS px.
+- Berlaku untuk tombol Kembali/Dashboard, Tambah Properti, Edit, Google Maps (jika tersedia), dan Hapus/minus pada kartu Properti.
+- Bentuk ikon/fungsi masing-masing tombol tidak diubah.
+- Perubahan v1.20.102 (petunjuk pencarian, minus delete, sorting Alias → Alamat → Sertifikat) tetap dipertahankan.
+- Perubahan v1.20.101 (Akta Sewa dapat disimpan tanpa Aset/Tanah dan otomatis PERLU VERIFIKASI) tetap dipertahankan.
 
-Deploy GitHub untuk v1.20.102: index.html, app.js, style.css.
-Tidak perlu SQL Supabase atau redeploy Edge Function.
+Referensi ukuran UI PALM untuk halaman Master Properti / Lokasi: tombol icon-only = 40 × 40 CSS px.
+
+Deploy GitHub untuk v1.20.103: index.html dan style.css.
+Tidak perlu Supabase SQL atau redeploy Edge Function.
