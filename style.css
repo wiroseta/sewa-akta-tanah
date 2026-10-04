@@ -1841,3 +1841,65 @@ textarea.compact-hover-textarea.is-expanded{
 
 /* v1.20.104 RC — regression fix: keep the authored back-arrow span visible after v1.19.78 normalizes assetBack. */
 #assetPage .asset-page-head #assetBack>span{display:inline-flex!important;font-size:21px!important;line-height:1!important;align-items:center!important;justify-content:center!important;}
+
+
+/* v1.20.105 RC — Master Properti persistent command/search zone.
+   Desktop: title/actions, search guidance, and search field remain available while cards scroll.
+   iPhone/mobile: compact fixed-height stack; guidance and result count are hidden to preserve data viewport. */
+#assetPage .asset-page-head{
+  position:sticky!important;
+  top:var(--global-nav-h,64px)!important;
+  z-index:930!important;
+  margin-bottom:0!important;
+}
+#assetPage .asset-search-help{
+  position:sticky!important;
+  top:calc(var(--global-nav-h,64px) + 60px)!important;
+  z-index:925!important;
+  margin:0!important;
+  padding:8px 2px 6px!important;
+  min-height:34px!important;
+  background:rgba(245,245,247,.97)!important;
+}
+#assetPage .asset-searchbar{
+  position:sticky!important;
+  top:calc(var(--global-nav-h,64px) + 94px)!important;
+  z-index:920!important;
+  margin:0!important;
+  padding:6px 0 10px!important;
+  background:rgba(245,245,247,.97)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+  border-bottom:1px solid rgba(0,0,0,.08)!important;
+}
+@media(max-width:760px){
+  :root{--global-nav-h:48px}
+  #appShell>header{
+    height:48px!important;min-height:48px!important;max-height:48px!important;
+    padding-top:max(4px,env(safe-area-inset-top))!important;
+    padding-bottom:4px!important;
+  }
+  #assetPage .asset-page-head{
+    top:var(--global-nav-h,48px)!important;
+    min-height:46px!important;height:46px!important;max-height:46px!important;
+    padding:3px 0!important;margin:0!important;
+  }
+  #assetPage .asset-page-head h2{font-size:18px!important;line-height:1.1!important}
+  #assetPage .asset-search-help{display:none!important}
+  #assetPage .asset-searchbar{
+    top:calc(var(--global-nav-h,48px) + 46px)!important;
+    min-height:48px!important;height:48px!important;
+    padding:4px 0 6px!important;
+    display:flex!important;flex-direction:row!important;align-items:center!important;
+    gap:6px!important;
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  }
+  #assetPage .asset-searchbar input{
+    height:38px!important;min-height:38px!important;padding:7px 10px!important;font-size:14px!important;
+  }
+  #assetPage #assetSearchCount{display:none!important}
+  #assetPage .asset-page-head #assetBack,#assetPage .asset-page-head #newAssetBtn{
+    width:40px!important;min-width:40px!important;max-width:40px!important;
+    height:40px!important;min-height:40px!important;max-height:40px!important;
+  }
+}

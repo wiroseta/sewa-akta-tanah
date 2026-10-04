@@ -1,3 +1,14 @@
+PALM v1.20.105 RC
+
+Perubahan v1.20.105 RC:
+- Master Properti / Lokasi: area atas tetap tersedia saat daftar Property di-scroll: Kembali ke Dashboard, judul, Tambah Property, petunjuk pencarian, dan field pencarian.
+- Desktop: petunjuk pencarian dan field pencarian ikut sticky di bawah toolbar Master Properti.
+- iPhone/mobile: sticky zone dibuat compact; petunjuk pencarian dan jumlah hasil disembunyikan saat mobile agar ruang data tetap luas; header 48px + toolbar 46px + search 48px.
+- Tombol Back dan Tambah tetap 40x40 CSS px pada mobile; perubahan v1.20.104/v1.20.103/v1.20.102/v1.20.101 dipertahankan.
+- Tidak ada perubahan database, Supabase SQL, atau Edge Function.
+
+Deploy GitHub untuk v1.20.105: index.html dan style.css.
+
 PALM v1.20.104 RC
 
 Perubahan v1.20.104 RC:
