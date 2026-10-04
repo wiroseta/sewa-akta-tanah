@@ -2105,3 +2105,37 @@ html,body,#appShell{max-width:100%;}
   .global-pdf-optimizer-linkrow .global-pdf-open-btn::first-letter{font-size:20px!important;}
   .global-pdf-optimizer-linkrow .global-pdf-open-btn span{display:none!important;}
 }
+
+/* v1.20.112 RC — definitive Master Property FIXED Action Bar.
+   Do not depend on sticky/ancestor overflow: pin directly below the fixed Global Header. */
+body.asset-master-header-mode #assetPage.asset-master-page{
+  padding-top:calc(var(--global-nav-h,64px) + 64px)!important;
+}
+body.asset-master-header-mode #assetPage .asset-actionbar{
+  position:fixed!important;
+  top:var(--global-nav-h,64px)!important;
+  left:50%!important;
+  right:auto!important;
+  transform:translateX(-50%)!important;
+  z-index:990!important;
+  box-sizing:border-box!important;
+  width:min(var(--app-content-max,1180px),100%)!important;
+  max-width:var(--app-content-max,1180px)!important;
+  min-height:56px!important;
+  margin:0!important;
+  padding:8px var(--app-content-gutter,20px)!important;
+  background:rgba(245,245,247,.985)!important;
+  border-bottom:1px solid rgba(0,0,0,.10)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.035)!important;
+}
+@media(max-width:760px){
+  body.asset-master-header-mode #assetPage.asset-master-page{
+    padding-top:calc(var(--global-nav-h,56px) + 50px)!important;
+  }
+  body.asset-master-header-mode #assetPage .asset-actionbar{
+    top:var(--global-nav-h,56px)!important;
+    width:100%!important;max-width:100%!important;
+    min-height:50px!important;
+    padding:5px var(--app-content-gutter,12px)!important;
+  }
+}
