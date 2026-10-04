@@ -1818,3 +1818,11 @@ textarea.compact-hover-textarea.is-expanded{
   #form .drive-extract.drive-compact>.drive-label,#form .drive-extract.drive-compact>#driveUrl,#form .drive-extract.drive-compact>.drive-state{grid-column:1/-1!important}
   #form .drive-extract.drive-compact>#driveExtractBtn{grid-column:1/-1!important;width:100%!important}
 }
+
+
+/* v1.20.102 RC — Master Properti search guidance + canonical minus delete */
+.asset-search-help{margin:10px 0 0;padding:0 2px;font-size:14px;line-height:1.35}
+.asset-master-actions .asset-delete-approved::before,.asset-master-actions .asset-delete-approved::after{content:none!important;display:none!important}
+.asset-master-actions .asset-delete-approved>span{display:block!important;font-size:28px!important;font-weight:500!important;line-height:38px!important;text-align:center!important}
+@media(max-width:700px){.asset-search-help{margin-top:8px;font-size:13px}.asset-page-head p{display:initial}}
+.asset-master-actions button.asset-delete-approved.v11978-delete{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;border-radius:10px!important}
