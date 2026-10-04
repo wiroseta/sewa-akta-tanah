@@ -1,3 +1,7 @@
+PALM v1.21.3 RC — Land Title AI Chronology & Address Verification
+
+Perbaikan pembacaan AI Sertifikat berdasarkan pengujian D4/D5: pisahkan Penunjuk/asal tanah dari peralihan hak, isi alamat dari lokasi fisik paling lengkap, notes kronologis terstruktur, dan pertahankan PERLU VERIFIKASI untuk konflik literal.
+
 PALM v1.21.2 RC — Property Detail Fixed Search Action Bar
 
 PALM v1.21.2 RC

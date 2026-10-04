@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.20.25] request received");
+ console.log("[extract-lease v1.21.3] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
 
@@ -68,6 +68,10 @@ ATURAN KETAT:
 22. HOLDER SAFETY: bila ada peralihan kepemilikan setelah pemegang awal tetapi nama penerima tidak terbaca/terverifikasi, holderName WAJIB kosong. DILARANG mengisi holderName dengan pemegang awal karena itu akan salah menggambarkan pemegang terkini. Catat pemegang awal dan peralihan yang belum terbaca di notes.
 23. NIB SAFETY: NIB harus didukung transkripsi literal yang konsisten. Jika kandidat NIB berbeda antar halaman atau tidak jelas, nib WAJIB kosong dan konflik dicatat.
 24. Field surveyNo/surveyDate/nib/holderName yang kosong karena konflik adalah hasil yang BENAR dan lebih baik daripada tebakan.
+25. PENUNJUK/ASAL TANAH BUKAN PERALIHAN HAK. Teks pada bagian PENUNJUK yang menerangkan asal bidang, sertifikat induk, jual-beli terdahulu, PT/pihak asal, atau dasar pembentukan bidang adalah fakta asal/penunjuk. Jangan membuat ownershipEvents ownershipChanged=true dari PENUNJUK kecuali dokumen secara eksplisit mencatatnya sebagai baris peralihan hak dengan penerima yang berhak. Jangan menyimpulkan pihak pada PENUNJUK sebagai pemegang baru.
+26. ADDRESS/LOKASI BIDANG: address harus diisi bila dokumen memuat lokasi bidang yang dapat dibaca. Prioritaskan uraian lokasi fisik bidang pada SURAT UKUR/GAMBAR SITUASI (desa/kelurahan, kecamatan, kota/kabupaten, jalan/komplek/blok) dan gabungkan hanya komponen yang benar-benar tertulis. Jika halaman identitas memakai nama administrasi lama/berbeda tetapi masih dapat dipahami sebagai bidang yang sama, isi address dengan uraian lokasi fisik paling lengkap dan catat perbedaan administratif di bagian PERLU VERIFIKASI; jangan mengosongkan address hanya karena ada variasi nama wilayah. Jika dua alamat benar-benar menunjuk lokasi berbeda dan tidak dapat direkonsiliasi, address kosong dan kedua kandidat dicatat.
+27. NOTES WAJIB TERSTRUKTUR dan kronologis dengan urutan semantik: "Pemegang awal: ..."; "Asal/Penunjuk: ..."; satu atau lebih "Peralihan: ..."; "Pemegang terakhir: ..."; dan bila perlu "PERLU VERIFIKASI: ...". Jangan mencampurkan Asal/Penunjuk dengan Peralihan. Jangan menyebut reasoning AI. Bagian yang tidak memiliki fakta boleh dihilangkan.
+28. Untuk Peralihan, hanya gunakan event dari tabel/catatan peralihan yang benar-benar mengubah pemegang. Nomor/tanggal akta, tanggal pendaftaran, pihak penerima dan halaman sumber boleh dicantumkan bila terbaca. Pemegang terakhir pada notes harus konsisten dengan holderName final.
 
 Kembalikan HANYA JSON valid persis:
 {"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","nib":"","notes":""}
@@ -134,7 +138,7 @@ ${JSON.stringify(pageResults)}`;
      }
      data.notes=lines.join('\n');
    }
-   console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
 
  if(documentType==='whole_document_consolidate'){
@@ -173,7 +177,7 @@ HASIL SEMUA HALAMAN (${pageResults.length} halaman/batch):\n${JSON.stringify(pag
    }
    const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
    if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
-   console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(documentType==='history_compare'){
    stage="openai-compare";
@@ -189,7 +193,7 @@ ${JSON.stringify(comparisonData.new)}`;
    const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:comparePrompt})});
    const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan perbandingan yang bukan JSON valid")}
-   console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
@@ -211,6 +215,9 @@ ATURAN WAJIB PEMEGANG HAK TERKINI:
 8. Pada tabel "PENDAFTARAN PERALIHAN HAK, PEMBEBANAN DAN PENCATATAN LAINNYA", ikuti garis KOLOM dan BARIS secara visual. Baca "Sebab perubahan", "Tanggal Pendaftaran", lalu "Nama yang berhak" pada BARIS YANG SAMA. Jangan mengambil nama dari tanda tangan/cap/pejabat atau baris di atas/bawah.
 9. Transkripsikan nama karakter demi karakter sebagaimana tercetak. Jangan melakukan autocorrect nama, jangan mengganti dengan nama yang mirip, dan jangan menggabungkan nama dari halaman lain.
 10. Untuk SURAT UKUR, "surveyNo" harus sama persis dengan teks nomor yang tercetak setelah label No. Jangan menambahkan leading zero, nama wilayah, atau angka lain yang tidak tercetak. "surveyDate" hanya dari tanggal pada bagian SURAT UKUR.
+11. PENUNJUK/ASAL TANAH BUKAN PERALIHAN HAK. Bila bagian PENUNJUK menyebut asal bidang/sertifikat induk/jual-beli terdahulu/pihak asal, catat sebagai fakta asal di notes/evidence tetapi JANGAN membuat ownershipEvents ownershipChanged=true hanya dari bagian PENUNJUK. Peralihan kepemilikan harus berasal dari tabel/catatan peralihan yang menunjukkan penerima/pihak yang berhak.
+12. ADDRESS/LOKASI BIDANG: cari lokasi pada halaman identitas DAN terutama SURAT UKUR/GAMBAR SITUASI. Ekstrak uraian lokasi fisik paling lengkap yang benar-benar terbaca (jalan/komplek/blok, desa/kelurahan, kecamatan, kota/kabupaten, provinsi bila ada). Jangan kosongkan address hanya karena nama administrasi berbeda antar halaman. Jika variasi tampak merupakan nama administratif lama/baru untuk bidang yang sama, gunakan uraian fisik paling lengkap dan catat variasinya di notes sebagai PERLU VERIFIKASI. Jika benar-benar dua lokasi berbeda dan tidak dapat dipastikan, address kosong.
+13. notes per halaman harus membedakan fakta dengan label yang jelas bila tersedia: "Pemegang awal", "Asal/Penunjuk", "Peralihan", dan "PERLU VERIFIKASI". Jangan menggabungkan Penunjuk dengan transaksi peralihan.
 
 Untuk rightType, prioritaskan judul/jenis hak yang tercetak pada sertifikat: tulisan HAK GUNA BANGUNAN atau HGB wajib dipetakan ke HGB; SERTIPIKAT HAK GUNA BANGUNAN/SHGB ke SHGB bila singkatan SHGB memang tercetak; HAK MILIK/SHM ke SHM atau HM sesuai yang tercetak; HAK PAKAI ke Hak Pakai. Gunakan Lainnya hanya jika jenis hak benar-benar bukan salah satu pilihan tersebut atau tidak dapat dikenali. Jangan menebak. Data luas harus hanya berasal dari dokumen tanah ini, bukan dari Akta Sewa atau PBB. KHUSUS landArea: cari label "Luas" pada bagian SURAT UKUR/data fisik sertifikat dan baca seluruh angka persis di sebelahnya. Format Indonesia memakai titik sebagai pemisah ribuan: contoh "6.159 m²" harus dikembalikan sebagai 6159. Jangan menghilangkan digit sehingga menjadi 1659 dan jangan mengganti digit sehingga menjadi 6759. Jika ada beberapa angka luas yang bertentangan, jangan otomatis mengutamakan halaman SURAT UKUR; bandingkan seluruh kandidat dan bila tidak dapat dipastikan secara literal, kosongkan landArea/beri 0 dan jelaskan kandidat di notes sebagai PERLU VERIFIKASI. Semua tanggal YYYY-MM-DD. Untuk SHM/HM yang tidak memiliki masa berakhir, validUntil harus string kosong. Struktur persis: {"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","nib":"","notes":"","ownershipEvents":[{"date":"","eventType":"pemegang_awal|jual_beli|hibah|waris|lelang|perubahan_nama|peralihan_lain|perpanjangan|hak_tanggungan|roya|administratif","from":"","to":"","ownershipChanged":false,"evidence":""}]}. ownershipEvents WAJIB memuat semua peristiwa yang terlihat pada halaman; untuk jual beli/peralihan isi from dan to sesuai pihak yang tertulis, ownershipChanged=true. KHUSUS halaman tabel PENDAFTARAN PERALIHAN HAK: untuk baris JUAL BELI/peralihan, field to WAJIB diambil dari kolom "Nama yang berhak" pada baris yang sama; jangan mengambil nama pejabat, tanda tangan, atau nama dari kolom lain. Untuk perpanjangan/Hak Tanggungan/roya/administratif ownershipChanged=false. WAJIB cari bagian berjudul SURAT UKUR pada seluruh halaman DAN bandingkan dengan ringkasan Surat Ukur pada halaman pendaftaran. Jangan membiarkan kandidat yang bertentangan diputus hanya karena berasal dari halaman SURAT UKUR. Jika transkripsi berbeda dan tidak dapat dipastikan, surveyNo/surveyDate harus kosong dan konflik kandidat dicatat sebagai PERLU VERIFIKASI. Bedakan dari nomor/tanggal sertifikat, tanggal pembukuan, dan nomor dasar pendaftaran. Jika ada NIB, masukkan hanya ke field nib. notes harus merangkum riwayat pemegang/peralihan hak penting yang benar-benar terlihat, termasuk pemegang sebelumnya, jenis peralihan dan tanggal bila terbaca.`,
  building:`Baca SELURUH dokumen bangunan/gudang/gedung Indonesia ini dengan teliti. Kembalikan HANYA JSON valid tanpa markdown. Jangan menebak. Ambil hanya data yang benar-benar tertulis atau terlihat pada dokumen. Struktur persis: {"name":"","buildingType":"Gudang|Gedung|Kantor|Pabrik|Ruko|Lainnya","buildingArea":0,"address":"","notes":""}. buildingArea harus angka m² tanpa pemisah ribuan. Jika jenis bangunan tidak jelas gunakan Lainnya. Masukkan informasi teknis penting lain (misalnya PBG/IMB, nomor dokumen, fungsi, lantai, spesifikasi yang relevan) ke notes tanpa mengarang.`,
@@ -226,16 +233,16 @@ ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untu
  if(Array.isArray(images)&&images.length){for(const im of images){if(im.variant)content.push({type:"input_text",text:`Versi visual halaman ${im.page||pageStart||'?'}: ${im.variant}. Ini bukan halaman tambahan; gunakan untuk verifikasi pembacaan halaman yang sama.`});content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:imageDetail})}}
  else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:imageDetail});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
- stage="openai"; console.log("[extract-lease v1.20.25] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
+ stage="openai"; console.log("[extract-lease v1.21.3] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),50000);let r;
  try{r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]}),signal:controller.signal})}
  catch(err){if(err?.name==='AbortError')throw new Error('OpenAI request timeout setelah 50 detik');throw err}
  finally{clearTimeout(timeout)}
- console.log("[extract-lease v1.20.25] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
+ console.log("[extract-lease v1.21.3] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
  const raw=await r.json();if(!r.ok)throw new Error(raw?.error?.message||`OpenAI error ${r.status}`);
  const text=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
  let clean=String(text).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan hasil yang bukan JSON valid")}
  const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
  if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
- console.log("[extract-lease v1.20.25] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+ console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
 }catch(e){const message=e?.message||String(e);console.error("[extract-lease] failed",{stage,message});return new Response(JSON.stringify({error:message,stage}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});
