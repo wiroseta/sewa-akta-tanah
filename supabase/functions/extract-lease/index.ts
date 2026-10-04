@@ -14,7 +14,7 @@ function subtractNotice(endDate:string,value:number,unit:string){
  return dt.toISOString().slice(0,10);
 }
 serve(async(req)=>{if(req.method==="OPTIONS")return new Response("ok",{headers:cors});let stage="request";try{
- console.log("[extract-lease v1.21.3] request received");
+ console.log("[extract-lease v1.21.4] request received");
  const key=Deno.env.get("OPENAI_API_KEY");if(!key)throw new Error("OPENAI_API_KEY belum diset di Supabase Secrets");
  let {filename,mimeType,base64,images,documentType='lease',driveFileId,driveAccessToken,pageStart,pageEnd,totalPages,comparisonData,pageResults}=await req.json();
 
@@ -70,8 +70,22 @@ ATURAN KETAT:
 24. Field surveyNo/surveyDate/nib/holderName yang kosong karena konflik adalah hasil yang BENAR dan lebih baik daripada tebakan.
 25. PENUNJUK/ASAL TANAH BUKAN PERALIHAN HAK. Teks pada bagian PENUNJUK yang menerangkan asal bidang, sertifikat induk, jual-beli terdahulu, PT/pihak asal, atau dasar pembentukan bidang adalah fakta asal/penunjuk. Jangan membuat ownershipEvents ownershipChanged=true dari PENUNJUK kecuali dokumen secara eksplisit mencatatnya sebagai baris peralihan hak dengan penerima yang berhak. Jangan menyimpulkan pihak pada PENUNJUK sebagai pemegang baru.
 26. ADDRESS/LOKASI BIDANG: address harus diisi bila dokumen memuat lokasi bidang yang dapat dibaca. Prioritaskan uraian lokasi fisik bidang pada SURAT UKUR/GAMBAR SITUASI (desa/kelurahan, kecamatan, kota/kabupaten, jalan/komplek/blok) dan gabungkan hanya komponen yang benar-benar tertulis. Jika halaman identitas memakai nama administrasi lama/berbeda tetapi masih dapat dipahami sebagai bidang yang sama, isi address dengan uraian lokasi fisik paling lengkap dan catat perbedaan administratif di bagian PERLU VERIFIKASI; jangan mengosongkan address hanya karena ada variasi nama wilayah. Jika dua alamat benar-benar menunjuk lokasi berbeda dan tidak dapat direkonsiliasi, address kosong dan kedua kandidat dicatat.
-27. NOTES WAJIB TERSTRUKTUR dan kronologis dengan urutan semantik: "Pemegang awal: ..."; "Asal/Penunjuk: ..."; satu atau lebih "Peralihan: ..."; "Pemegang terakhir: ..."; dan bila perlu "PERLU VERIFIKASI: ...". Jangan mencampurkan Asal/Penunjuk dengan Peralihan. Jangan menyebut reasoning AI. Bagian yang tidak memiliki fakta boleh dihilangkan.
-28. Untuk Peralihan, hanya gunakan event dari tabel/catatan peralihan yang benar-benar mengubah pemegang. Nomor/tanggal akta, tanggal pendaftaran, pihak penerima dan halaman sumber boleh dicantumkan bila terbaca. Pemegang terakhir pada notes harus konsisten dengan holderName final.
+27. FORMAT notes WAJIB MULTILINE, ringkas, terstruktur, dan mudah dibaca. Gunakan label HURUF BESAR di awal baris dengan format persis berikut bila datanya tersedia:
+PEMEGANG AWAL: <nama dan keterangan singkat>.
+
+ASAL / PENUNJUK: <asal bidang/penunjuk dan keterangan singkat>.
+
+RIWAYAT PERALIHAN:
+• <jenis peralihan> → <penerima>; <akta/tanggal/pendaftaran/halaman yang terbaca>.
+• <event berikutnya bila ada>.
+
+PEMEGANG HAK TERAKHIR: <nama>.
+
+PERLU VERIFIKASI:
+• <konflik atau data yang perlu diperiksa>.
+• <konflik berikutnya bila ada>.
+Pertahankan karakter newline (\n) dan baris kosong (\n\n) di dalam string notes JSON; JANGAN menggabungkan seluruh notes menjadi satu paragraf. Label dan isi PEMEGANG AWAL, ASAL / PENUNJUK, dan PEMEGANG HAK TERAKHIR berada pada baris yang sama setelah titik dua. RIWAYAT PERALIHAN dan PERLU VERIFIKASI memakai bullet • pada baris berikutnya. Jika hanya ada satu item tetap boleh memakai satu bullet. Hilangkan seluruh bagian yang tidak memiliki fakta. Jangan mencampurkan ASAL / PENUNJUK dengan RIWAYAT PERALIHAN dan jangan menulis reasoning AI.
+28. Untuk RIWAYAT PERALIHAN, hanya gunakan event dari tabel/catatan peralihan yang benar-benar mengubah pemegang. Nomor/tanggal akta, tanggal pendaftaran, pihak penerima dan halaman sumber boleh dicantumkan bila terbaca. Pemegang hak terakhir pada notes harus konsisten dengan holderName final. Jika pihak lama tidak terbaca, jangan menulis konstruksi mekanis seperti "pihak lama tidak tercantum → NAMA"; tulis natural, misalnya "• Jual beli → NAMA; Akta ...".
 
 Kembalikan HANYA JSON valid persis:
 {"rightType":"HGB|SHGB|SHM|HM|Hak Pakai|Lainnya","certificateNo":"","holderName":"","landArea":0,"validUntil":"","address":"","surveyNo":"","surveyDate":"","nib":"","notes":""}
@@ -138,7 +152,7 @@ ${JSON.stringify(pageResults)}`;
      }
      data.notes=lines.join('\n');
    }
-   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.4] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
 
  if(documentType==='whole_document_consolidate'){
@@ -177,7 +191,7 @@ HASIL SEMUA HALAMAN (${pageResults.length} halaman/batch):\n${JSON.stringify(pag
    }
    const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
    if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
-   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.4] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(documentType==='history_compare'){
    stage="openai-compare";
@@ -193,7 +207,7 @@ ${JSON.stringify(comparisonData.new)}`;
    const rr=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:comparePrompt})});
    const raw=await rr.json();if(!rr.ok)throw new Error(raw?.error?.message||`OpenAI error ${rr.status}`);
    const tx=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";let clean=String(tx).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan perbandingan yang bukan JSON valid")}
-   console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+   console.log("[extract-lease v1.21.4] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
  }
  if(!base64&&!(Array.isArray(images)&&images.length))throw new Error("File kosong");
  const prompts:any={
@@ -233,16 +247,16 @@ ADAPTIVE VISUAL VERIFICATION v1.20.10: Jika tersedia lebih dari satu gambar untu
  if(Array.isArray(images)&&images.length){for(const im of images){if(im.variant)content.push({type:"input_text",text:`Versi visual halaman ${im.page||pageStart||'?'}: ${im.variant}. Ini bukan halaman tambahan; gunakan untuk verifikasi pembacaan halaman yang sama.`});content.push({type:"input_image",image_url:`data:${im.mimeType||'image/jpeg'};base64,${im.base64}`,detail:imageDetail})}}
  else if(isImage)content.push({type:"input_image",image_url:`data:${mimeType};base64,${base64}`,detail:imageDetail});
  else content.push({type:"input_file",filename:filename||"akta.pdf",file_data:`data:${mimeType||'application/pdf'};base64,${base64}`});
- stage="openai"; console.log("[extract-lease v1.21.3] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
+ stage="openai"; console.log("[extract-lease v1.21.4] OpenAI request started", {filename,mimeType,documentType,pageStart,pageEnd,totalPages,base64Chars:typeof base64==='string'?base64.length:0,imageCount:Array.isArray(images)?images.length:0});
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),50000);let r;
  try{r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}]}),signal:controller.signal})}
  catch(err){if(err?.name==='AbortError')throw new Error('OpenAI request timeout setelah 50 detik');throw err}
  finally{clearTimeout(timeout)}
- console.log("[extract-lease v1.21.3] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
+ console.log("[extract-lease v1.21.4] OpenAI HTTP response received",{status:r.status,documentType,pageStart,pageEnd});
  const raw=await r.json();if(!r.ok)throw new Error(raw?.error?.message||`OpenAI error ${r.status}`);
  const text=raw.output?.flatMap((o:any)=>o.content||[]).find((c:any)=>c.type==="output_text")?.text||raw.output_text||"";
  let clean=String(text).trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();let data;try{data=JSON.parse(clean)}catch{throw new Error("AI mengembalikan hasil yang bukan JSON valid")}
  const noticeValue=Number(data?.renewalNoticeValue||0),noticeUnit=String(data?.renewalNoticeUnit||'').toLowerCase();
  if(data?.end&&noticeValue>0&&noticeUnit){const calculated=subtractNotice(String(data.end),noticeValue,noticeUnit);if(calculated)data.renewalNotice=calculated}
- console.log("[extract-lease v1.21.3] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
+ console.log("[extract-lease v1.21.4] request completed",{documentType,pageStart,pageEnd}); return new Response(JSON.stringify({data}),{headers:{...cors,"Content-Type":"application/json"}});
 }catch(e){const message=e?.message||String(e);console.error("[extract-lease] failed",{stage,message});return new Response(JSON.stringify({error:message,stage}),{status:400,headers:{...cors,"Content-Type":"application/json"}})}});

@@ -1,9 +1,5 @@
-PALM v1.21.3 RC — Land Title AI Chronology & Address Verification
+PALM v1.21.4 RC — Structured Land Title AI Notes
 
-Perbaikan pembacaan AI Sertifikat berdasarkan pengujian D4/D5: pisahkan Penunjuk/asal tanah dari peralihan hak, isi alamat dari lokasi fisik paling lengkap, notes kronologis terstruktur, dan pertahankan PERLU VERIFIKASI untuk konflik literal.
+Berbasis v1.21.3 RC. Perubahan khusus pembacaan AI Sertifikat: Catatan Sertifikat kini diwajibkan multiline terstruktur dengan format compact LABEL: isi untuk PEMEGANG AWAL, ASAL / PENUNJUK, PEMEGANG HAK TERAKHIR; RIWAYAT PERALIHAN dan PERLU VERIFIKASI menggunakan bullet pada baris terpisah. Newline wajib dipertahankan dalam string notes JSON dan catatan tidak boleh digabung menjadi satu paragraf. Seluruh fix v1.21.3 dan sebelumnya dipertahankan.
 
-PALM v1.21.2 RC — Property Detail Fixed Search Action Bar
-
-PALM v1.21.2 RC
-
-Major search update: Cari Seluruh Database & Riwayat now searches active Property/Sertifikat, PBB, Akta Sewa and stored historical versions. Scope filter replaces property-only filter. Explicit 40x40 X close control.
+Deploy: update index.html ke GitHub untuk badge versi dan redeploy supabase/functions/extract-lease/index.ts. Tidak ada SQL baru.
