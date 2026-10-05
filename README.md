@@ -1,3 +1,9 @@
+# PALM v1.21.51 RC
+
+- Memperbaiki submenu Export global agar ketiga aksi selalu menampilkan ikon + teks: Print, Save as Excel, dan Excel Save to Google Drive.
+- Submenu dipulihkan dari satu fungsi canonical saat startup dan setiap kali Export dibuka, sehingga normalizer UI lama tidak dapat menghilangkan label.
+- Fungsi export tidak diubah; perubahan hanya pada render/readability submenu.
+
 PALM v1.21.50 RC — Global Export Icon Source-of-Truth Fix
 
 Perubahan v1.21.50:
