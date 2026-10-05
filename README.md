@@ -1,3 +1,16 @@
+PALM v1.21.33 RC — Safe Land Title Identity Fix
+
+Perubahan v1.21.33:
+- Jenis Hak + Nomor Sertifikat tidak lagi dianggap unique key global. Nomor yang sama boleh mewakili bidang/lokasi berbeda.
+- Sertifikat yang sudah memiliki internal ID tetap di-update berdasarkan ID tersebut.
+- Untuk Sertifikat baru, PALM hanya otomatis memakai ulang Master bila ada identitas bidang kuat yang sama: NIB, Nomor Surat Ukur, atau file Google Drive Sertifikat yang sama.
+- Jika nomor sama dan hanya alamat + luas yang cocok, PALM meminta pilihan: gunakan Master lama atau buat Sertifikat baru.
+- Jika nomor sama tetapi identitas/lokasi berbeda, PALM membuat Master Sertifikat baru dan tidak menimpa record lama.
+- List Sertifikat Tanah sekarang menampilkan NIB, Surat Ukur, dan luas agar nomor sertifikat yang sama mudah dibedakan.
+- Seluruh fix v1.21.32 dan sebelumnya dipertahankan.
+
+Deploy: app.js, index.html, README.md. Tidak ada perubahan database/Supabase SQL.
+
 PALM v1.21.32 RC — Property–Sertifikat Unlink Fix
 
 Perubahan v1.21.32:
