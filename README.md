@@ -1,4 +1,12 @@
-PALM v1.21.48 RC — Fixed Master PBB & Akta Sewa Action Bars
+PALM v1.21.49 RC — Global Export Dropdown + PBB Search Alignment
+
+Perubahan v1.21.49:
+- Ikon Export standar PALM tampil pada menu global “…” di samping teks “Export halaman aktif”.
+- Export tidak lagi membuka dialog/modal besar. Opsi export menjadi submenu/dropdown langsung dari menu global.
+- Setiap opsi submenu memiliki ikon + teks: Print, Save as Excel, Excel Save to Google Drive.
+- Master PBB tidak lagi menyisakan kolom tombol Export lama; search memakai ruang penuh dan tombol + berada di ujung kanan action bar.
+- Tetap memakai satu engine Export global sebagai source-of-truth.
+- Tidak ada perubahan database/Supabase SQL.
 
 Perubahan v1.21.48:
 - Master Akta Sewa: tombol kembali, search, jumlah data, dan tombol + tetap terlihat di bawah Global Header saat halaman di-scroll.
