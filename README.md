@@ -109,7 +109,12 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Data PBB/SPPT: added 40×40 Google Drive open button beside saved Google Drive SPPT field.
 
 
-## v1.21.23 RC — Final AI Button Label Fix
+## v1.21.24 RC — Final AI Button Label Fix
 - PBB Baca File memakai teks literal tepat: `✨ Baca File`; tanpa pseudo-element, bintang belakang, atau ikon tambahan.
 - PBB Baca dari Google Drive memakai teks literal tepat: `✨ Baca dari Google Drive`; tanpa logo Google Drive, bintang belakang, atau ikon tambahan.
 - Optimizer clamp tetap terpisah 40×40 CSS px dan layout v1.21.22 dipertahankan.
+
+
+## v1.21.24 RC
+- Fix root cause tombol AI PBB yang diubah menjadi icon-only oleh legacy v1.19.65 enhancer.
+- `✨ Baca File` dan `✨ Baca dari Google Drive` sekarang dikecualikan dari legacy icon enhancer dan dikunci sebagai text action canonical PALM.

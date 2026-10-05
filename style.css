@@ -2535,3 +2535,9 @@ textarea.palm-dynamic-text:focus{
 /* v1.21.23 RC — canonical PALM AI button labels: exact visible text, no generated icons. */
 #pbbEditDlg #pbbExtractBtn,#pbbEditDlg #pbbDriveExtractBtn{font-size:14px!important;line-height:1!important;white-space:nowrap!important}
 #pbbEditDlg #pbbExtractBtn::before,#pbbEditDlg #pbbExtractBtn::after,#pbbEditDlg #pbbDriveExtractBtn::before,#pbbEditDlg #pbbDriveExtractBtn::after{content:none!important;display:none!important;background:none!important}
+
+
+/* v1.21.24 RC — canonical PALM AI text actions must never be converted to icon-only. */
+#pbbEditDlg .palm-ai-text-action{font-size:14px!important;line-height:1!important;width:max-content!important;min-width:max-content!important;max-width:none!important;height:40px!important;min-height:40px!important;padding:0 16px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;overflow:visible!important;background:#0b73d9!important;color:#fff!important;border-color:#0b73d9!important;border-radius:12px!important;font-weight:700!important}
+#pbbEditDlg .palm-ai-text-action::before,#pbbEditDlg .palm-ai-text-action::after{content:none!important;display:none!important;background:none!important}
+#pbbEditDlg .palm-ai-text-action .v11961-icon,#pbbEditDlg .palm-ai-text-action .v11961-sr,#pbbEditDlg .palm-ai-text-action .v11972-color-icon{display:none!important}

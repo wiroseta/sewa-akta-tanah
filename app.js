@@ -1642,7 +1642,7 @@ function v11965Spec(b,label){
 function v11965Enhance(root=document){
  const buttons=root.matches?.('button')?[root]:[...root.querySelectorAll?.('button')||[]];
  buttons.forEach(b=>{
-   if(b.classList.contains('collapsible-header')||b.classList.contains('pdf-optimize-btn'))return;
+   if(b.classList.contains('collapsible-header')||b.classList.contains('pdf-optimize-btn')||b.classList.contains('palm-ai-text-action'))return;
    // v1.20.18: these three actions must remain self-explanatory text buttons.
    const readableLeaseActions={
      addClause:'＋ Klausul',
