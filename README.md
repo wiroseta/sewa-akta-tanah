@@ -120,7 +120,9 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - `✨ Baca File` dan `✨ Baca dari Google Drive` sekarang dikecualikan dari legacy icon enhancer dan dikunci sebagai text action canonical PALM.
 
 
-## v1.21.26 RC
+## v1.21.27 RC
 - Master PBB: tombol utama Export dikembalikan ke icon-only Share/Export 40×40 CSS px.
 - Menu Export diberi label final: Print, Save as Excel, Excel Save to Google Drive.
 - Perubahan v1.21.25 untuk tombol Google Drive bukti bayar tetap dipertahankan.
+
+- v1.21.27 RC: Root fix menu Export Master PBB. Item menu dipaksa tetap readable text: Print, Save as Excel, Excel Save to Google Drive; legacy icon-only classes dibersihkan saat menu dibuka.

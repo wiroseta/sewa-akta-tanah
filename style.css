@@ -2564,3 +2564,10 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-export-menu{min-width:270px!important}
 #pbbPage .pbb-export-menu button{display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
 @media(max-width:760px){#pbbPage .pbb-actionbar{grid-template-columns:40px minmax(0,1fr) 40px 40px!important}#pbbPage .pbb-export-wrap{width:40px!important}}
+
+/* v1.21.27 RC — PBB Export menu is a readable text menu, never icon-only. */
+#pbbPage #pbbExportMenu{width:max-content!important;min-width:260px!important;max-width:min(92vw,340px)!important;height:auto!important}
+#pbbPage #pbbExportMenu>button{width:100%!important;min-width:0!important;max-width:none!important;height:40px!important;min-height:40px!important;padding:0 12px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;font-size:14px!important;line-height:1.2!important;overflow:visible!important;white-space:nowrap!important;text-indent:0!important}
+#pbbPage #pbbExportMenu>button>span:not(.pbb-export-item-icon){display:inline!important;position:static!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;overflow:visible!important;clip:auto!important;white-space:nowrap!important;font-size:14px!important;line-height:1.2!important;color:#1d1d1f!important;visibility:visible!important;opacity:1!important}
+#pbbPage #pbbExportMenu .pbb-export-item-icon{display:inline-flex!important;position:static!important;width:24px!important;min-width:24px!important;height:auto!important;margin:0!important;padding:0!important;overflow:visible!important;clip:auto!important;align-items:center!important;justify-content:center!important;font-size:18px!important;line-height:1!important;visibility:visible!important;opacity:1!important}
+#pbbPage #pbbExportMenu>button::before,#pbbPage #pbbExportMenu>button::after{content:none!important;display:none!important}
