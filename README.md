@@ -1,3 +1,12 @@
+PALM v1.21.46 RC — Master Fixed-Header Offset Root Fix
+
+Perubahan v1.21.46:
+- Memperbaiki akar masalah judul Master PBB dan Master Akta Sewa yang tertutup global fixed header.
+- v1.21.45 secara tidak sengaja meng-override padding-top global master page menjadi 0 dengan !important. Heading tetap ada, tetapi berada di belakang header fixed; hanya teks keterangannya yang terlihat.
+- Mengubah source-of-truth rule yang sama (bukan menambah override baru): padding-top PBB/Akta Sewa kembali mengikuti --global-nav-h pada desktop dan mobile.
+- Tidak mengubah render kartu, data PBB, data Akta Sewa, Supabase, atau fungsi lain.
+- Aturan cleanup permanen dipertahankan: tidak menumpuk patch untuk selector yang sama.
+
 PALM v1.21.45 RC — Master PBB/Akta Sewa Source-of-Truth Layout Fix
 
 Perubahan v1.21.45:

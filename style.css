@@ -2614,7 +2614,7 @@ nn/* v1.21.7 RC — global single-line field height normalization.
 /* v1.21.45 RC — canonical master-list layout for PBB and Akta Sewa.
    Mirrors the proven Master Properti structure: intro -> sticky actionbar -> cards. */
 #pbbPage.pbb-master-page,#leasePage.lease-master-page{
-  max-width:1180px!important;margin:0 auto!important;padding:0 20px 60px!important;
+  max-width:1180px!important;margin:0 auto!important;padding:var(--global-nav-h,58px) 20px 60px!important;
 }
 #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{
   position:relative!important;display:block!important;visibility:visible!important;opacity:1!important;
@@ -2635,7 +2635,7 @@ nn/* v1.21.7 RC — global single-line field height normalization.
 }
 #pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
 @media(max-width:760px){
-  #pbbPage.pbb-master-page,#leasePage.lease-master-page{padding:0 10px 40px!important;}
+  #pbbPage.pbb-master-page,#leasePage.lease-master-page{padding:var(--global-nav-h,48px) 10px 40px!important;}
   #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}
   #pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}
   #pbbPage .pbb-search-help,#leasePage .lease-master-intro p{font-size:13px!important;}
