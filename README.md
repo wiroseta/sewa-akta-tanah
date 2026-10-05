@@ -1,3 +1,14 @@
+PALM v1.21.35 RC — Akta Sewa AI / Dokumen Layout & Icon Standard
+
+Perubahan v1.21.35:
+- Menyamakan layout Pembacaan AI / Dokumen Akta Sewa dengan standar PALM modul lain.
+- File lokal: file picker → Optimizer 40×40 → ✨ Baca File.
+- Google Drive: link → Buka Dokumen 40×40 → Optimizer 40×40 → ✨ Baca dari Google Drive.
+- Menghapus logo Google Drive berwarna dari tombol AI; aksi AI selalu menggunakan simbol ✨.
+- Tombol Buka Dokumen dan Optimizer menggunakan class/ikon global PALM.
+- Menjaga layout compact dan wrapping pada layar iPhone.
+- Seluruh perubahan v1.21.34 dan sebelumnya dipertahankan.
+
 PALM v1.21.34 RC — Property PBB Count
 
 Perubahan v1.21.34:
