@@ -1,3 +1,10 @@
+PALM v1.21.34 RC — Property PBB Count
+
+Perubahan v1.21.34:
+- Kartu Master Properti/Lokasi sekarang menampilkan jumlah PBB yang terhubung, di samping jumlah Sertifikat Tanah dan Bangunan.
+- Jumlah PBB dihitung berdasarkan NOP unik/master PBB, bukan jumlah SPPT tahunan. Satu NOP dengan beberapa tahun SPPT tetap dihitung sebagai 1 PBB.
+- Seluruh perubahan v1.21.33 dan sebelumnya dipertahankan.
+
 PALM v1.21.33 RC — Safe Land Title Identity Fix
 
 Perubahan v1.21.33:

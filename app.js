@@ -508,11 +508,15 @@ async function getPropertyChildren(assetId){
   return{landTitles:(links.data||[]).map(x=>({...x.land_titles,relation_covered_area:x.covered_area,relation_notes:x.notes||''})).filter(Boolean),buildings:b.data||[],permits:pr.data||[],agents:ag.data||[]}
 }
 async function propertyCounts(assetId){
-  const [lt,b]=await Promise.all([
+  const [lt,b,p]=await Promise.all([
     sb.from('asset_land_titles').select('land_title_id',{count:'exact',head:true}).eq('asset_id',assetId),
-    sb.from('buildings').select('id',{count:'exact',head:true}).eq('asset_id',assetId)
+    sb.from('buildings').select('id',{count:'exact',head:true}).eq('asset_id',assetId),
+    sb.from('pbb_records').select('id,nop').eq('asset_id',assetId)
   ]);
-  return{lands:lt.count||0,buildings:b.count||0}
+  if(lt.error)throw lt.error;if(b.error)throw b.error;if(p.error)throw p.error;
+  // Hitung Master PBB/NOP unik, bukan jumlah SPPT tahunan.
+  const pbbKeys=new Set((p.data||[]).map(r=>normalizeNop(r.nop)||`id:${r.id}`).filter(Boolean));
+  return{lands:lt.count||0,buildings:b.count||0,pbb:pbbKeys.size}
 }
 function openAssetList(){showMasterPage('assetPage');renderAssetCards()}window.openAssetList=openAssetList;
 function assetSearchText(a){return [a.alias,a.name,a.address,a.area,a.notes].filter(Boolean).join(' ').toLowerCase()}
@@ -524,8 +528,8 @@ async function renderAssetCards(){
   if($('#assetSearchCount'))$('#assetSearchCount').textContent=`${filtered.length} dari ${assets.length} Properti`;
   if(!filtered.length){box.innerHTML=`<div class="asset-empty">${assets.length?'Tidak ada properti yang cocok dengan pencarian.':'Belum ada properti/lokasi.'}</div>`;return}
   box.innerHTML='<div class="muted">Memuat struktur properti…</div>';
-  const counts=await Promise.all(filtered.map(x=>propertyCounts(x.a.id).catch(()=>({lands:0,buildings:0}))));
-  box.innerHTML=filtered.map((x,j)=>{let a=x.a,i=x.i;return `<div class="asset-master-card"><div class="property-label">PROPERTI / LOKASI</div>${a.alias?`<h3 class="asset-alias">${a.alias}</h3><div class="asset-official-name">${a.name||'-'}</div>`:`<h3>${a.name||'-'}</h3>`}<div class="asset-address">${a.address||'-'}</div><div class="property-counts"><span class="approved-land">${counts[j].lands} sertifikat tanah</span><span class="approved-building">${counts[j].buildings} bangunan</span></div><div class="asset-master-actions"><button type="button" class="asset-open-approved v11978-edit" aria-label="Buka Properti" onclick="openAssetEdit(${i})"><span aria-hidden="true">✎</span></button>${a.googleMapsUrl?`<button type="button" class="secondary asset-map-approved v11978-open" aria-label="Buka Google Maps" onclick="window.open('${a.googleMapsUrl}','_blank','noopener,noreferrer')"><span aria-hidden="true">${locationPinIcon()}</span></button>`:''}${currentRole==='administrator'?`<button type="button" class="secondary danger-action asset-delete-approved v11978-delete" aria-label="Hapus Properti" onclick="deletePropertySafe('${a.id}')"><span aria-hidden="true">−</span></button>`:''}</div></div>`}).join('')
+  const counts=await Promise.all(filtered.map(x=>propertyCounts(x.a.id).catch(()=>({lands:0,buildings:0,pbb:0}))));
+  box.innerHTML=filtered.map((x,j)=>{let a=x.a,i=x.i;return `<div class="asset-master-card"><div class="property-label">PROPERTI / LOKASI</div>${a.alias?`<h3 class="asset-alias">${a.alias}</h3><div class="asset-official-name">${a.name||'-'}</div>`:`<h3>${a.name||'-'}</h3>`}<div class="asset-address">${a.address||'-'}</div><div class="property-counts"><span class="approved-land">${counts[j].lands} sertifikat tanah</span><span class="approved-building">${counts[j].buildings} bangunan</span><span class="approved-pbb">${counts[j].pbb} PBB</span></div><div class="asset-master-actions"><button type="button" class="asset-open-approved v11978-edit" aria-label="Buka Properti" onclick="openAssetEdit(${i})"><span aria-hidden="true">✎</span></button>${a.googleMapsUrl?`<button type="button" class="secondary asset-map-approved v11978-open" aria-label="Buka Google Maps" onclick="window.open('${a.googleMapsUrl}','_blank','noopener,noreferrer')"><span aria-hidden="true">${locationPinIcon()}</span></button>`:''}${currentRole==='administrator'?`<button type="button" class="secondary danger-action asset-delete-approved v11978-delete" aria-label="Hapus Properti" onclick="deletePropertySafe('${a.id}')"><span aria-hidden="true">−</span></button>`:''}</div></div>`}).join('')
 }
 function assetDetailNodeText(el){let parts=[el.innerText||''];el.querySelectorAll('input,textarea,select').forEach(x=>{parts.push(x.value||'');if(x.tagName==='SELECT')parts.push(x.options[x.selectedIndex]?.text||'')});return parts.join(' ').toLowerCase()}
 function runAssetDetailSearch(){
