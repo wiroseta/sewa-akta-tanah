@@ -18,3 +18,9 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 
 ## No redeploy required
 `config.js`, icons, manifest, service worker, local optimizer, and seed SQL are unchanged.
+
+
+### Corrected UI build
+- User Management warning-email settings are responsive and no longer overflow horizontally.
+- One `Simpan Perubahan` button saves warning-email settings for all users.
+- `supabase_latest.sql` drops the legacy `app_list_users()` before recreating its expanded return signature.

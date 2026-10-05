@@ -29,6 +29,7 @@ drop policy if exists warning_email_log_admin_select on public.app_warning_email
 create policy warning_email_log_admin_select on public.app_warning_email_log for select to authenticated
 using (data_owner_id=public.app_access_owner() and public.app_is_admin());
 
+drop function if exists public.app_list_users();
 create or replace function public.app_list_users()
 returns table(id uuid,email text,role text,data_owner_id uuid,warning_email_enabled boolean,warning_email text)
 language plpgsql security definer set search_path=public,auth as $$
