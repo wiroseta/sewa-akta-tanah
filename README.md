@@ -1,3 +1,12 @@
+PALM v1.21.45 RC — Master PBB/Akta Sewa Source-of-Truth Layout Fix
+
+Perubahan v1.21.45:
+- PBB dan Akta Sewa sekarang memakai struktur yang sama dengan Master Properti: intro/judul -> actionbar sticky -> kartu.
+- Judul kembali memakai elemen h2 standar seperti Master Properti; class heading eksperimen master-page-title dihapus.
+- showMasterPage memakai scroll auto agar halaman selalu mulai dari posisi atas tanpa transisi smooth yang dapat meninggalkan heading di balik sticky bar.
+- Blok layout v1.21.44 diganti, bukan ditumpuk; satu kontrak CSS final dipakai untuk intro/actionbar kedua halaman.
+- Seluruh fungsi/data v1.21.44 dan sebelumnya dipertahankan.
+
 PALM v1.21.44 RC — Master PBB/Akta Runtime CSS Cleanup
 
 Perubahan v1.21.44:

@@ -2610,35 +2610,34 @@ nn/* v1.21.7 RC — global single-line field height normalization.
 #driveOpenCompactBtn.palm-drive-open-btn{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:7px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
 #driveOpenCompactBtn .palm-drive-logo{display:block!important;width:25px!important;height:23px!important}
 @media(max-width:760px){#form>.lease-local-search{grid-template-columns:minmax(0,1fr)!important;row-gap:4px!important}#form>.lease-local-search>#leaseLocalSearch{max-width:none!important}#form>.lease-local-search>#leaseLocalSearchCount{grid-column:1!important;white-space:normal!important}}
-/* v1.21.44 RC — canonical Master PBB + Master Akta Sewa layout.
-   Single layout contract: sticky actionbar -> title/help -> cards. */
+
+/* v1.21.45 RC — canonical master-list layout for PBB and Akta Sewa.
+   Mirrors the proven Master Properti structure: intro -> sticky actionbar -> cards. */
 #pbbPage.pbb-master-page,#leasePage.lease-master-page{
-  max-width:none!important;margin:0!important;padding-top:0!important;padding-left:20px!important;padding-right:20px!important;padding-bottom:60px!important;
-}
-#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{
-  position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:950!important;
-  left:auto!important;right:auto!important;transform:none!important;box-sizing:border-box!important;
-  width:100%!important;max-width:none!important;margin:0 0 8px!important;padding:8px 0!important;
-  background:rgba(245,245,247,.98)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
-  border-bottom:1px solid rgba(0,0,0,.08)!important;
+  max-width:1180px!important;margin:0 auto!important;padding:0 20px 60px!important;
 }
 #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{
-  display:block!important;visibility:visible!important;opacity:1!important;position:static!important;transform:none!important;
-  width:100%!important;height:auto!important;min-height:0!important;margin:0!important;padding:10px 2px 10px!important;overflow:visible!important;
+  position:relative!important;display:block!important;visibility:visible!important;opacity:1!important;
+  margin:0!important;padding:10px 2px 10px!important;background:transparent!important;overflow:visible!important;
 }
-#pbbPage .master-page-title,#leasePage .master-page-title{
-  display:block!important;visibility:visible!important;opacity:1!important;position:static!important;transform:none!important;
-  width:auto!important;height:auto!important;min-height:0!important;margin:8px 0!important;padding:0!important;overflow:visible!important;
-  color:#1d1d1f!important;font-size:28px!important;font-weight:700!important;line-height:1.15!important;white-space:normal!important;
+#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{
+  display:block!important;visibility:visible!important;opacity:1!important;position:static!important;
+  margin:8px 0!important;padding:0!important;color:#1d1d1f!important;font-size:28px!important;font-weight:700!important;line-height:1.15!important;
 }
 #pbbPage .pbb-search-help,#leasePage .lease-master-intro p{
   display:block!important;visibility:visible!important;opacity:1!important;position:static!important;margin:0!important;padding:0!important;
 }
+#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{
+  position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:980!important;
+  left:auto!important;right:auto!important;transform:none!important;width:100%!important;max-width:none!important;
+  margin:0 0 8px!important;padding:8px 0!important;background:rgba(245,245,247,.98)!important;
+  border-bottom:1px solid rgba(0,0,0,.08)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+}
 #pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
 @media(max-width:760px){
-  #pbbPage.pbb-master-page,#leasePage.lease-master-page{padding-left:10px!important;padding-right:10px!important;padding-bottom:40px!important;}
-  #pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;padding:5px 0!important;}
+  #pbbPage.pbb-master-page,#leasePage.lease-master-page{padding:0 10px 40px!important;}
   #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}
-  #pbbPage .master-page-title,#leasePage .master-page-title{font-size:21px!important;margin:5px 0!important;}
+  #pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}
   #pbbPage .pbb-search-help,#leasePage .lease-master-intro p{font-size:13px!important;}
+  #pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,56px)!important;padding:5px 0!important;}
 }
