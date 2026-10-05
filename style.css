@@ -282,7 +282,7 @@ dialog .compact-form-actions{top:0}.asset-detail-topbar .compact-form-actions,.l
  #appShell>header{padding:7px 10px;align-items:center}#appShell>header h1{font-size:18px}#appShell>header #userEmail{display:none}.version-badge{font-size:10px;padding:3px 6px}.head-actions{gap:5px}.primary-actions button{padding:7px 9px;font-size:0}.primary-actions button::first-letter{font-size:16px}.menu-trigger span{display:none}.menu-trigger{padding:7px 9px!important}
  .compact-form-actions{margin:0 -12px 12px;padding:8px 12px;top:0}.compact-form-actions button{flex:1;padding:9px 10px}
  .asset-detail-topbar,.lease-detail-topbar{grid-template-columns:auto minmax(0,1fr) auto;gap:7px;padding:7px 10px}.asset-detail-topbar>div,.lease-detail-topbar>div{grid-row:auto;grid-column:auto}.asset-detail-topbar h2,.lease-detail-topbar h2{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-detail-topbar .pill,.lease-detail-topbar .pill{display:none}.asset-detail-topbar .compact-form-actions,.lease-detail-topbar .compact-form-actions{gap:5px}.asset-detail-topbar .compact-form-actions button,.lease-detail-topbar .compact-form-actions button{font-size:12px;padding:8px 9px;white-space:nowrap}
- .lease-top-actions{display:none}.pbb-page-head{top:48px;align-items:center;gap:8px}.pbb-page-head>div{display:flex;align-items:center;gap:7px}.pbb-page-head h2{font-size:17px;margin:0}.pbb-page-head #pbbBack{font-size:0;padding:8px}.pbb-page-head #pbbBack::after{content:'←';font-size:16px}.pbb-page-actions{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px}.pbb-page-actions button{flex:0 0 auto!important;white-space:nowrap;font-size:12px;padding:8px 9px}
+ .lease-top-actions{display:none}.pbb-page-head{top:48px;align-items:center;gap:8px}.pbb-page-head>div{display:flex;align-items:center;gap:7px}.pbb-page-head h2{font-size:17px;margin:0}.pbb-page-head #pbbBack{font-size:0;padding:8px}.pbb-page-head #pbbBack::after{content:"←";font-size:16px}.pbb-page-actions{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px}.pbb-page-actions button{flex:0 0 auto!important;white-space:nowrap;font-size:12px;padding:8px 9px}
 }
 
 /* ============================================================
@@ -338,7 +338,7 @@ button.danger-menu:hover,.repeat-row.land>button:last-child:hover,.repeat-row.la
  .asset-detail-topbar{grid-template-columns:auto minmax(0,1fr) auto!important;gap:6px!important;min-height:46px!important;padding:5px 8px!important}
  .asset-detail-topbar>div{grid-row:auto!important;grid-column:auto!important;min-width:0}
  .asset-detail-topbar #assetDetailBack{font-size:0!important;width:38px;padding:8px!important}
- .asset-detail-topbar #assetDetailBack::after{content:'‹';font-size:24px;line-height:16px}
+ .asset-detail-topbar #assetDetailBack::after{content:"‹";font-size:24px;line-height:16px}
  .asset-detail-topbar .pill{display:none!important}
  .asset-detail-topbar .compact-form-actions{gap:5px!important}
  .asset-detail-topbar .compact-form-actions #assetCancel{display:none!important}
@@ -407,7 +407,7 @@ html,body{max-width:100%;overflow-x:hidden}
  /* Akta: reduce navigation/search/control vertical cost without shrinking readability. */
  .lease-detail-topbar{grid-template-columns:40px minmax(0,1fr) auto!important;gap:5px!important}
  .lease-detail-topbar #leaseBackBtn{font-size:0!important;width:40px!important;height:36px!important;padding:5px!important}
- .lease-detail-topbar #leaseBackBtn::after{content:'‹';font-size:27px;line-height:20px}
+ .lease-detail-topbar #leaseBackBtn::after{content:"‹";font-size:27px;line-height:20px}
  .lease-detail-topbar h2{font-size:14px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
  .lease-detail-topbar .compact-form-actions{display:flex!important;gap:4px!important;min-width:0!important}
  .lease-detail-topbar .compact-form-actions #cancel{display:none!important}
@@ -567,10 +567,10 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 .asset-page-head{position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:35!important;background:rgba(245,245,247,.94)!important;backdrop-filter:blur(9px) saturate(1.12);-webkit-backdrop-filter:blur(9px) saturate(1.12);padding:10px 0 9px!important;margin:0 0 8px!important;align-items:center!important;border-bottom:1px solid rgba(0,0,0,.07)}
 .asset-page-head>div{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;flex:1;min-width:0}.asset-page-head h2{grid-column:2;margin:0!important}.asset-page-head p{grid-column:2;margin:2px 0 0!important}.asset-page-head #assetBack{grid-column:1;grid-row:1/3}
 #assetBack,#newAssetBtn{width:auto!important;min-width:44px!important;height:44px!important;min-height:44px!important;padding:0 13px!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:13px!important}
-#assetBack::before{content:'🏠';font-size:24px}#newAssetBtn::before{content:'＋';font-size:30px;font-weight:800;color:#fff}#newAssetBtn{background:#16a34a!important;border-color:#16a34a!important}
+#assetBack::before{content:"🏠";font-size:24px}#newAssetBtn::before{content:"＋";font-size:30px;font-weight:800;color:#fff}#newAssetBtn{background:#16a34a!important;border-color:#16a34a!important}
 .asset-searchbar{top:calc(var(--global-nav-h,64px) + 64px)!important}
-.asset-master-actions button{font-size:0!important;width:46px!important;min-width:46px!important;height:44px!important;padding:0!important;border-radius:13px!important}.asset-master-actions button::before{font-size:24px;line-height:1}.asset-master-actions .asset-open-approved::before{content:'🏢'}.asset-master-actions .asset-map-approved::before{content:'🗺️'}.asset-master-actions .asset-delete-approved::before{content:'🗑️'}.asset-master-actions .asset-delete-approved{background:#fff!important;border-color:#f1b4b4!important}
-.asset-master-card .property-counts .approved-land::before{content:'📜';margin-right:6px}.asset-master-card .property-counts .approved-building::before{content:'🏢';margin-right:6px}
+.asset-master-actions button{font-size:0!important;width:46px!important;min-width:46px!important;height:44px!important;padding:0!important;border-radius:13px!important}.asset-master-actions button::before{font-size:24px;line-height:1}.asset-master-actions .asset-open-approved::before{content:"🏢"}.asset-master-actions .asset-map-approved::before{content:"🗺️"}.asset-master-actions .asset-delete-approved::before{content:"🗑️"}.asset-master-actions .asset-delete-approved{background:#fff!important;border-color:#f1b4b4!important}
+.asset-master-card .property-counts .approved-land::before{content:"📜";margin-right:6px}.asset-master-card .property-counts .approved-building::before{content:"🏢";margin-right:6px}
 @media(max-width:700px){.asset-page-head{top:var(--global-nav-h,56px)!important;flex-direction:row!important}.asset-page-head>div{grid-template-columns:auto minmax(0,1fr)}.asset-page-head p{display:none}.asset-page-head #assetBack{grid-row:1}.asset-page-head h2{font-size:19px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-searchbar{top:calc(var(--global-nav-h,56px) + 64px)!important}}
 
 /* v1.19.75 — mobile GPU cleanup: same blue-glass look without costly live blur */
@@ -589,10 +589,10 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 /* Canonical property card controls: exactly one colored icon, standard 48px control. */
 .asset-master-actions button{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;font-size:0!important}
 .asset-master-actions button .v11961-icon,.asset-master-actions button .v11972-color-icon,.asset-master-actions button .v11961-sr{display:none!important}
-.asset-open-approved::after{content:'🏢';font-size:26px}.asset-map-approved::after{content:'🗺️';font-size:27px}.asset-delete-approved::after{content:'🗑️';font-size:25px}
+.asset-open-approved::after{content:"🏢";font-size:26px}.asset-map-approved::after{content:"🗺️";font-size:27px}.asset-delete-approved::after{content:"🗑️";font-size:25px}
 .asset-open-approved{background:#0a6ed1!important;border-color:#0a6ed1!important}.asset-delete-approved{background:#fff!important;border-color:#efb1b1!important}
 /* Colored map action in property detail; never show a legacy black icon beside it. */
-#assetOpenMaps{font-size:0!important;width:48px;min-width:48px;padding:0!important}#assetOpenMaps::after{content:'🗺️';font-size:26px}#assetOpenMaps .v11961-icon,#assetOpenMaps .v11972-color-icon{display:none!important}
+#assetOpenMaps{font-size:0!important;width:48px;min-width:48px;padding:0!important}#assetOpenMaps::after{content:"🗺️";font-size:26px}#assetOpenMaps .v11961-icon,#assetOpenMaps .v11972-color-icon{display:none!important}
 /* Do not let legacy icon enhancers inflate canonical controls. */
 [data-v11975-canonical="1"] .v11961-icon,[data-v11975-canonical="1"] .v11972-color-icon{display:none!important}
 @media(max-width:700px){.master-return-label,.v11975-action-label{display:none}.master-return-button{padding:5px 8px!important}.asset-detail-actions{gap:6px}.asset-detail-topbar{gap:8px}}
@@ -603,9 +603,9 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
    one semantic colored icon per property action and standard 48px controls. */
 .asset-master-actions button::after{content:none!important;display:none!important}
 .asset-master-actions button::before{display:block!important;margin:0!important;line-height:1!important}
-.asset-master-actions .asset-open-approved::before{content:'🏢'!important;font-size:25px!important}
-.asset-master-actions .asset-map-approved::before{content:'🗺️'!important;font-size:26px!important}
-.asset-master-actions .asset-delete-approved::before{content:'🗑️'!important;font-size:24px!important}
+.asset-master-actions .asset-open-approved::before{content:"🏢"!important;font-size:25px!important}
+.asset-master-actions .asset-map-approved::before{content:"🗺️"!important;font-size:26px!important}
+.asset-master-actions .asset-delete-approved::before{content:"🗑️"!important;font-size:24px!important}
 .asset-master-actions .asset-open-approved{background:#0a6ed1!important;border-color:#0a6ed1!important}
 .asset-master-actions .asset-map-approved{background:#fff!important}
 .asset-master-actions .asset-delete-approved{background:#fff!important;border-color:#efb1b1!important}
@@ -618,8 +618,8 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 /* v1.19.76 corrected build — canonical PBB icons, same version */
 .pbb-card-actions button{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:13px!important;overflow:hidden!important}
 .pbb-card-actions button::before{display:block!important;font-size:25px!important;line-height:1!important}
-.pbb-card-actions .pbb-open-approved::before{content:'🧾'!important}.pbb-card-actions .pbb-open-approved{background:#0a6ed1!important;border-color:#0a6ed1!important}
-.pbb-card-actions .pbb-sppt-approved::before{content:'📄'!important}.pbb-card-actions .pbb-sppt-approved{background:#fff!important}
+.pbb-card-actions .pbb-open-approved::before{content:"🧾"!important}.pbb-card-actions .pbb-open-approved{background:#0a6ed1!important;border-color:#0a6ed1!important}
+.pbb-card-actions .pbb-sppt-approved::before{content:"📄"!important}.pbb-card-actions .pbb-sppt-approved{background:#fff!important}
 .pbb-page-actions .pbb-toolbar-icon{display:inline-flex!important;align-items:center!important;gap:7px!important;white-space:nowrap!important}
 .pbb-page-actions .pbb-toolbar-icon:first-letter{font-size:22px}
 @media(max-width:700px){.pbb-page-actions .pbb-toolbar-icon span{display:none}.pbb-page-actions .pbb-toolbar-icon{width:44px!important;min-width:44px!important;height:44px!important;padding:0!important;justify-content:center!important;font-size:22px!important}}
@@ -643,8 +643,8 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 .pbb-long-section>summary::-webkit-details-marker{display:none}
 .pbb-long-section>summary .pbb-section-summary{margin-left:auto;font-weight:600;font-size:.9em;color:rgba(255,255,255,.88)}
 .pbb-long-section>summary .pbb-section-chevron{margin-left:8px}
-.pbb-long-section>summary .pbb-section-chevron::before{content:'▶'}
-.pbb-long-section[open]>summary .pbb-section-chevron::before{content:'▼'}
+.pbb-long-section>summary .pbb-section-chevron::before{content:"▶"}
+.pbb-long-section[open]>summary .pbb-section-chevron::before{content:"▼"}
 .pbb-long-section-body{padding:16px 18px}
 .pbb-long-section-body .pbb-form-history{margin:0;border:0;padding:0}
 @media(max-width:700px){.pbb-long-section>summary{padding:12px 14px}.pbb-long-section-body{padding:13px}.pbb-long-section>summary .pbb-section-summary{font-size:.8em}}
@@ -652,8 +652,8 @@ button[aria-label*="Cari" i] .v11961-icon,button[title*="Cari" i] .v11961-icon{f
 
 /* v1.19.76 CORRECTED-4 — Master Akta Sewa canonical actions, same version */
 /* Generic property-action rules must never erase Lease card actions. */
-.lease-card-actions .lease-open-approved::before{content:'📝'!important;font-size:25px!important;display:block!important;line-height:1!important}
-.lease-card-actions .lease-delete-approved::before{content:'🗑️'!important;font-size:24px!important;display:block!important;line-height:1!important}
+.lease-card-actions .lease-open-approved::before{content:"📝"!important;font-size:25px!important;display:block!important;line-height:1!important}
+.lease-card-actions .lease-delete-approved::before{content:"🗑️"!important;font-size:24px!important;display:block!important;line-height:1!important}
 .lease-card-actions .lease-open-approved{background:#0a6ed1!important;border-color:#0a6ed1!important}
 .lease-card-actions .lease-delete-approved{background:#fff!important;border-color:#efb1b1!important}
 .lease-card-actions button::after{content:none!important;display:none!important}
@@ -830,7 +830,7 @@ button.v11978-back>span,button.v11978-save>span,button.v11978-edit>span,button.v
 #assetLandTitles .landtitle label.land-wide.land-dynamic-label{grid-column:1/-1!important;width:100%!important}
 #assetLandTitles .landtitle label.land-wide.land-dynamic-label textarea{width:100%!important}
 #assetLandTitles .landtitle .land-drive-connect-btn{font-size:0!important;line-height:1!important;overflow:hidden!important;white-space:nowrap!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
-#assetLandTitles .landtitle .land-drive-connect-btn::before{content:'🔗';font-size:24px;line-height:1}
+#assetLandTitles .landtitle .land-drive-connect-btn::before{content:"🔗";font-size:24px;line-height:1}
 #assetLandTitles .landtitle .land-ai-status.drive-connected{background:#eefaf1!important;border-color:#b8e5c2!important;color:#176b32!important}
 
 /* v1.20.00 — Google Drive read button owns connection/reconnection; no separate link button */
@@ -903,7 +903,7 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 /* v1.20.26 — Objek yang Dicakup Akta Sewa as native collapsible section */
 .lease-object-details{padding:0!important;overflow:hidden;background:#fff!important;border:1px solid #dedee5!important;border-radius:14px!important}
 .lease-object-summary{list-style:none;display:grid;grid-template-columns:minmax(0,1fr) auto 20px;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:linear-gradient(115deg,rgba(8,85,165,.96),rgba(35,126,211,.86));color:#fff;font-weight:800}
-.lease-object-summary::-webkit-details-marker{display:none}.lease-object-title{font-size:16px}.lease-object-count{font-size:12px;color:rgba(255,255,255,.82);font-weight:600;text-align:right}.lease-object-chevron::after{content:'▶';font-size:14px}.lease-object-details[open]>.lease-object-summary .lease-object-chevron::after{content:'▼'}
+.lease-object-summary::-webkit-details-marker{display:none}.lease-object-title{font-size:16px}.lease-object-count{font-size:12px;color:rgba(255,255,255,.82);font-weight:600;text-align:right}.lease-object-chevron::after{content:"▶";font-size:14px}.lease-object-details[open]>.lease-object-summary .lease-object-chevron::after{content:"▼"}
 .lease-object-body{padding:18px}.lease-object-details[open]>.lease-object-summary{border-bottom:1px solid rgba(0,0,0,.08)}
 @media(max-width:760px){.lease-object-summary{grid-template-columns:minmax(0,1fr) minmax(0,96px) 18px;padding:10px 11px}.lease-object-title{font-size:16px}.lease-object-count{font-size:10px;line-height:1.15}.lease-object-body{padding:10px}}
 
@@ -919,7 +919,7 @@ button.v12018-readable-action::after{content:none!important;display:none!importa
 /* warning changes border/summary only; payment section header stays blue */
 .collapsible-section.has-attention>.collapsible-header{background:linear-gradient(115deg,var(--v11969-blueGlass1),var(--v11969-blueGlass2))!important;color:#fff!important}
 @media(max-width:900px){.payment-column-head{display:none!important}.payrow,.ledger-row{grid-template-columns:1fr 1fr!important}}
-\n/* v1.20.29 — verified expanding payment notes; compact note columns */
+n/* v1.20.29 — verified expanding payment notes; compact note columns */
 :root{
   --schedule-cols-v12029:132px 112px 176px minmax(260px,420px) 34px;
   --ledger-cols-v12029:132px 112px 178px 150px 112px 124px minmax(180px,260px) 34px;
@@ -1376,7 +1376,7 @@ textarea.compact-hover-textarea.is-expanded{
 
 /* v1.20.69: collapsed certificate header must hide ALL body controls, including AI controls with later display!important rules. */
 #assetLandTitles .repeat-row.landtitle.landtitle-collapsed > :not(.landtitle-summary){display:none!important}
-\n\n/* v1.20.74 RC — final global remove + Google Maps icon standard */\n.palm-remove-icon,\n.repeat-row>button.palm-remove-icon:last-child,\n.remove-payment.palm-remove-icon,.ledgerRemove.palm-remove-icon{\n  width:40px!important;min-width:40px!important;max-width:40px!important;\n  height:40px!important;min-height:40px!important;max-height:40px!important;\n  padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;\n  justify-self:end!important;align-self:start!important;line-height:1!important;font-size:20px!important;flex:0 0 40px!important;\n}\n.palm-map-pin-btn,#assetOpenMaps.palm-map-pin-btn,#openMapsBtn.palm-map-pin-btn{\n  width:40px!important;min-width:40px!important;max-width:40px!important;\n  height:40px!important;min-height:40px!important;max-height:40px!important;\n  padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;\n  gap:0!important;flex:0 0 40px!important;font-size:0!important;line-height:1!important;box-sizing:border-box!important;\n}\n.palm-map-pin-btn .location-pin-icon,#assetOpenMaps.palm-map-pin-btn .location-pin-icon,#openMapsBtn.palm-map-pin-btn .location-pin-icon{\n  display:block!important;width:24px!important;height:24px!important;margin:0!important;vertical-align:middle!important;color:currentColor!important;\n}\n/* Suppress legacy colored-map pseudo glyphs when the canonical pin is used. */\n.asset-map-approved.palm-map-pin-btn::before,.asset-map-approved.palm-map-pin-btn::after,#assetOpenMaps.palm-map-pin-btn::before,#assetOpenMaps.palm-map-pin-btn::after{content:none!important;display:none!important}\n/* URL + 40px pin remain on one row on desktop. */\n#assetForm .doc-link-row:has(#assetOpenMaps),#form .doc-link-row:has(#openMapsBtn){display:grid!important;grid-template-columns:minmax(0,1fr) 40px!important;gap:10px!important;align-items:center!important}\n#assetForm .doc-link-row:has(#assetOpenMaps)>input,#form .doc-link-row:has(#openMapsBtn)>input{width:100%!important;min-width:0!important;height:40px!important;min-height:40px!important;box-sizing:border-box!important}\n@media(max-width:640px){#assetForm .doc-link-row:has(#assetOpenMaps),#form .doc-link-row:has(#openMapsBtn){grid-template-columns:minmax(0,1fr) 40px!important}}\n
+nn/* v1.20.74 RC — final global remove + Google Maps icon standard */n.palm-remove-icon,n.repeat-row>button.palm-remove-icon:last-child,n.remove-payment.palm-remove-icon,.ledgerRemove.palm-remove-icon{n  width:40px!important;min-width:40px!important;max-width:40px!important;n  height:40px!important;min-height:40px!important;max-height:40px!important;n  padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;n  justify-self:end!important;align-self:start!important;line-height:1!important;font-size:20px!important;flex:0 0 40px!important;n}n.palm-map-pin-btn,#assetOpenMaps.palm-map-pin-btn,#openMapsBtn.palm-map-pin-btn{n  width:40px!important;min-width:40px!important;max-width:40px!important;n  height:40px!important;min-height:40px!important;max-height:40px!important;n  padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;n  gap:0!important;flex:0 0 40px!important;font-size:0!important;line-height:1!important;box-sizing:border-box!important;n}n.palm-map-pin-btn .location-pin-icon,#assetOpenMaps.palm-map-pin-btn .location-pin-icon,#openMapsBtn.palm-map-pin-btn .location-pin-icon{n  display:block!important;width:24px!important;height:24px!important;margin:0!important;vertical-align:middle!important;color:currentColor!important;n}n/* Suppress legacy colored-map pseudo glyphs when the canonical pin is used. */n.asset-map-approved.palm-map-pin-btn::before,.asset-map-approved.palm-map-pin-btn::after,#assetOpenMaps.palm-map-pin-btn::before,#assetOpenMaps.palm-map-pin-btn::after{content:none!important;display:none!important}n/* URL + 40px pin remain on one row on desktop. */n#assetForm .doc-link-row:has(#assetOpenMaps),#form .doc-link-row:has(#openMapsBtn){display:grid!important;grid-template-columns:minmax(0,1fr) 40px!important;gap:10px!important;align-items:center!important}n#assetForm .doc-link-row:has(#assetOpenMaps)>input,#form .doc-link-row:has(#openMapsBtn)>input{width:100%!important;min-width:0!important;height:40px!important;min-height:40px!important;box-sizing:border-box!important}n@media(max-width:640px){#assetForm .doc-link-row:has(#assetOpenMaps),#form .doc-link-row:has(#openMapsBtn){grid-template-columns:minmax(0,1fr) 40px!important}}n
 /* v1.20.81 RC — Certificate workflow: document links/relation first, AI reader last. */
 #assetLandTitles .repeat-row.landtitle .land-ai-bottom{grid-column:1/-1!important;width:100%!important;min-width:0!important}
 #assetLandTitles .repeat-row.landtitle .land-ai-bottom .land-group-title{margin-top:10px!important}
@@ -1435,7 +1435,7 @@ textarea.compact-hover-textarea.is-expanded{
     text-overflow:clip!important;
   }
 }
-\n\n/* v1.20.83 RC — land-title picker alignment + resilient PBB history icons */\n.land-picker-row{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important;column-gap:12px!important;padding:11px 12px!important}\n.land-picker-row>input[type="checkbox"]{margin:0!important;align-self:center!important;justify-self:center!important;width:16px!important;height:16px!important}\n.land-picker-row>span{min-width:0!important;align-self:center!important}\n.land-picker-row>span>b,.land-picker-row>span>small{display:block!important}\n\n/* Draw the SPPT history action icons with CSS so legacy DOM/icon normalizers cannot erase them. */\n.pbb-history-icon{position:relative!important;font-size:0!important;overflow:hidden!important}\n.pbb-history-edit::before,.pbb-history-proof::before,.pbb-history-delete::before{content:""!important;display:block!important;width:24px!important;height:24px!important;background-position:center!important;background-repeat:no-repeat!important;background-size:24px 24px!important;opacity:1!important;visibility:visible!important}\n.pbb-history-edit::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z'/%3E%3C/svg%3E")!important}\n.pbb-history-proof::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 2h9l3 3v17H6z'/%3E%3Cpath d='M14 2v5h5'/%3E%3Cpath d='M9 11h6M9 15h6M9 19h4'/%3E%3C/svg%3E")!important}\n.pbb-history-delete::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b42318' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M7 12h10'/%3E%3C/svg%3E")!important}\n.pbb-history-icon.pbb-drive-read .v11964-drive-svg{display:block!important;width:24px!important;height:22px!important;opacity:1!important;visibility:visible!important}\n.pbb-history-icon:disabled::before,.pbb-history-icon:disabled .v11964-drive-svg{opacity:.55!important;filter:none!important}\n@media(max-width:700px){.land-picker-row{grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important}}\n
+nn/* v1.20.83 RC — land-title picker alignment + resilient PBB history icons */n.land-picker-row{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important;column-gap:12px!important;padding:11px 12px!important}n.land-picker-row>input[type="checkbox"]{margin:0!important;align-self:center!important;justify-self:center!important;width:16px!important;height:16px!important}n.land-picker-row>span{min-width:0!important;align-self:center!important}n.land-picker-row>span>b,.land-picker-row>span>small{display:block!important}nn/* Draw the SPPT history action icons with CSS so legacy DOM/icon normalizers cannot erase them. */n.pbb-history-icon{position:relative!important;font-size:0!important;overflow:hidden!important}n.pbb-history-edit::before,.pbb-history-proof::before,.pbb-history-delete::before{content:""!important;display:block!important;width:24px!important;height:24px!important;background-position:center!important;background-repeat:no-repeat!important;background-size:24px 24px!important;opacity:1!important;visibility:visible!important}n.pbb-history-edit::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z'/%3E%3C/svg%3E")!important}n.pbb-history-proof::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 2h9l3 3v17H6z'/%3E%3Cpath d='M14 2v5h5'/%3E%3Cpath d='M9 11h6M9 15h6M9 19h4'/%3E%3C/svg%3E")!important}n.pbb-history-delete::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b42318' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M7 12h10'/%3E%3C/svg%3E")!important}n.pbb-history-icon.pbb-drive-read .v11964-drive-svg{display:block!important;width:24px!important;height:22px!important;opacity:1!important;visibility:visible!important}n.pbb-history-icon:disabled::before,.pbb-history-icon:disabled .v11964-drive-svg{opacity:.55!important;filter:none!important}n@media(max-width:700px){.land-picker-row{grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important}}n
 
 /* v1.20.84 RC — responsive land-title picker; checkbox + certificate no. + details share one row */
 #landTitlePickerDlg.history-dialog{
@@ -1606,7 +1606,7 @@ textarea.compact-hover-textarea.is-expanded{
  #assetLandTitles .land-drive-workflow .mini-open{grid-column:1!important;width:100%!important}
  #assetLandTitles .land-drive-workflow>.pdf-optimize-btn{grid-column:2!important}
  #assetLandTitles .land-drive-workflow>.land-drive-ai-btn{grid-column:3!important;width:40px!important;min-width:40px!important;padding:0!important;font-size:0!important;overflow:hidden!important}
- #assetLandTitles .land-drive-workflow>.land-drive-ai-btn::before{content:'✨'!important;font-size:18px!important}
+ #assetLandTitles .land-drive-workflow>.land-drive-ai-btn::before{content:"✨"!important;font-size:18px!important}
  #assetLandTitles .land-ai-section-title{white-space:normal!important}
  #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px!important}
  #assetLandTitles .land-ai-controls .land-file{grid-column:1/-1!important}
@@ -1622,7 +1622,7 @@ textarea.compact-hover-textarea.is-expanded{
 @media(max-width:800px){
  #assetLandTitles .repeat-row.landtitle .land-ai-controls{grid-template-columns:minmax(0,1fr) 40px!important}
 }
-\n\n/* v1.20.91 RC — Safari-safe full-width PALM file picker. */
+nn/* v1.20.91 RC — Safari-safe full-width PALM file picker. */
 #assetLandTitles .land-ai-controls .land-file.palm-file-picker{
  position:relative!important;display:flex!important;align-items:center!important;gap:10px!important;
  width:100%!important;min-width:0!important;height:40px!important;padding:4px 10px!important;
@@ -1757,7 +1757,7 @@ textarea.compact-hover-textarea.is-expanded{
 #form .lease-doc-drive-row>#openDocBtn,#form .lease-doc-drive-row>#leaseDocPdfOptimizeBtn{flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important}
 #form .lease-doc-drive-row>.lease-doc-drive-ai-btn{flex:0 0 auto!important;height:40px!important;min-height:40px!important;white-space:nowrap!important}
 @media(max-width:760px){#form .lease-local-ai-row,#form .lease-doc-drive-row{flex-wrap:wrap!important}#form .lease-local-ai-row>.lease-file-picker,#form .lease-doc-drive-row>input{flex:1 0 100%!important;width:100%!important}#form .lease-local-ai-row>#extractBtn,#form .lease-doc-drive-row>.lease-doc-drive-ai-btn{flex:1 1 auto!important}}
-\n/* v1.20.97 RC — repeat-card destructive action belongs to the card, not the AI file row. */
+n/* v1.20.97 RC — repeat-card destructive action belongs to the card, not the AI file row. */
 .repeat-card-actions{grid-column:1/-1!important;display:flex!important;align-items:center!important;gap:10px!important;margin-top:10px!important;width:100%!important}
 .repeat-card-actions .repeat-card-add-btn,.repeat-card-actions .repeat-remove-btn{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 40px!important;font-size:20px!important;line-height:1!important}
 .repeat-row.permit .palm-local-file-row>.repeat-remove-btn,.repeat-row.agent .palm-local-file-row>.repeat-remove-btn,#assetLandTitles .land-ai-controls>.repeat-remove-btn{display:none!important}
@@ -1872,6 +1872,8 @@ textarea.compact-hover-textarea.is-expanded{
   -webkit-backdrop-filter:blur(12px)!important;
   border-bottom:1px solid rgba(0,0,0,.08)!important;
 }
+#pbbPage .pbb-actionbar{display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;gap:8px!important;align-items:center!important;}
+#leasePage .lease-actionbar{display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px!important;gap:8px!important;align-items:center!important;}
 @media(max-width:760px){
   :root{--global-nav-h:48px}
   #appShell>header{
@@ -1903,7 +1905,7 @@ textarea.compact-hover-textarea.is-expanded{
     height:40px!important;min-height:40px!important;max-height:40px!important;
   }
 }
-\n\n/* v1.20.106 RC — one persistent Master Properti control block.\n   The whole navigation/title/help/search group sticks as a single unit, so Back and Add cannot scroll away independently. */\n#assetPage .asset-sticky-controls{\n  position:sticky!important;\n  top:var(--global-nav-h,64px)!important;\n  z-index:940!important;\n  margin:0!important;\n  padding:0 0 8px!important;\n  background:rgba(245,245,247,.97)!important;\n  backdrop-filter:blur(14px)!important;\n  -webkit-backdrop-filter:blur(14px)!important;\n  border-bottom:1px solid rgba(0,0,0,.08)!important;\n}\n#assetPage .asset-sticky-controls .asset-page-head,\n#assetPage .asset-sticky-controls .asset-search-help,\n#assetPage .asset-sticky-controls .asset-searchbar{\n  position:relative!important;\n  top:auto!important;\n  z-index:auto!important;\n}\n#assetPage .asset-sticky-controls .asset-page-head{margin:0!important;padding:8px 0 6px!important;border-bottom:0!important;background:transparent!important;}\n#assetPage .asset-sticky-controls .asset-search-help{margin:0!important;padding:3px 2px 7px!important;min-height:0!important;background:transparent!important;}\n#assetPage .asset-sticky-controls .asset-searchbar{margin:0!important;padding:0!important;border-bottom:0!important;background:transparent!important;}\n#assetPage #assetCards{position:relative;z-index:1;}\n@media(max-width:760px){\n  #assetPage .asset-sticky-controls{\n    top:var(--global-nav-h,48px)!important;\n    padding:0 0 5px!important;\n    backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important;\n  }\n  #assetPage .asset-sticky-controls .asset-page-head{\n    min-height:44px!important;height:44px!important;max-height:44px!important;\n    padding:2px 0!important;display:flex!important;align-items:center!important;\n  }\n  #assetPage .asset-sticky-controls .asset-page-head h2{font-size:17px!important;line-height:1.05!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}\n  #assetPage .asset-sticky-controls .asset-search-help{display:none!important;}\n  #assetPage .asset-sticky-controls .asset-searchbar{\n    min-height:42px!important;height:42px!important;padding:2px 0!important;\n    display:flex!important;flex-direction:row!important;align-items:center!important;\n  }\n  #assetPage .asset-sticky-controls .asset-searchbar input{height:36px!important;min-height:36px!important;padding:6px 9px!important;font-size:14px!important;}\n  #assetPage #assetSearchCount{display:none!important;}\n}\n
+nn/* v1.20.106 RC — one persistent Master Properti control block.\n   The whole navigation/title/help/search group sticks as a single unit, so Back and Add cannot scroll away independently. */n#assetPage .asset-sticky-controls{n  position:sticky!important;n  top:var(--global-nav-h,64px)!important;n  z-index:940!important;n  margin:0!important;n  padding:0 0 8px!important;n  background:rgba(245,245,247,.97)!important;n  backdrop-filter:blur(14px)!important;n  -webkit-backdrop-filter:blur(14px)!important;n  border-bottom:1px solid rgba(0,0,0,.08)!important;n}n#assetPage .asset-sticky-controls .asset-page-head,n#assetPage .asset-sticky-controls .asset-search-help,n#assetPage .asset-sticky-controls .asset-searchbar{n  position:relative!important;n  top:auto!important;n  z-index:auto!important;n}n#assetPage .asset-sticky-controls .asset-page-head{margin:0!important;padding:8px 0 6px!important;border-bottom:0!important;background:transparent!important;}n#assetPage .asset-sticky-controls .asset-search-help{margin:0!important;padding:3px 2px 7px!important;min-height:0!important;background:transparent!important;}n#assetPage .asset-sticky-controls .asset-searchbar{margin:0!important;padding:0!important;border-bottom:0!important;background:transparent!important;}n#assetPage #assetCards{position:relative;z-index:1;}n@media(max-width:760px){n  #assetPage .asset-sticky-controls{n    top:var(--global-nav-h,48px)!important;n    padding:0 0 5px!important;n    backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important;n  }n  #assetPage .asset-sticky-controls .asset-page-head{n    min-height:44px!important;height:44px!important;max-height:44px!important;n    padding:2px 0!important;display:flex!important;align-items:center!important;n  }n  #assetPage .asset-sticky-controls .asset-page-head h2{font-size:17px!important;line-height:1.05!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}n  #assetPage .asset-sticky-controls .asset-search-help{display:none!important;}n  #assetPage .asset-sticky-controls .asset-searchbar{n    min-height:42px!important;height:42px!important;padding:2px 0!important;n    display:flex!important;flex-direction:row!important;align-items:center!important;n  }n  #assetPage .asset-sticky-controls .asset-searchbar input{height:36px!important;min-height:36px!important;padding:6px 9px!important;font-size:14px!important;}n  #assetPage #assetSearchCount{display:none!important;}n}n
 /* v1.20.107 RC — iPhone Dashboard viewport + canonical icon surface fix.
    Default layout fits the viewport; browser pinch zoom remains enabled by the standard viewport meta. */
 html,body,#appShell{max-width:100%;}
@@ -1956,7 +1958,7 @@ html,body,#appShell{max-width:100%;}
   #appShell>header .utility-menu{flex-basis:38px!important;width:38px!important;min-width:38px!important;max-width:38px!important;}
   #appShell>header #mobileMenuBtn{width:38px!important;min-width:38px!important;max-width:38px!important;}
 }
-\n\n/* v1.20.108 RC — Master Properti unified global action row.\n   Required order: Back | Properti | PBB | Akta Sewa | Menu | Add. */\nbody.asset-master-header-mode #appShell>header .head-actions{\n  display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;\n}\nbody.asset-master-header-mode #appShell>header #assetBack{order:0!important;}\nbody.asset-master-header-mode #appShell>header .primary-actions{order:1!important;}\nbody.asset-master-header-mode #appShell>header .utility-menu{order:2!important;}\nbody.asset-master-header-mode #appShell>header #newAssetBtn{order:3!important;}\nbody.asset-master-header-mode #appShell>header #assetBack,\nbody.asset-master-header-mode #appShell>header #newAssetBtn{\n  width:40px!important;min-width:40px!important;max-width:40px!important;\n  height:40px!important;min-height:40px!important;max-height:40px!important;\n  padding:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;\n  font-size:0!important;line-height:1!important;flex:0 0 40px!important;\n}\nbody.asset-master-header-mode #appShell>header #assetBack .dashboard-return-icon{font-size:0!important;}\nbody.asset-master-header-mode #appShell>header #assetBack .dashboard-return-icon::before{content:'←';font-size:26px!important;font-weight:500!important;line-height:1!important;}\nbody.asset-master-header-mode #appShell>header #assetBack>span:last-child{display:none!important;}\nbody.asset-master-header-mode #appShell>header #newAssetBtn::before{content:'+'!important;font-size:30px!important;font-weight:400!important;line-height:1!important;}\nbody.asset-master-header-mode #assetPage .asset-page-head{\n  min-height:0!important;height:auto!important;max-height:none!important;padding:4px 0 5px!important;\n}\nbody.asset-master-header-mode #assetPage .asset-page-head>div{width:100%!important;}\nbody.asset-master-header-mode #assetPage .asset-page-head h2{margin:0!important;}\n@media(max-width:760px){\n body.asset-master-header-mode #appShell>header{\n   min-height:auto!important;height:auto!important;max-height:none!important;\n   flex-wrap:wrap!important;padding-top:max(4px,env(safe-area-inset-top))!important;padding-bottom:5px!important;\n }\n body.asset-master-header-mode #appShell>header .head-actions{\n   order:-1!important;width:100%!important;flex:0 0 100%!important;justify-content:space-between!important;gap:2px!important;\n }\n body.asset-master-header-mode #appShell>header>div:first-child{order:2!important;width:100%!important;flex:0 0 100%!important;}\n body.asset-master-header-mode #appShell>header .primary-actions{display:flex!important;flex:1 1 auto!important;justify-content:center!important;}\n body.asset-master-header-mode #appShell>header #assetBack,\n body.asset-master-header-mode #appShell>header #newAssetBtn,\n body.asset-master-header-mode #appShell>header #mobileMenuBtn{flex:0 0 40px!important;}\n body.asset-master-header-mode #appShell>header .utility-menu{flex:0 0 40px!important;}\n body.asset-master-header-mode #assetPage .asset-sticky-controls{top:var(--global-nav-h,96px)!important;}\n body.asset-master-header-mode #assetPage .asset-page-head{display:none!important;}\n body.asset-master-header-mode #assetPage .asset-searchbar{padding-top:3px!important;}\n}\n\n\n/* v1.20.109 RC — approved two-tier Master Property sticky layout.\n   Global Header remains sticky. Action order: Dashboard Back | Search | Count | Add.\n   Title/help and property cards remain scrollable content. */\nbody.asset-master-header-mode #appShell>header .head-actions{display:flex!important;}\nbody.asset-master-header-mode #appShell>header #assetBack,\nbody.asset-master-header-mode #appShell>header #newAssetBtn{all:unset;}\n#assetPage .asset-master-intro{position:relative!important;margin:0!important;padding:10px 2px 10px!important;}\n#assetPage .asset-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}\n#assetPage .asset-master-intro .asset-search-help{margin:0!important;padding:0!important;}\n#assetPage .asset-actionbar{\n position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:950!important;\n display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;\n padding:8px 0!important;margin:0 0 8px!important;background:rgba(245,245,247,.98)!important;\n backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;\n border-bottom:1px solid rgba(0,0,0,.08)!important;\n}\n#assetPage .asset-actionbar #assetBack,\n#assetPage .asset-actionbar #newAssetBtn{\n width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;\n flex:0 0 40px!important;padding:0!important;margin:0!important;border-radius:10px!important;box-sizing:border-box!important;\n display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:0!important;line-height:1!important;\n}\n#assetPage .asset-actionbar #assetBack .dashboard-return-icon{font-size:0!important;}\n#assetPage .asset-actionbar #assetBack .dashboard-return-icon::before{content:'←';font-size:26px!important;font-weight:500!important;line-height:1!important;}\n#assetPage .asset-actionbar #assetBack>span:last-child{display:none!important;}\n#assetPage .asset-actionbar #newAssetBtn::before{content:'+'!important;font-size:30px!important;font-weight:500!important;line-height:1!important;}\n#assetPage .asset-actionbar .asset-searchbar{\n position:relative!important;top:auto!important;z-index:auto!important;display:flex!important;flex:1 1 auto!important;min-width:0!important;\n align-items:center!important;gap:10px!important;padding:0!important;margin:0!important;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;\n}\n#assetPage .asset-actionbar .asset-searchbar input{height:40px!important;min-height:40px!important;min-width:0!important;flex:1 1 auto!important;padding:8px 12px!important;}\n#assetPage .asset-actionbar #assetSearchCount{flex:0 0 auto!important;white-space:nowrap!important;}\n@media(max-width:760px){\n #assetPage .asset-master-intro{padding:6px 0 8px!important;}\n #assetPage .asset-master-intro h2{font-size:21px!important;margin:5px 0 5px!important;}\n #assetPage .asset-master-intro .asset-search-help{font-size:13px!important;}\n #assetPage .asset-actionbar{top:var(--global-nav-h,48px)!important;gap:6px!important;padding:5px 0!important;}\n #assetPage .asset-actionbar .asset-searchbar{flex-direction:row!important;align-items:center!important;gap:5px!important;}\n #assetPage .asset-actionbar .asset-searchbar input{height:40px!important;min-height:40px!important;font-size:16px!important;padding:7px 9px!important;}\n #assetPage .asset-actionbar #assetSearchCount{display:block!important;max-width:54px!important;white-space:normal!important;text-align:center!important;font-size:11px!important;line-height:1.05!important;}\n}\n@media(max-width:380px){\n #assetPage .asset-actionbar{gap:4px!important;}\n #assetPage .asset-actionbar #assetSearchCount{max-width:46px!important;font-size:10px!important;}\n}\n
+nn/* v1.20.108 RC — Master Properti unified global action row.\n   Required order: Back | Properti | PBB | Akta Sewa | Menu | Add. */nbody.asset-master-header-mode #appShell>header .head-actions{n  display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;n}nbody.asset-master-header-mode #appShell>header #assetBack{order:0!important;}nbody.asset-master-header-mode #appShell>header .primary-actions{order:1!important;}nbody.asset-master-header-mode #appShell>header .utility-menu{order:2!important;}nbody.asset-master-header-mode #appShell>header #newAssetBtn{order:3!important;}nbody.asset-master-header-mode #appShell>header #assetBack,nbody.asset-master-header-mode #appShell>header #newAssetBtn{n  width:40px!important;min-width:40px!important;max-width:40px!important;n  height:40px!important;min-height:40px!important;max-height:40px!important;n  padding:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;n  font-size:0!important;line-height:1!important;flex:0 0 40px!important;n}nbody.asset-master-header-mode #appShell>header #assetBack .dashboard-return-icon{font-size:0!important;}nbody.asset-master-header-mode #appShell>header #assetBack .dashboard-return-icon::before{content:"←";font-size:26px!important;font-weight:500!important;line-height:1!important;}nbody.asset-master-header-mode #appShell>header #assetBack>span:last-child{display:none!important;}nbody.asset-master-header-mode #appShell>header #newAssetBtn::before{content:"+"!important;font-size:30px!important;font-weight:400!important;line-height:1!important;}nbody.asset-master-header-mode #assetPage .asset-page-head{n  min-height:0!important;height:auto!important;max-height:none!important;padding:4px 0 5px!important;n}nbody.asset-master-header-mode #assetPage .asset-page-head>div{width:100%!important;}nbody.asset-master-header-mode #assetPage .asset-page-head h2{margin:0!important;}n@media(max-width:760px){n body.asset-master-header-mode #appShell>header{n   min-height:auto!important;height:auto!important;max-height:none!important;n   flex-wrap:wrap!important;padding-top:max(4px,env(safe-area-inset-top))!important;padding-bottom:5px!important;n }n body.asset-master-header-mode #appShell>header .head-actions{n   order:-1!important;width:100%!important;flex:0 0 100%!important;justify-content:space-between!important;gap:2px!important;n }n body.asset-master-header-mode #appShell>header>div:first-child{order:2!important;width:100%!important;flex:0 0 100%!important;}n body.asset-master-header-mode #appShell>header .primary-actions{display:flex!important;flex:1 1 auto!important;justify-content:center!important;}n body.asset-master-header-mode #appShell>header #assetBack,n body.asset-master-header-mode #appShell>header #newAssetBtn,n body.asset-master-header-mode #appShell>header #mobileMenuBtn{flex:0 0 40px!important;}n body.asset-master-header-mode #appShell>header .utility-menu{flex:0 0 40px!important;}n body.asset-master-header-mode #assetPage .asset-sticky-controls{top:var(--global-nav-h,96px)!important;}n body.asset-master-header-mode #assetPage .asset-page-head{display:none!important;}n body.asset-master-header-mode #assetPage .asset-searchbar{padding-top:3px!important;}n}nnn/* v1.20.109 RC — approved two-tier Master Property sticky layout.\n   Global Header remains sticky. Action order: Dashboard Back | Search | Count | Add.\n   Title/help and property cards remain scrollable content. */nbody.asset-master-header-mode #appShell>header .head-actions{display:flex!important;}nbody.asset-master-header-mode #appShell>header #assetBack,nbody.asset-master-header-mode #appShell>header #newAssetBtn{all:unset;}n#assetPage .asset-master-intro{position:relative!important;margin:0!important;padding:10px 2px 10px!important;}n#assetPage .asset-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}n#assetPage .asset-master-intro .asset-search-help{margin:0!important;padding:0!important;}n#assetPage .asset-actionbar{n position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:950!important;n display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;n padding:8px 0!important;margin:0 0 8px!important;background:rgba(245,245,247,.98)!important;n backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;n border-bottom:1px solid rgba(0,0,0,.08)!important;n}n#assetPage .asset-actionbar #assetBack,n#assetPage .asset-actionbar #newAssetBtn{n width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;n flex:0 0 40px!important;padding:0!important;margin:0!important;border-radius:10px!important;box-sizing:border-box!important;n display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:0!important;line-height:1!important;n}n#assetPage .asset-actionbar #assetBack .dashboard-return-icon{font-size:0!important;}n#assetPage .asset-actionbar #assetBack .dashboard-return-icon::before{content:"←";font-size:26px!important;font-weight:500!important;line-height:1!important;}n#assetPage .asset-actionbar #assetBack>span:last-child{display:none!important;}n#assetPage .asset-actionbar #newAssetBtn::before{content:"+"!important;font-size:30px!important;font-weight:500!important;line-height:1!important;}n#assetPage .asset-actionbar .asset-searchbar{n position:relative!important;top:auto!important;z-index:auto!important;display:flex!important;flex:1 1 auto!important;min-width:0!important;n align-items:center!important;gap:10px!important;padding:0!important;margin:0!important;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;n}n#assetPage .asset-actionbar .asset-searchbar input{height:40px!important;min-height:40px!important;min-width:0!important;flex:1 1 auto!important;padding:8px 12px!important;}n#assetPage .asset-actionbar #assetSearchCount{flex:0 0 auto!important;white-space:nowrap!important;}n@media(max-width:760px){n #assetPage .asset-master-intro{padding:6px 0 8px!important;}n #assetPage .asset-master-intro h2{font-size:21px!important;margin:5px 0 5px!important;}n #assetPage .asset-master-intro .asset-search-help{font-size:13px!important;}n #assetPage .asset-actionbar{top:var(--global-nav-h,48px)!important;gap:6px!important;padding:5px 0!important;}n #assetPage .asset-actionbar .asset-searchbar{flex-direction:row!important;align-items:center!important;gap:5px!important;}n #assetPage .asset-actionbar .asset-searchbar input{height:40px!important;min-height:40px!important;font-size:16px!important;padding:7px 9px!important;}n #assetPage .asset-actionbar #assetSearchCount{display:block!important;max-width:54px!important;white-space:normal!important;text-align:center!important;font-size:11px!important;line-height:1.05!important;}n}n@media(max-width:380px){n #assetPage .asset-actionbar{gap:4px!important;}n #assetPage .asset-actionbar #assetSearchCount{max-width:46px!important;font-size:10px!important;}n}n
 /* v1.20.110 RC — definitive Master Property two-tier sticky layout.
    Approved order: Back | Search | Count | Add. */
 #assetPage .asset-master-intro{
@@ -2015,10 +2017,10 @@ html,body,#appShell{max-width:100%;}
 }
 #assetPage .asset-actionbar #assetBack{background:#fff!important;color:#1d1d1f!important;border:1px solid #c7c7cc!important;}
 #assetPage .asset-actionbar #assetBack .dashboard-return-icon{font-size:0!important;display:inline-flex!important;}
-#assetPage .asset-actionbar #assetBack .dashboard-return-icon::before{content:'←'!important;font-size:26px!important;font-weight:600!important;line-height:1!important;}
+#assetPage .asset-actionbar #assetBack .dashboard-return-icon::before{content:"←"!important;font-size:26px!important;font-weight:600!important;line-height:1!important;}
 #assetPage .asset-actionbar #assetBack>span:last-child{display:none!important;}
 #assetPage .asset-actionbar #newAssetBtn{background:#16a34a!important;color:#fff!important;border:0!important;}
-#assetPage .asset-actionbar #newAssetBtn::before{content:'+'!important;font-size:30px!important;font-weight:700!important;line-height:1!important;}
+#assetPage .asset-actionbar #newAssetBtn::before{content:"+"!important;font-size:30px!important;font-weight:700!important;line-height:1!important;}
 #assetPage .asset-actionbar .asset-searchbar input{
   width:100%!important;min-width:0!important;height:40px!important;min-height:40px!important;
   margin:0!important;padding:8px 12px!important;font-size:16px!important;
@@ -2058,7 +2060,7 @@ html,body,#appShell{max-width:100%;}
   color:#1d1d1f!important;background:#fff!important;border:1px solid #c7c7cc!important;
 }
 #assetPage .asset-actionbar #assetBack::before{
-  content:'←'!important;display:block!important;font-size:26px!important;font-weight:600!important;line-height:1!important;
+  content:"←"!important;display:block!important;font-size:26px!important;font-weight:600!important;line-height:1!important;
 }
 #assetPage .asset-actionbar #assetBack .dashboard-return-icon,
 #assetPage .asset-actionbar #assetBack>span{display:none!important;}
@@ -2280,7 +2282,7 @@ textarea.palm-dynamic-text:focus{
   overflow:hidden!important;
   resize:none!important;
 }
-\n\n/* v1.21.7 RC — global single-line field height normalization.\n   Reference control: Link Google Drive Sertifikat = exactly 40 CSS px.\n   Applies to all ordinary text/date/number/search/url/email/password inputs and selects.\n   Checkboxes/radios/file pickers are intentionally excluded. Dynamic textareas retain v1.21.2 expand-on-focus behavior. */\n:where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]), select){\n  height:40px!important;\n  min-height:40px!important;\n  max-height:40px!important;\n  box-sizing:border-box!important;\n}\n/* Document/Drive link fields: explicit final guard against older row/stretch rules. */\n:where(.doc-link-row,.lease-doc-drive-row,.global-pdf-optimizer-linkrow) input:not([type="file"]),\n#assetLandTitles input[type="url"],#assetLandTitles input[type="text"]{\n  height:40px!important;min-height:40px!important;max-height:40px!important;\n}\n
+nn/* v1.21.7 RC — global single-line field height normalization.\n   Reference control: Link Google Drive Sertifikat = exactly 40 CSS px.\n   Applies to all ordinary text/date/number/search/url/email/password inputs and selects.\n   Checkboxes/radios/file pickers are intentionally excluded. Dynamic textareas retain v1.21.2 expand-on-focus behavior. */n:where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]), select){n  height:40px!important;n  min-height:40px!important;n  max-height:40px!important;n  box-sizing:border-box!important;n}n/* Document/Drive link fields: explicit final guard against older row/stretch rules. */n:where(.doc-link-row,.lease-doc-drive-row,.global-pdf-optimizer-linkrow) input:not([type="file"]),n#assetLandTitles input[type="url"],#assetLandTitles input[type="text"]{n  height:40px!important;min-height:40px!important;max-height:40px!important;n}n
 
 /* v1.21.11 — per-user warning email settings */
 .user-warning-row{align-items:flex-start;gap:16px}.user-warning-identity{min-width:180px;flex:1}.user-warning-settings{display:grid;grid-template-columns:minmax(170px,auto) minmax(240px,1fr) auto auto;gap:10px;align-items:end;flex:2}.user-warning-settings label{margin:0}.user-warning-toggle{min-height:40px;display:flex!important;align-items:center;gap:8px}.user-warning-toggle input{width:18px;height:18px}.user-warning-email input{height:40px}.user-warning-settings button{height:40px;white-space:nowrap}@media(max-width:760px){.user-warning-row{display:block}.user-warning-settings{grid-template-columns:1fr;margin-top:10px}.user-warning-settings button{width:100%}}
@@ -2306,17 +2308,12 @@ textarea.palm-dynamic-text:focus{
 /* v1.21.13 RC — Master PBB follows approved Master Property two-tier layout.
    Global header + compact PBB action bar remain sticky; intro/tools/cards scroll. */
 #pbbPage.pbb-master-page{padding-top:0!important;}
-#pbbPage .pbb-master-intro{position:relative!important;margin:0!important;padding:10px 2px 10px!important;}
-#pbbPage .pbb-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}
-#pbbPage .pbb-master-intro .pbb-search-help{margin:0!important;padding:0!important;}
+
+
+
 #pbbPage .pbb-secondary-tools{display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:wrap!important;margin-top:10px!important;}
 #pbbPage .pbb-secondary-tools .pbb-toolbar-icon{height:40px!important;min-height:40px!important;}
-#pbbPage .pbb-actionbar{
- position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:950!important;
- display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px!important;align-items:center!important;gap:10px!important;min-width:0!important;
- padding:8px 0!important;margin:0 0 8px!important;background:rgba(245,245,247,.98)!important;
- backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border-bottom:1px solid rgba(0,0,0,.08)!important;
-}
+
 #pbbPage .pbb-actionbar #pbbBack,#pbbPage .pbb-actionbar #newPbbBtn{
  width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;
  padding:0!important;margin:0!important;border-radius:10px!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
@@ -2324,9 +2321,9 @@ textarea.palm-dynamic-text:focus{
 }
 #pbbPage .pbb-actionbar #pbbBack{background:#fff!important;color:#1d1d1f!important;border:1px solid #c7c7cc!important;}
 #pbbPage .pbb-actionbar #pbbBack .dashboard-return-icon,#pbbPage .pbb-actionbar #pbbBack>span{display:none!important;}
-#pbbPage .pbb-actionbar #pbbBack::before{content:'←'!important;font-size:26px!important;font-weight:600!important;line-height:1!important;}
+#pbbPage .pbb-actionbar #pbbBack::before{content:"←"!important;font-size:26px!important;font-weight:600!important;line-height:1!important;}
 #pbbPage .pbb-actionbar #newPbbBtn{background:#16a34a!important;color:#fff!important;border:0!important;}
-#pbbPage .pbb-actionbar #newPbbBtn::before{content:'+'!important;font-size:30px!important;font-weight:700!important;line-height:1!important;}
+#pbbPage .pbb-actionbar #newPbbBtn::before{content:"+"!important;font-size:30px!important;font-weight:700!important;line-height:1!important;}
 #pbbPage .pbb-actionbar #newPbbBtn>span{display:none!important;}
 #pbbPage .pbb-actionbar .pbb-searchbar{position:relative!important;top:auto!important;z-index:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;padding:0!important;margin:0!important;background:transparent!important;}
 #pbbPage .pbb-actionbar .pbb-searchbar input{height:40px!important;min-height:40px!important;min-width:0!important;width:100%!important;padding:8px 12px!important;}
@@ -2334,27 +2331,27 @@ textarea.palm-dynamic-text:focus{
 /* Master cards no longer expose a direct SPPT Drive/link control. Drive URL stays in PBB edit and is used by Read/Verify AI + Optimizer. */
 #pbbPage .pbb-history-actions .pbb-drive-read{display:none!important;}
 @media(max-width:760px){
- #pbbPage .pbb-master-intro{padding:6px 0 8px!important;}
- #pbbPage .pbb-master-intro h2{font-size:21px!important;margin:5px 0!important;}
- #pbbPage .pbb-master-intro .pbb-search-help{font-size:13px!important;}
+ 
+ 
+ 
  #pbbPage .pbb-secondary-tools{gap:5px!important;margin-top:7px!important;}
  #pbbPage .pbb-secondary-tools .pbb-toolbar-icon{width:40px!important;min-width:40px!important;max-width:40px!important;padding:0!important;font-size:0!important;}
  #pbbPage .pbb-secondary-tools .pbb-toolbar-icon>span{display:none!important;}
- #pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;grid-template-columns:40px minmax(0,1fr) 40px!important;gap:6px!important;padding:5px 0!important;}
+ 
  #pbbPage .pbb-actionbar .pbb-searchbar{grid-template-columns:minmax(0,1fr) 54px!important;gap:5px!important;}
  #pbbPage .pbb-actionbar .pbb-searchbar input{font-size:16px!important;padding:7px 9px!important;}
  #pbbPage .pbb-actionbar #pbbSearchCount{max-width:54px!important;white-space:normal!important;text-align:center!important;font-size:11px!important;line-height:1.05!important;}
 }
 @media(max-width:380px){
- #pbbPage .pbb-actionbar{gap:4px!important;}
+ 
  #pbbPage .pbb-actionbar .pbb-searchbar{grid-template-columns:minmax(0,1fr) 46px!important;gap:3px!important;}
  #pbbPage .pbb-actionbar #pbbSearchCount{max-width:46px!important;font-size:10px!important;}
 }
 
 /* v1.21.14 RC — Master PBB compact sticky action bar + canonical Export menu */
 #pbbPage.pbb-master-page{padding-top:0!important}
-#pbbPage .pbb-master-intro,#pbbPage .pbb-secondary-tools{display:none!important}
-#pbbPage .pbb-actionbar{position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:980!important;display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;gap:8px!important;align-items:center!important;padding:8px 0!important;margin:0 0 10px!important;background:rgba(245,245,247,.98)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;border-bottom:1px solid rgba(0,0,0,.08)!important}
+#pbbPage .pbb-secondary-tools{display:none!important}
+
 #pbbPage .pbb-action-icon{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;margin:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;font-size:0!important}
 #pbbPage .pbb-action-icon svg{width:23px!important;height:23px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
 #pbbPage #pbbBack{background:#fff!important;color:#1d1d1f!important;border:1px solid #c7c7cc!important}
@@ -2367,8 +2364,8 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-export-menu[hidden]{display:none!important}
 #pbbPage .pbb-export-menu button{display:block!important;width:100%!important;height:40px!important;text-align:left!important;padding:0 12px!important;background:#fff!important;color:#1d1d1f!important;border:0!important;border-radius:8px!important;font-size:14px!important}
 #pbbPage .pbb-export-menu button:hover{background:#f2f2f7!important}
-@media(max-width:760px){#pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;gap:5px!important;padding:5px 0!important}#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 50px!important;gap:4px!important}#pbbPage #pbbSearchCount{max-width:50px!important;white-space:normal!important;text-align:center!important;font-size:10px!important;line-height:1.05!important}#pbbPage .pbb-searchbar input{font-size:16px!important;padding:7px 9px!important}#pbbPage .pbb-export-menu{right:-45px!important;min-width:220px!important}}
-@media(max-width:390px){#pbbPage .pbb-actionbar{gap:3px!important}#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 43px!important;gap:2px!important}#pbbPage #pbbSearchCount{max-width:43px!important;font-size:9px!important}}
+@media(max-width:760px){#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 50px!important;gap:4px!important}#pbbPage #pbbSearchCount{max-width:50px!important;white-space:normal!important;text-align:center!important;font-size:10px!important;line-height:1.05!important}#pbbPage .pbb-searchbar input{font-size:16px!important;padding:7px 9px!important}#pbbPage .pbb-export-menu{right:-45px!important;min-width:220px!important}}
+@media(max-width:390px){#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 43px!important;gap:2px!important}#pbbPage #pbbSearchCount{max-width:43px!important;font-size:9px!important}}
 
 /* v1.21.15 RC — restore direct Google Drive scan opener on Master PBB cards. */
 #pbbPage .pbb-card-actions{display:flex!important;gap:8px!important;align-items:center!important}
@@ -2376,9 +2373,9 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-card-drive-open .pbb-drive-logo{display:block!important;width:25px!important;height:23px!important}
 #pbbPage .pbb-card-drive-open:disabled{opacity:.35!important;cursor:not-allowed!important}
 /* v1.21.15 RC — Master PBB action bar is fixed under global header; avoids sticky being defeated by main overflow containment. */
-#pbbPage .pbb-actionbar{position:fixed!important;top:var(--global-nav-h,58px)!important;left:20px!important;right:20px!important;width:auto!important;z-index:980!important;padding:8px 0!important;margin:0!important}
+
 #pbbPage #pbbCards{padding-top:58px!important}
-@media(max-width:760px){#pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;left:10px!important;right:10px!important;padding:5px 0!important}#pbbPage #pbbCards{padding-top:50px!important}}
+@media(max-width:760px){#pbbPage #pbbCards{padding-top:50px!important}}
 
 #pbbPage .pbb-card-actions .pbb-edit-svg{display:block!important;width:22px!important;height:22px!important;fill:none!important;stroke:#fff!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
 
@@ -2437,10 +2434,10 @@ textarea.palm-dynamic-text:focus{
 
 /* v1.21.19 RC — Master Akta Sewa follows approved Master Property / Master PBB layout. */
 #leasePage.lease-master-page{padding-top:0!important;max-width:none!important;margin:0!important;padding-left:20px!important;padding-right:20px!important}
-#leasePage .lease-master-intro{position:relative!important;margin:0!important;padding:10px 2px 10px!important}
-#leasePage .lease-master-intro h2{font-size:28px!important;margin:8px 0 8px!important}
-#leasePage .lease-master-intro p{margin:0!important}
-#leasePage .lease-actionbar{position:fixed!important;top:var(--global-nav-h,58px)!important;left:20px!important;right:20px!important;width:auto!important;z-index:980!important;display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px!important;gap:8px!important;align-items:center!important;padding:8px 0!important;margin:0!important;background:rgba(245,245,247,.98)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;border-bottom:1px solid rgba(0,0,0,.08)!important}
+
+
+
+
 #leasePage .lease-action-icon{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;margin:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;font-size:0!important}
 #leasePage #leaseListBack{background:#fff!important;color:#1d1d1f!important;border:1px solid #c7c7cc!important}
 #leasePage #leaseListBack svg{width:23px!important;height:23px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
@@ -2456,10 +2453,10 @@ textarea.palm-dynamic-text:focus{
 #leasePage .lease-card-actions .lease-delete-approved>span{font-size:27px!important;line-height:1!important;font-weight:600!important;color:#b42318!important}
 @media(max-width:760px){
  #leasePage.lease-master-page{padding-left:10px!important;padding-right:10px!important}
- #leasePage .lease-master-intro{padding:6px 0 8px!important}
- #leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important}
- #leasePage .lease-master-intro p{font-size:13px!important}
- #leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;left:10px!important;right:10px!important;gap:5px!important;padding:5px 0!important}
+ 
+ 
+ 
+ 
  #leasePage .lease-master-search{grid-template-columns:minmax(0,1fr) 50px!important;gap:4px!important}
  #leasePage #leaseSearchCount{max-width:50px!important;white-space:normal!important;text-align:center!important;font-size:10px!important;line-height:1.05!important}
  #leasePage .lease-master-search input{font-size:16px!important;padding:7px 9px!important}
@@ -2541,8 +2538,8 @@ textarea.palm-dynamic-text:focus{
 #pbbEditDlg .palm-ai-text-action{font-size:14px!important;line-height:1!important;width:max-content!important;min-width:max-content!important;max-width:none!important;height:40px!important;min-height:40px!important;padding:0 16px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;overflow:visible!important;background:#0b73d9!important;color:#fff!important;border-color:#0b73d9!important;border-radius:12px!important;font-weight:700!important}
 #pbbEditDlg .palm-ai-text-action::before,#pbbEditDlg .palm-ai-text-action::after{content:none!important;display:none!important;background:none!important}
 #pbbEditDlg .palm-ai-text-action .v11961-icon,#pbbEditDlg .palm-ai-text-action .v11961-sr,#pbbEditDlg .palm-ai-text-action .v11972-color-icon{display:none!important}
-\n\n/* v1.21.25 RC — labeled Master PBB Export + Google Drive opener for payment proof */
-#pbbPage .pbb-actionbar{grid-template-columns:40px minmax(0,1fr) auto 40px!important}
+nn/* v1.21.25 RC — labeled Master PBB Export + Google Drive opener for payment proof */
+
 #pbbPage .pbb-export-wrap{width:auto!important;height:40px!important}
 #pbbPage .pbb-actionbar #pbbExportBtn.pbb-export-labeled{width:auto!important;min-width:94px!important;max-width:none!important;height:40px!important;padding:0 12px!important;gap:7px!important;font-size:14px!important;font-weight:600!important;white-space:nowrap!important}
 #pbbPage .pbb-actionbar #pbbExportBtn.pbb-export-labeled>*{display:block!important}
@@ -2551,11 +2548,11 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-export-label{font-size:14px!important;line-height:1!important;color:inherit!important}
 #pbbEditDlg .pbb-payment-drive-row{display:grid!important;grid-template-columns:minmax(0,1fr) 40px!important;gap:8px!important;align-items:center!important}
 #pbbEditDlg .pbb-payment-drive-row>input{width:100%!important;min-width:0!important}
-@media(max-width:760px){#pbbPage .pbb-actionbar{grid-template-columns:40px minmax(0,1fr) auto 40px!important}#pbbPage .pbb-actionbar #pbbExportBtn.pbb-export-labeled{min-width:82px!important;padding:0 9px!important;gap:5px!important;font-size:13px!important}}
+@media(max-width:760px){#pbbPage .pbb-actionbar #pbbExportBtn.pbb-export-labeled{min-width:82px!important;padding:0 9px!important;gap:5px!important;font-size:13px!important}}
 
 
 /* v1.21.26 RC — Master PBB: canonical icon-only Export trigger; readable menu labels. */
-#pbbPage .pbb-actionbar{grid-template-columns:40px minmax(0,1fr) 40px 40px!important}
+
 #pbbPage .pbb-export-wrap{width:40px!important;height:40px!important}
 #pbbPage .pbb-actionbar #pbbExportBtn{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;padding:0!important;display:grid!important;place-items:center!important}
 #pbbPage .pbb-actionbar #pbbExportBtn>svg{display:none!important}
@@ -2563,7 +2560,7 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-actionbar #pbbExportBtn::after{content:none!important;display:none!important}
 #pbbPage .pbb-export-menu{min-width:270px!important}
 #pbbPage .pbb-export-menu button{display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
-@media(max-width:760px){#pbbPage .pbb-actionbar{grid-template-columns:40px minmax(0,1fr) 40px 40px!important}#pbbPage .pbb-export-wrap{width:40px!important}}
+@media(max-width:760px){#pbbPage .pbb-export-wrap{width:40px!important}}
 
 /* v1.21.27 RC — PBB Export menu is a readable text menu, never icon-only. */
 #pbbPage #pbbExportMenu{width:max-content!important;min-width:260px!important;max-width:min(92vw,340px)!important;height:auto!important}
@@ -2573,16 +2570,7 @@ textarea.palm-dynamic-text:focus{
 #pbbPage #pbbExportMenu>button::before,#pbbPage #pbbExportMenu>button::after{content:none!important;display:none!important}
 
 /* v1.21.30 RC — Master PBB action bar aligned to card content; shorter search field. */
-#pbbPage .pbb-actionbar{
-  left:50%!important;
-  right:auto!important;
-  width:calc(100% - 100px)!important;
-  max-width:1650px!important;
-  transform:translateX(-50%)!important;
-  box-sizing:border-box!important;
-  grid-template-columns:40px minmax(0,1fr) 40px 40px!important;
-  align-items:center!important;
-}
+
 #pbbPage .pbb-actionbar .pbb-searchbar{
   width:100%!important;
   max-width:1250px!important;
@@ -2597,14 +2585,10 @@ textarea.palm-dynamic-text:focus{
   margin-bottom:0!important;
 }
 @media(max-width:760px){
-  #pbbPage .pbb-actionbar{
-    width:calc(100% - 20px)!important;
-    max-width:none!important;
-    grid-template-columns:40px minmax(0,1fr) 40px 40px!important;
-  }
+  
   #pbbPage .pbb-actionbar .pbb-searchbar{max-width:none!important;}
 }
-\n\n/* v1.21.35 RC — Akta Sewa AI / Dokumen follows PALM global action standards */\n#form .ai-extract #extractBtn,#form .ai-extract #driveExtractBtn{font-size:14px!important;line-height:1!important;width:max-content!important;min-width:max-content!important;max-width:none!important;height:40px!important;min-height:40px!important;padding:0 16px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;overflow:visible!important;background:#0b73d9!important;color:#fff!important;border-color:#0b73d9!important;border-radius:12px!important;font-weight:700!important}\n#form .ai-extract #extractBtn::before,#form .ai-extract #extractBtn::after,#form .ai-extract #driveExtractBtn::before,#form .ai-extract #driveExtractBtn::after{content:none!important;display:none!important;background:none!important}\n#form .ai-extract #extractBtn .v11961-icon,#form .ai-extract #extractBtn .v11961-sr,#form .ai-extract #extractBtn .v11972-color-icon,#form .ai-extract #driveExtractBtn .v11961-icon,#form .ai-extract #driveExtractBtn .v11961-sr,#form .ai-extract #driveExtractBtn .v11972-color-icon{display:none!important}\n#form .ai-extract #driveOpenCompactBtn,#form .ai-extract #leaseLocalPdfOptimizeBtn,#form .ai-extract #leasePdfOptimizeBtn{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;display:grid!important;place-items:center!important}\n#form .ai-extract #driveOpenCompactBtn{font-size:20px!important}\n@media(max-width:760px){#form .ai-extract #extractBtn,#form .ai-extract #driveExtractBtn{width:100%!important;max-width:100%!important}}\n
+nn/* v1.21.35 RC — Akta Sewa AI / Dokumen follows PALM global action standards */n#form .ai-extract #extractBtn,#form .ai-extract #driveExtractBtn{font-size:14px!important;line-height:1!important;width:max-content!important;min-width:max-content!important;max-width:none!important;height:40px!important;min-height:40px!important;padding:0 16px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;overflow:visible!important;background:#0b73d9!important;color:#fff!important;border-color:#0b73d9!important;border-radius:12px!important;font-weight:700!important}n#form .ai-extract #extractBtn::before,#form .ai-extract #extractBtn::after,#form .ai-extract #driveExtractBtn::before,#form .ai-extract #driveExtractBtn::after{content:none!important;display:none!important;background:none!important}n#form .ai-extract #extractBtn .v11961-icon,#form .ai-extract #extractBtn .v11961-sr,#form .ai-extract #extractBtn .v11972-color-icon,#form .ai-extract #driveExtractBtn .v11961-icon,#form .ai-extract #driveExtractBtn .v11961-sr,#form .ai-extract #driveExtractBtn .v11972-color-icon{display:none!important}n#form .ai-extract #driveOpenCompactBtn,#form .ai-extract #leaseLocalPdfOptimizeBtn,#form .ai-extract #leasePdfOptimizeBtn{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;display:grid!important;place-items:center!important}n#form .ai-extract #driveOpenCompactBtn{font-size:20px!important}n@media(max-width:760px){#form .ai-extract #extractBtn,#form .ai-extract #driveExtractBtn{width:100%!important;max-width:100%!important}}n
 
 /* v1.21.36 RC — Akta search sizing + canonical Google Drive open icon */
 #form>.lease-local-search{display:grid!important;grid-template-columns:minmax(320px,780px) max-content!important;justify-content:start!important;align-items:center!important;column-gap:12px!important;width:100%!important}
@@ -2616,121 +2600,73 @@ textarea.palm-dynamic-text:focus{
 
 
 /* v1.21.37 RC — visible Master titles for PBB and Akta Sewa, matching Master Properti. */
-#pbbPage .pbb-master-intro{display:block!important;position:relative!important;margin:0!important;padding:10px 2px 10px!important;}
-#pbbPage .pbb-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}
-#pbbPage .pbb-master-intro .pbb-search-help{margin:0!important;padding:0!important;}
-#leasePage .lease-master-intro{display:block!important;position:relative!important;margin:0!important;padding:66px 2px 10px!important;}
-#leasePage .lease-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}
-#leasePage .lease-master-intro p{margin:0!important;}
+
+
+
+
+
+
 #leasePage #cards{padding-top:0!important;}
 @media(max-width:760px){
- #pbbPage .pbb-master-intro{padding:6px 0 8px!important;}
- #pbbPage .pbb-master-intro h2{font-size:21px!important;margin:5px 0!important;}
- #pbbPage .pbb-master-intro .pbb-search-help{font-size:13px!important;}
- #leasePage .lease-master-intro{padding:56px 0 8px!important;}
- #leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}
- #leasePage .lease-master-intro p{font-size:13px!important;}
+ 
+ 
+ 
+ 
+ 
+ 
  #leasePage #cards{padding-top:0!important;}
 }
 
 
 /* v1.21.38 RC — Master PBB/Akta Sewa title structure mirrors Master Properti.
    Intro is normal scroll content before the sticky actionbar; no artificial top padding. */
-#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;position:relative!important;margin:0!important;padding:10px 2px 10px!important;}
-#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}
-#pbbPage .pbb-master-intro .pbb-search-help,#leasePage .lease-master-intro p{margin:0!important;padding:0!important;}
+
+
+
 @media(max-width:760px){
- #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}
- #pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}
- #pbbPage .pbb-master-intro .pbb-search-help,#leasePage .lease-master-intro p{font-size:13px!important;}
+ 
+ 
+ 
 }
 
 
 /* v1.21.39 RC — definitive master heading placement.
    Toolbar stays first and sticky in normal flow; heading follows it exactly like Master Property. */
-#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{position:sticky!important;top:var(--global-nav-h,58px)!important;left:auto!important;right:auto!important;width:auto!important;margin:0 0 10px!important;}
+
 #pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
-#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;padding:10px 2px 12px!important;margin:0!important;}
-#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{display:block!important;visibility:visible!important;font-size:28px!important;line-height:1.15!important;margin:8px 0 8px!important;color:#1d1d1f!important;}
-@media(max-width:760px){#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;}#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 9px!important;}#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}}
+
+
+@media(max-width:760px){}
 
 
 /* v1.21.40 RC — PBB/Akta master headings use the same DOM order as Master Properti.
    Intro comes before the sticky actionbar. Also neutralize obsolete fixed/center transforms. */
-#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;margin:0!important;padding:10px 2px 10px!important;}
-#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{display:block!important;visibility:visible!important;opacity:1!important;font-size:28px!important;line-height:1.15!important;margin:8px 0 8px!important;color:#1d1d1f!important;}
-#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{position:sticky!important;top:var(--global-nav-h,64px)!important;left:auto!important;right:auto!important;width:100%!important;max-width:none!important;transform:none!important;box-sizing:border-box!important;margin:0 0 8px!important;}
+
+
+
 #pbbPage .pbb-actionbar .pbb-searchbar{width:100%!important;max-width:none!important;}
 #pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
-@media(max-width:760px){#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;width:100%!important;transform:none!important;}}
+@media(max-width:760px){}
 
 
 /* v1.21.41 RC — definitive Master PBB/Akta ordering: sticky actionbar first, intro below it, matching Master Properti visual layout. */
-#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{position:sticky!important;top:var(--global-nav-h,64px)!important;left:auto!important;right:auto!important;width:100%!important;transform:none!important;margin:0 0 8px!important;box-sizing:border-box!important;}
-#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;position:relative!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:10px 2px 10px!important;}
-#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{display:block!important;visibility:visible!important;opacity:1!important;font-size:28px!important;line-height:1.15!important;margin:8px 0!important;color:#1d1d1f!important;}
-@media(max-width:760px){#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;}#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}}
+
+
+
+@media(max-width:760px){}
 
 
 /* v1.21.42 RC — clean final master heading contract.
    Use a dedicated title class so historical h2 rules cannot hide master titles.
    PBB and Lease intentionally mirror the proven Property master flow:
    sticky actionbar -> visible title/help -> cards. */
-#pbbPage .pbb-master-intro,
-#leasePage .lease-master-intro{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  position:static!important;
-  transform:none!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:10px 2px 10px!important;
-  overflow:visible!important;
-}
-#pbbPage .pbb-master-intro .master-page-title,
-#leasePage .lease-master-intro .master-page-title{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  position:static!important;
-  transform:none!important;
-  width:auto!important;
-  height:auto!important;
-  margin:8px 0!important;
-  padding:0!important;
-  color:#1d1d1f!important;
-  font-size:28px!important;
-  font-weight:700!important;
-  line-height:1.15!important;
-  white-space:normal!important;
-}
-#pbbPage .pbb-master-intro .pbb-search-help,
-#leasePage .lease-master-intro p{
-  display:block!important;
-  position:static!important;
-  margin:0!important;
-  padding:0!important;
-}
-#pbbPage .pbb-actionbar,
-#leasePage .lease-actionbar{
-  position:sticky!important;
-  top:var(--global-nav-h,64px)!important;
-  left:auto!important;
-  right:auto!important;
-  transform:none!important;
-  width:100%!important;
-  max-width:none!important;
-  margin:0 0 8px!important;
-  box-sizing:border-box!important;
-}
+
+
+
+
 @media(max-width:760px){
-  #pbbPage .pbb-master-intro,
-  #leasePage .lease-master-intro{padding:6px 0 8px!important;}
-  #pbbPage .pbb-master-intro .master-page-title,
-  #leasePage .lease-master-intro .master-page-title{font-size:21px!important;margin:5px 0!important;}
-  #pbbPage .pbb-actionbar,
-  #leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;}
+  
+  
+  
 }
+\n\n/* v1.21.43 RC — canonical Master PBB + Master Akta Sewa layout after legacy cleanup.\n   One contract only: sticky actionbar -> visible intro -> cards. */\n#pbbPage .pbb-actionbar,\n#leasePage .lease-actionbar{\n  position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:950!important;\n  left:auto!important;right:auto!important;transform:none!important;box-sizing:border-box!important;\n  width:100%!important;max-width:none!important;margin:0 0 8px!important;padding:8px 0!important;\n  background:rgba(245,245,247,.98)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;\n  border-bottom:1px solid rgba(0,0,0,.08)!important;\n}\n#pbbPage .pbb-master-intro,\n#leasePage .lease-master-intro{\n  display:block!important;visibility:visible!important;opacity:1!important;position:static!important;transform:none!important;\n  width:100%!important;height:auto!important;min-height:0!important;margin:0!important;padding:10px 2px 10px!important;overflow:visible!important;\n}\n#pbbPage .master-page-title,\n#leasePage .master-page-title{\n  display:block!important;visibility:visible!important;opacity:1!important;position:static!important;transform:none!important;\n  margin:8px 0!important;padding:0!important;color:#1d1d1f!important;font-size:28px!important;font-weight:700!important;line-height:1.15!important;white-space:normal!important;\n}\n#pbbPage .pbb-search-help,\n#leasePage .lease-master-intro p{display:block!important;position:static!important;margin:0!important;padding:0!important;}\n@media(max-width:760px){\n  #pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;padding:5px 0!important;}\n  #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}\n  #pbbPage .master-page-title,#leasePage .master-page-title{font-size:21px!important;margin:5px 0!important;}\n  #pbbPage .pbb-search-help,#leasePage .lease-master-intro p{font-size:13px!important;}\n}\n

@@ -1,3 +1,10 @@
+PALM v1.21.43 RC — Master PBB & Akta Sewa CSS Cleanup
+
+- Membersihkan aturan layout master PBB/Akta Sewa lama yang bertumpuk dan saling override.
+- Menghapus konflik fixed/sticky, display none/block, offset dan padding kompensasi lama pada master intro/actionbar.
+- Menetapkan satu kontrak layout final untuk toolbar, judul, keterangan, dan kartu.
+- Mempertahankan kontrol PBB/Akta Sewa, export, ikon, editor, dan fungsi data yang tidak terkait.
+
 PALM v1.21.42 RC — Master Heading Render Isolation Fix
 
 Perubahan v1.21.42:
