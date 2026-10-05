@@ -1,3 +1,13 @@
+PALM v1.21.16 RC — PBB Editor Final UI
+
+Perubahan v1.21.16:
+- Header Tambah / Edit PBB dibuat satu baris dengan tombol Tutup dan Simpan; label PBB / SPPT dihapus.
+- Buka Semua / Tutup Semua tetap tepat di atas Pembacaan AI SPPT.
+- File lokal: Optimizer standar PALM (ikon clamp) + Baca File (bintang + teks).
+- Link Google Drive: Buka Google Drive + Optimizer standar PALM (ikon clamp) + Baca dari Google Drive (bintang + teks).
+- Ikon clamp ditetapkan sebagai ikon Optimizer standar PALM.
+- Seluruh perbaikan Master PBB v1.21.15 tetap dipertahankan.
+
 PALM v1.21.15 RC — Warning FIFO Reconciliation Fix
 
 ## v1.21.12 changes

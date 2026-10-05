@@ -2405,3 +2405,27 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-card-actions .pbb-open-approved,
 #pbbPage .pbb-card-actions .pbb-card-drive-open{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;border-radius:10px!important;padding:0!important;box-sizing:border-box!important}
 #pbbPage .pbb-card-actions .pbb-open-approved .pbb-edit-svg{width:20px!important;height:20px!important}
+
+
+/* v1.21.16 RC — final PBB editor compact header + PALM standard document actions */
+#pbbEditDlg .pbb-dialog-title{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0!important;padding:0 0 12px!important;border-bottom:1px solid #e5e7eb!important}
+#pbbEditDlg .pbb-dialog-title h2{margin:0!important}
+#pbbEditDlg .pbb-title-actions{display:flex!important;align-items:center!important;gap:8px!important;margin-left:auto!important}
+#pbbEditDlg .pbb-title-icon{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;display:grid!important;place-items:center!important;border-radius:10px!important;font-size:20px!important;line-height:1!important}
+#pbbEditDlg .pbb-title-save{background:#1473cf!important;color:#fff!important}
+#pbbEditDlg>.pill,#pbbEditDlg .pbb-dialog-title>.pill{display:none!important}
+#pbbEditDlg .collapse-page-controls{display:flex!important;gap:8px!important;margin:12px 0 8px!important;padding:0!important}
+#pbbEditDlg .collapse-page-controls button{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:20px!important}
+#pbbEditDlg .ai-extract-actions{grid-template-columns:minmax(280px,1fr) 40px auto!important}
+#pbbEditDlg .pbb-drive-compact{grid-template-columns:auto minmax(280px,1fr) 40px 40px auto!important}
+#pbbEditDlg .palm-optimizer-btn,#pbbEditDlg .palm-drive-btn{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:22px!important}
+#pbbEditDlg #pbbExtractBtn,#pbbEditDlg #pbbDriveExtractBtn{height:40px!important;min-height:40px!important;white-space:nowrap!important}
+#pbbEditDlg #pbbDriveOpenBtn,#pbbEditDlg #pbbPdfOptimizeBtn{height:40px!important;min-height:40px!important}
+@media(max-width:720px){
+ #pbbEditDlg .pbb-dialog-title{flex-direction:row!important;align-items:center!important}
+ #pbbEditDlg .ai-extract-actions{grid-template-columns:minmax(0,1fr) 40px auto!important}
+ #pbbEditDlg .pbb-drive-compact{grid-template-columns:minmax(0,1fr) 40px 40px!important}
+ #pbbEditDlg .pbb-drive-compact .drive-label{grid-column:1/-1!important}
+ #pbbEditDlg .pbb-drive-compact input{grid-column:1/2!important}
+ #pbbEditDlg .pbb-drive-compact #pbbDriveExtractBtn{grid-column:1/-1!important;width:100%!important}
+}
