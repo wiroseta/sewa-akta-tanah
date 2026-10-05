@@ -1,3 +1,13 @@
+PALM v1.21.44 RC — Master PBB/Akta Runtime CSS Cleanup
+
+Perubahan v1.21.44:
+- Menemukan akar masalah heading: blok CSS final v1.21.43 tersimpan dengan karakter literal \n, sehingga kontrak layout final tidak diparse sebagai CSS normal oleh browser.
+- Membersihkan patch heading v1.21.37–v1.21.42 yang kosong/bertumpuk.
+- Menghapus spacer padding-top lama pada daftar PBB/Akta yang berasal dari era actionbar position:fixed.
+- Membuat satu kontrak final untuk Master PBB dan Master Akta Sewa: actionbar sticky -> judul -> keterangan -> cards.
+- Memperbaiki blok CSS Akta Sewa AI v1.21.35 yang juga memiliki separator karakter n malformed.
+- Tidak mengubah data, Supabase schema, atau Edge Function.
+
 PALM v1.21.43 RC — Master PBB & Akta Sewa CSS Cleanup
 
 - Membersihkan aturan layout master PBB/Akta Sewa lama yang bertumpuk dan saling override.
