@@ -81,6 +81,13 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - PBB export dropdown now uses labeled actions: Print PBB Terbaru, Save as Excel, Save Excel to Google Drive.
 
 
+## v1.21.20 RC
+- Memperbaiki tombol pada Pembacaan AI SPPT/PBB yang masih salah pada v1.21.19.
+- Baris file lokal sekarang: file → Baca File → Optimizer icon-only 40×40.
+- Baris Google Drive sekarang: link → Buka Dokumen icon-only 40×40 → Optimizer icon-only 40×40 → Baca dari Google Drive.
+- Menghapus tampilan teks “Optimizer” yang terpotong dan logo Drive yang keliru sebagai tombol aksi.
+- Tidak mengubah logika penyimpanan/data PBB.
+
 ## v1.21.19 RC
 - Master Akta Sewa mengikuti layout Master Property / Master PBB.
 - Action bar tetap terlihat saat scroll: Kembali | Search | jumlah data | Tambah.
