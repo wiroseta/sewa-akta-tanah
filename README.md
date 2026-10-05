@@ -107,3 +107,9 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - PBB local AI row: Choose File → Optimizer clamp → Baca File; text button auto-width.
 - PBB AI Google Drive row: removed Open button; link → Optimizer clamp → Baca dari Google Drive.
 - Data PBB/SPPT: added 40×40 Google Drive open button beside saved Google Drive SPPT field.
+
+
+## v1.21.23 RC — Final AI Button Label Fix
+- PBB Baca File memakai teks literal tepat: `✨ Baca File`; tanpa pseudo-element, bintang belakang, atau ikon tambahan.
+- PBB Baca dari Google Drive memakai teks literal tepat: `✨ Baca dari Google Drive`; tanpa logo Google Drive, bintang belakang, atau ikon tambahan.
+- Optimizer clamp tetap terpisah 40×40 CSS px dan layout v1.21.22 dipertahankan.
