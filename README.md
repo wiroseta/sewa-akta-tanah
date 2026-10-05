@@ -81,7 +81,7 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - PBB export dropdown now uses labeled actions: Print PBB Terbaru, Save as Excel, Save Excel to Google Drive.
 
 
-## v1.21.21 RC
+## v1.21.22 RC
 - Memperbaiki tombol pada Pembacaan AI SPPT/PBB yang masih salah pada v1.21.19.
 - Baris file lokal sekarang: file → Baca File → Optimizer icon-only 40×40.
 - Baris Google Drive sekarang: link → Buka Dokumen icon-only 40×40 → Optimizer icon-only 40×40 → Baca dari Google Drive.
@@ -96,8 +96,14 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Layout mobile dibuat ringkas agar action bar tidak memakan ruang layar berlebihan.
 
 
-## v1.21.21 RC — PBB Approved Button Visuals
+## v1.21.22 RC — PBB Approved Button Visuals
 - PBB/SPPT Optimizer memakai ikon clamp 🗜️ sesuai referensi yang disetujui.
 - Baca File dikunci sebagai tombol biru bertuliskan “✨ Baca File”.
 - Baca dari Google Drive dikunci sebagai tombol biru bertuliskan “✨ Baca dari Google Drive”.
 - Fungsi tombol tidak diubah; perubahan hanya visual/kontrol PBB/SPPT.
+
+
+## v1.21.22 RC
+- PBB local AI row: Choose File → Optimizer clamp → Baca File; text button auto-width.
+- PBB AI Google Drive row: removed Open button; link → Optimizer clamp → Baca dari Google Drive.
+- Data PBB/SPPT: added 40×40 Google Drive open button beside saved Google Drive SPPT field.

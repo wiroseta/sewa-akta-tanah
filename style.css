@@ -2509,3 +2509,24 @@ textarea.palm-dynamic-text:focus{
 #pbbEditDlg #pbbExtractBtn>* ,#pbbEditDlg #pbbDriveExtractBtn>*{display:none!important}
 #pbbEditDlg #pbbExtractBtn::before{content:"✨ Baca File"!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important}
 #pbbEditDlg #pbbDriveExtractBtn::before{content:"✨ Baca dari Google Drive"!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important}
+
+
+/* v1.21.22 RC — final PBB/SPPT workflow layout.
+   Local: file | optimizer | Baca File. AI Drive: link | optimizer | Baca dari Google Drive.
+   Saved SPPT: link | Google Drive open button. */
+#pbbEditDlg .ai-extract-actions{display:grid!important;grid-template-columns:minmax(0,1fr) 40px max-content!important;gap:10px!important;align-items:center!important;min-width:0!important}
+#pbbEditDlg .pbb-drive-compact{display:grid!important;grid-template-columns:auto minmax(0,1fr) 40px max-content!important;gap:10px!important;align-items:center!important;min-width:0!important}
+#pbbEditDlg #pbbExtractBtn,#pbbEditDlg #pbbDriveExtractBtn{width:max-content!important;max-width:none!important;min-width:max-content!important;padding:0 16px!important;overflow:visible!important;flex:none!important}
+#pbbEditDlg .pbb-sppt-drive-field{min-width:0!important}
+#pbbEditDlg .pbb-sppt-drive-row{display:grid!important;grid-template-columns:minmax(0,1fr) 40px!important;gap:8px!important;align-items:center!important;min-width:0!important;margin-top:6px!important}
+#pbbEditDlg .pbb-sppt-drive-row input{width:100%!important;min-width:0!important;height:40px!important;margin:0!important}
+#pbbEditDlg .pbb-sppt-open-drive{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;display:grid!important;place-items:center!important;position:relative!important;overflow:hidden!important;font-size:0!important}
+#pbbEditDlg .pbb-sppt-open-drive::before{content:""!important;width:25px!important;height:23px!important;display:block!important;background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 87.3 78'%3E%3Cpath fill='%230066DA' d='M6.6 66.85 10.45 73.5c.8 1.4 1.95 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z'/%3E%3Cpath fill='%2300AC47' d='M43.65 25.05 29.9 1.25A9.5 9.5 0 0 0 26.6 0L13.75 22.25 27.5 46.05z'/%3E%3Cpath fill='%23EA4335' d='M73.55 76.8a9.5 9.5 0 0 0 3.3-3.3l1.6-2.75 7.65-13.25a9.5 9.5 0 0 0 1.2-4.5H59.8L46.05 76.8z'/%3E%3Cpath fill='%2300832D' d='M43.65 25.05 57.4 1.25A9.5 9.5 0 0 0 54.1 0H33.2a9.5 9.5 0 0 0-3.3 1.25z'/%3E%3Cpath fill='%232684FC' d='M59.8 53H27.5L13.75 76.8a9.5 9.5 0 0 0 4.5 1.2h50.8a9.5 9.5 0 0 0 4.5-1.2z'/%3E%3Cpath fill='%23FFBA00' d='M73.4 26.55 60.55 4.3a9.5 9.5 0 0 0-3.15-3.05L43.65 25.05 59.8 53h27.5a9.5 9.5 0 0 0-1.2-4.5z'/%3E%3C/svg%3E")!important}
+@media(max-width:720px){
+ #pbbEditDlg .ai-extract-actions{grid-template-columns:minmax(0,1fr) 40px max-content!important;gap:6px!important}
+ #pbbEditDlg .pbb-drive-compact{grid-template-columns:minmax(0,1fr) 40px!important;gap:6px!important}
+ #pbbEditDlg .pbb-drive-compact .drive-label{grid-column:1/-1!important}
+ #pbbEditDlg .pbb-drive-compact input{grid-column:1/2!important}
+ #pbbEditDlg .pbb-drive-compact #pbbPdfOptimizeBtn{grid-column:2/3!important}
+ #pbbEditDlg .pbb-drive-compact #pbbDriveExtractBtn{grid-column:1/-1!important;width:max-content!important;min-width:max-content!important;max-width:100%!important;justify-self:end!important}
+}
