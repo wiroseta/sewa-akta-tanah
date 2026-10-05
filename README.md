@@ -1,3 +1,13 @@
+PALM v1.21.39 RC — Master PBB & Akta Sewa Heading Definitive Fix
+
+Perubahan v1.21.39:
+- Memperbaiki akar masalah judul Master PBB dan Master Akta Sewa yang tertutup actionbar fixed.
+- Struktur DOM sekarang sama dengan Master Properti: toolbar lebih dulu, kemudian heading/keterangan, kemudian daftar kartu.
+- Actionbar diubah dari fixed menjadi sticky dalam normal flow sehingga tidak menutupi heading.
+- Menghapus spacer/padding kartu yang sebelumnya diperlukan untuk fixed actionbar.
+- Cache CSS/app dinaikkan ke v1.21.39.
+- Seluruh perubahan v1.21.38 dan sebelumnya dipertahankan.
+
 PALM v1.21.38 RC — Master PBB & Akta Sewa Title Placement Fix
 
 Perubahan v1.21.38:

@@ -2644,3 +2644,12 @@ textarea.palm-dynamic-text:focus{
  #pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}
  #pbbPage .pbb-master-intro .pbb-search-help,#leasePage .lease-master-intro p{font-size:13px!important;}
 }
+
+
+/* v1.21.39 RC — definitive master heading placement.
+   Toolbar stays first and sticky in normal flow; heading follows it exactly like Master Property. */
+#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{position:sticky!important;top:var(--global-nav-h,58px)!important;left:auto!important;right:auto!important;width:auto!important;margin:0 0 10px!important;}
+#pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
+#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;padding:10px 2px 12px!important;margin:0!important;}
+#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{display:block!important;visibility:visible!important;font-size:28px!important;line-height:1.15!important;margin:8px 0 8px!important;color:#1d1d1f!important;}
+@media(max-width:760px){#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;}#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 9px!important;}#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}}
