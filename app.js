@@ -1,4 +1,4 @@
-const APP_BUILD="1.20.96-RC";
+const APP_BUILD="1.21.10-RC";
 let data=[],assets=[],edit=-1,assetEdit=-1,currentUser=null,currentRole='viewer',dataOwnerId=null,pbbEdit=-1,pbbData=[],googleDriveToken='',pendingPriorDeeds=[],leaseRescanResult=null,leaseTaxAIResult=null,leaseAIWholeMeta={},pendingLeaseLink=null,pendingPbbHistory=[],leaseRelationAudit={};const $=s=>document.querySelector(s);const fmt=n=>n?new Intl.NumberFormat('id-ID',{maximumFractionDigits:2}).format(n):'-';
 function parseMoney(v){if(typeof v==='number')return v;if(!v)return 0;let s=String(v).trim().replace(/\s/g,'').replace(/^Rp/i,'');if(s.includes(',')&&s.includes('.')){s=s.replace(/\./g,'').replace(',','.')}else if(s.includes(',')){s=s.replace(',','.')}else if((s.match(/\./g)||[]).length>1){s=s.replace(/\./g,'')}return Number(s.replace(/[^0-9.-]/g,''))||0}
 function moneyDisplay(v){const n=parseMoney(v);return (v!==''&&v!=null&&!Number.isNaN(n))?`Rp ${new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}`:''}
@@ -111,12 +111,24 @@ function paymentKindLabel(k){return k==='deposit'?'Security Deposit':k==='other'
 function contractPaymentTarget(x={},p={}){let stated=parseMoney(p.amount);if(paymentKind(p)!=='rent')return stated;let rate=Math.max(0,Math.min(100,Number(x.rentTaxRate||0))),mode=x.rentTaxMode||'gross_includes_tax';if(mode==='gross_includes_tax')return Math.max(0,stated-Math.round(stated*rate/100));return stated}
 function contractPaymentPaid(p={}){return paymentTransactions(p).filter(t=>!t.unallocated).reduce((n,t)=>n+parseMoney(t.amount),0)}
 function contractPaymentRemaining(x={},p={}){return Math.max(0,contractPaymentTarget(x,p)-contractPaymentPaid(p))}
+// v1.21.10 — Dashboard wajib memakai rekonsiliasi ledger aktual (FIFO), bukan hanya alokasi transaksi yang tersimpan pada termin.
+// Ini menjaga Agenda konsisten dengan Riwayat Pembayaran Aktual, termasuk data lama yang alokasinya belum tersimpan ulang.
+function dashboardPaymentStates(x={}){
+ let payments=Array.isArray(x.payments)?x.payments:[],states=payments.map(p=>({p,target:contractPaymentTarget(x,p),paid:0,remaining:contractPaymentTarget(x,p)}));
+ let ledger=extractLedger(payments);
+ for(const t of ledger){
+  let left=parseMoney(t.amount),kind=t.kind||'rent';if(left<=0)continue;
+  if(t.targetId){let i=payments.findIndex(p=>String(p.id||'')===String(t.targetId)&&paymentKind(p)===kind);if(i>=0){let part=Math.min(left,states[i].remaining);states[i].paid+=part;states[i].remaining-=part;left-=part;continue}}
+  for(let i=0;i<payments.length&&left>0;i++){if(paymentKind(payments[i])!==kind||states[i].remaining<=0)continue;let part=Math.min(left,states[i].remaining);states[i].paid+=part;states[i].remaining-=part;left-=part}
+ }
+ return states;
+}
 function paymentRemaining(p={}){return Math.max(0,parseMoney(p.amount)-paymentPaid(p))}
 function paymentStatus(p={}){let target=parseMoney(p.amount),paid=paymentPaid(p);if(target>0&&paid>=target)return paid>target?'lebih_bayar':'lunas';if(paid>0)return 'kurang_bayar';return 'belum_bayar'}
 function render(){if(!currentUser)return;renderOpenAIStatus();let q=$('#search').value.toLowerCase(),now=new Date();let overdue=0,unpaid90=0,contract180=0,hgb1095=0;let a=[];
 function pushAlert(day,text,type='normal',tag=''){a.push([day,text,type,tag])}
 data.forEach(x=>{
-  (x.payments||[]).forEach(p=>{if(!p.due)return;let kind=paymentKind(p),target=contractPaymentTarget(x,p),rem=contractPaymentRemaining(x,p),paid=contractPaymentPaid(p);if(rem<=0)return;let d=days(p.due),noun=kind==='rent'?'netto':'kewajiban',detail=paid>0?`Kurang bayar Rp${fmt(rem)} dari ${noun} Rp${fmt(target)} (diterima Rp${fmt(paid)})`:`Belum dibayar ${noun} Rp${fmt(target)}`,tag=kind==='deposit'?'SECURITY DEPOSIT':kind==='other'||kind==='pbb'?'PEMBAYARAN LAIN-LAIN':'PEMBAYARAN SEWA';if(d<0){overdue++;pushAlert(d,`${detail} · ${x.tenant} — jatuh tempo ${isoToID(p.due)}`,'overdue',tag)}else if(d<=90){unpaid90++;pushAlert(d,`${detail} · ${x.tenant} — jatuh tempo ${isoToID(p.due)}`,d<=30?'urgent':'due',tag)}});
+  dashboardPaymentStates(x).forEach(({p,target,remaining:rem,paid})=>{if(!p.due||rem<=0)return;let kind=paymentKind(p),d=days(p.due),noun=kind==='rent'?'netto':'kewajiban',detail=paid>0?`Kurang bayar Rp${fmt(rem)} dari ${noun} Rp${fmt(target)} (diterima Rp${fmt(paid)})`:`Belum dibayar ${noun} Rp${fmt(target)}`,tag=kind==='deposit'?'SECURITY DEPOSIT':kind==='other'||kind==='pbb'?'PEMBAYARAN LAIN-LAIN':'PEMBAYARAN SEWA';if(d<0){overdue++;pushAlert(d,`${detail} · ${x.tenant} — jatuh tempo ${isoToID(p.due)}`,'overdue',tag)}else if(d<=90){unpaid90++;pushAlert(d,`${detail} · ${x.tenant} — jatuh tempo ${isoToID(p.due)}`,d<=30?'urgent':'due',tag)}});
   let endDays=days(x.end);if(x.end){if(endDays<0)pushAlert(endDays,`Kontrak ${x.tenant} telah berakhir pada ${x.end}`,'overdue','KONTRAK');else if(endDays<=180){contract180++;pushAlert(endDays,`Kontrak ${x.tenant} berakhir ${x.end}. Siapkan perpanjangan / kontrak baru.`,endDays<=60?'urgent':'normal','KONTRAK')}}
   let d=days(x.renewalNotice);if(x.renewalNotice){if(d<0&&endDays>=0)pushAlert(d,`Deadline pemberitahuan perpanjangan ${x.tenant} sudah lewat — ${x.renewalNotice}`,'overdue','PERPANJANGAN');else if(d>=0&&d<=365)pushAlert(d,`Deadline pemberitahuan perpanjangan ${x.tenant} — ${x.renewalNotice}`,d<=60?'urgent':'normal','PERPANJANGAN')}
 });
