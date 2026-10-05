@@ -2350,3 +2350,22 @@ textarea.palm-dynamic-text:focus{
  #pbbPage .pbb-actionbar .pbb-searchbar{grid-template-columns:minmax(0,1fr) 46px!important;gap:3px!important;}
  #pbbPage .pbb-actionbar #pbbSearchCount{max-width:46px!important;font-size:10px!important;}
 }
+
+/* v1.21.14 RC — Master PBB compact sticky action bar + canonical Export menu */
+#pbbPage.pbb-master-page{padding-top:0!important}
+#pbbPage .pbb-master-intro,#pbbPage .pbb-secondary-tools{display:none!important}
+#pbbPage .pbb-actionbar{position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:980!important;display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;gap:8px!important;align-items:center!important;padding:8px 0!important;margin:0 0 10px!important;background:rgba(245,245,247,.98)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;border-bottom:1px solid rgba(0,0,0,.08)!important}
+#pbbPage .pbb-action-icon{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;margin:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;font-size:0!important}
+#pbbPage .pbb-action-icon svg{width:23px!important;height:23px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#pbbPage #pbbBack{background:#fff!important;color:#1d1d1f!important;border:1px solid #c7c7cc!important}
+#pbbPage #newPbbBtn{background:#16a34a!important;color:#fff!important;border:0!important;font-size:30px!important;font-weight:600!important;line-height:1!important}
+#pbbPage .pbb-searchbar{position:relative!important;top:auto!important;z-index:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important;padding:0!important;margin:0!important;background:transparent!important}
+#pbbPage .pbb-searchbar input{height:40px!important;min-height:40px!important;width:100%!important;min-width:0!important;padding:8px 12px!important}
+#pbbPage #pbbSearchCount{white-space:nowrap!important}
+#pbbPage .pbb-export-wrap{position:relative!important;width:40px!important;height:40px!important}
+#pbbPage .pbb-export-menu{position:absolute!important;right:0!important;top:46px!important;min-width:230px!important;padding:6px!important;background:#fff!important;border:1px solid #d1d1d6!important;border-radius:12px!important;box-shadow:0 10px 30px rgba(0,0,0,.16)!important;z-index:1200!important}
+#pbbPage .pbb-export-menu[hidden]{display:none!important}
+#pbbPage .pbb-export-menu button{display:block!important;width:100%!important;height:40px!important;text-align:left!important;padding:0 12px!important;background:#fff!important;color:#1d1d1f!important;border:0!important;border-radius:8px!important;font-size:14px!important}
+#pbbPage .pbb-export-menu button:hover{background:#f2f2f7!important}
+@media(max-width:760px){#pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;gap:5px!important;padding:5px 0!important}#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 50px!important;gap:4px!important}#pbbPage #pbbSearchCount{max-width:50px!important;white-space:normal!important;text-align:center!important;font-size:10px!important;line-height:1.05!important}#pbbPage .pbb-searchbar input{font-size:16px!important;padding:7px 9px!important}#pbbPage .pbb-export-menu{right:-45px!important;min-width:220px!important}}
+@media(max-width:390px){#pbbPage .pbb-actionbar{gap:3px!important}#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 43px!important;gap:2px!important}#pbbPage #pbbSearchCount{max-width:43px!important;font-size:9px!important}}
