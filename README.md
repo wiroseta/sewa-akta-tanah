@@ -1,3 +1,12 @@
+PALM v1.21.32 RC — Property–Sertifikat Unlink Fix
+
+Perubahan v1.21.32:
+- Tombol − pada kartu Sertifikat di Detail Property sekarang benar-benar melepas relasi asset_land_titles untuk Property aktif.
+- Penghapusan relasi meminta konfirmasi dan tidak menghapus Master Sertifikat.
+- Relasi Sertifikat ke Property lain, PBB, dan Akta Sewa tidak ikut dihapus.
+- Kartu Sertifikat baru yang belum disimpan tetap hanya dihapus dari form.
+- Mempertahankan seluruh perbaikan v1.21.31 dan sebelumnya.
+
 PALM v1.21.31 RC — List Sertifikat Close & Search Fix
 
 Perubahan v1.21.31:
