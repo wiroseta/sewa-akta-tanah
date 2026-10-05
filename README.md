@@ -1,3 +1,12 @@
+PALM v1.21.37 RC — Master PBB & Akta Sewa Titles
+
+Perubahan v1.21.37:
+- Menambahkan judul Master PBB dan keterangan singkat di halaman daftar PBB.
+- Menampilkan Master Akta Sewa dan keterangan singkat secara konsisten di bawah action/search bar.
+- Styling desktop dan iPhone mengikuti pola Master Properti / Lokasi.
+- Toolbar/search tetap sticky; judul dan keterangan ikut scroll bersama konten.
+- Seluruh perubahan v1.21.36 dan sebelumnya dipertahankan.
+
 PALM v1.21.36 RC — Akta Search & Google Drive Open Icon Fix
 
 Perubahan v1.21.36:
