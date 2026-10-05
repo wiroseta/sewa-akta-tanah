@@ -1915,7 +1915,17 @@ function v11971SearchIcons(root=document){ return; /* v1.19.78 disabled legacy s
   const first=b.firstChild;if(first?.nodeType===3&&/[🔎⌕]/u.test(first.textContent||'')){first.textContent=(first.textContent||'').replace(/[🔎⌕]/gu,V11971_SEARCH_ICON);b.classList.add('v11971-search-command')}
  });
 }
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{v11971ReadableUtilityMenu();v11971SearchIcons(document)},120);});
+// v1.21.50 RC — Export is part of the canonical readable utility menu.
+// Rebuild only the parent Export button after the legacy utility-menu normalizer,
+// so the approved Share/Export glyph cannot be lost while the submenu remains untouched.
+const V12150_EXPORT_ICON='<svg class="palm-export-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
+function v12150EnsureGlobalExportMenu(){
+ const b=document.getElementById('globalExportBtn');if(!b)return;
+ b.classList.remove('v11961-command','v11960-command');b.classList.add('v11971-menu-row');
+ b.setAttribute('aria-label','Export halaman aktif');b.removeAttribute('title');delete b.dataset.tooltip;
+ b.innerHTML=`<span class="v11971-menu-icon palm-global-export-icon" aria-hidden="true">${V12150_EXPORT_ICON}</span><span class="v11971-menu-label">Export halaman aktif</span><span class="global-export-chevron" aria-hidden="true">›</span>`;
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{v11971ReadableUtilityMenu();v12150EnsureGlobalExportMenu();v11971SearchIcons(document)},120);});
 
 // ============================================================
 // v1.19.72 RC — approved colorful icon language, global audit.

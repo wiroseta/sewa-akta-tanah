@@ -1,4 +1,9 @@
-PALM v1.21.49 RC — Global Export Dropdown + PBB Search Alignment
+PALM v1.21.50 RC — Global Export Icon Source-of-Truth Fix
+
+Perubahan v1.21.50:
+- Memperbaiki ikon “Export halaman aktif” yang hilang: ikon Share/Export PALM kini dirender ulang oleh normalizer menu utility yang sama sebagai source-of-truth, setelah normalizer menu lama berjalan.
+- Submenu Export dan fungsi export tidak diubah.
+- Tidak ada perubahan database/Supabase SQL.
 
 Perubahan v1.21.49:
 - Ikon Export standar PALM tampil pada menu global “…” di samping teks “Export halaman aktif”.
