@@ -1,4 +1,4 @@
-PALM v1.21.12 RC — Warning FIFO Reconciliation Fix
+PALM v1.21.13 RC — Warning FIFO Reconciliation Fix
 
 ## v1.21.12 changes
 - Fix dashboard warning FIFO: pembayaran aktual tidak lagi hilang ketika ledger transaction menunjuk termin yang sudah lunas; sisa pembayaran tetap diteruskan ke termin berikutnya sesuai FIFO.
@@ -47,3 +47,10 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Warning overdue memakai stage tetap `overdue`, sehingga tidak terkirim ulang setiap hari hanya karena jumlah hari keterlambatan berubah.
 - Dedup tetap per recipient + warning_key + warning_stage.
 - `supabase_latest.sql` memakai validasi email yang sudah dikoreksi dan aman untuk upgrade dari versi lama.
+
+
+## v1.21.13 RC — Master PBB Layout
+- Master PBB mengikuti pola Master Property: global header dan action bar compact sticky; intro, tools sekunder, dan kartu PBB scrollable.
+- Action bar: Kembali ke Dashboard | Search | jumlah NOP | Tambah PBB.
+- Tombol/link Google Drive SPPT di kartu Master PBB dan riwayat dihapus. URL Drive tetap tersimpan dan tetap dipakai pada form PBB untuk Baca/Verifikasi AI dan Optimizer.
+- Print/Excel/Drive export dipertahankan sebagai tools sekunder yang ikut scroll.

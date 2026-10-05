@@ -2302,3 +2302,51 @@ textarea.palm-dynamic-text:focus{
 .user-warning-savebar{position:sticky;bottom:0;display:flex;justify-content:flex-end;padding:14px 0 2px;margin-top:8px;background:linear-gradient(to bottom,rgba(255,255,255,0),#fff 18px);z-index:2;}
 .user-warning-savebar button{height:40px!important;min-width:170px;}
 @media(max-width:620px){.users-standard-dialog{width:calc(100vw - 16px)!important;}.user-warning-top{align-items:flex-start;}.user-warning-settings{grid-template-columns:1fr!important;gap:8px!important;}.user-warning-actions button{width:auto!important;}.user-warning-savebar{padding-top:12px;}.user-warning-savebar button{width:100%!important;}.user-warning-row{padding:14px 0!important;}}
+
+/* v1.21.13 RC — Master PBB follows approved Master Property two-tier layout.
+   Global header + compact PBB action bar remain sticky; intro/tools/cards scroll. */
+#pbbPage.pbb-master-page{padding-top:0!important;}
+#pbbPage .pbb-master-intro{position:relative!important;margin:0!important;padding:10px 2px 10px!important;}
+#pbbPage .pbb-master-intro h2{font-size:28px!important;margin:8px 0 8px!important;}
+#pbbPage .pbb-master-intro .pbb-search-help{margin:0!important;padding:0!important;}
+#pbbPage .pbb-secondary-tools{display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:wrap!important;margin-top:10px!important;}
+#pbbPage .pbb-secondary-tools .pbb-toolbar-icon{height:40px!important;min-height:40px!important;}
+#pbbPage .pbb-actionbar{
+ position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:950!important;
+ display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px!important;align-items:center!important;gap:10px!important;min-width:0!important;
+ padding:8px 0!important;margin:0 0 8px!important;background:rgba(245,245,247,.98)!important;
+ backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border-bottom:1px solid rgba(0,0,0,.08)!important;
+}
+#pbbPage .pbb-actionbar #pbbBack,#pbbPage .pbb-actionbar #newPbbBtn{
+ width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;
+ padding:0!important;margin:0!important;border-radius:10px!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ font-size:0!important;line-height:1!important;
+}
+#pbbPage .pbb-actionbar #pbbBack{background:#fff!important;color:#1d1d1f!important;border:1px solid #c7c7cc!important;}
+#pbbPage .pbb-actionbar #pbbBack .dashboard-return-icon,#pbbPage .pbb-actionbar #pbbBack>span{display:none!important;}
+#pbbPage .pbb-actionbar #pbbBack::before{content:'←'!important;font-size:26px!important;font-weight:600!important;line-height:1!important;}
+#pbbPage .pbb-actionbar #newPbbBtn{background:#16a34a!important;color:#fff!important;border:0!important;}
+#pbbPage .pbb-actionbar #newPbbBtn::before{content:'+'!important;font-size:30px!important;font-weight:700!important;line-height:1!important;}
+#pbbPage .pbb-actionbar #newPbbBtn>span{display:none!important;}
+#pbbPage .pbb-actionbar .pbb-searchbar{position:relative!important;top:auto!important;z-index:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;padding:0!important;margin:0!important;background:transparent!important;}
+#pbbPage .pbb-actionbar .pbb-searchbar input{height:40px!important;min-height:40px!important;min-width:0!important;width:100%!important;padding:8px 12px!important;}
+#pbbPage .pbb-actionbar #pbbSearchCount{white-space:nowrap!important;}
+/* Master cards no longer expose a direct SPPT Drive/link control. Drive URL stays in PBB edit and is used by Read/Verify AI + Optimizer. */
+#pbbPage .pbb-card-actions .pbb-card-drive-read,#pbbPage .pbb-history-actions .pbb-drive-read{display:none!important;}
+@media(max-width:760px){
+ #pbbPage .pbb-master-intro{padding:6px 0 8px!important;}
+ #pbbPage .pbb-master-intro h2{font-size:21px!important;margin:5px 0!important;}
+ #pbbPage .pbb-master-intro .pbb-search-help{font-size:13px!important;}
+ #pbbPage .pbb-secondary-tools{gap:5px!important;margin-top:7px!important;}
+ #pbbPage .pbb-secondary-tools .pbb-toolbar-icon{width:40px!important;min-width:40px!important;max-width:40px!important;padding:0!important;font-size:0!important;}
+ #pbbPage .pbb-secondary-tools .pbb-toolbar-icon>span{display:none!important;}
+ #pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;grid-template-columns:40px minmax(0,1fr) 40px!important;gap:6px!important;padding:5px 0!important;}
+ #pbbPage .pbb-actionbar .pbb-searchbar{grid-template-columns:minmax(0,1fr) 54px!important;gap:5px!important;}
+ #pbbPage .pbb-actionbar .pbb-searchbar input{font-size:16px!important;padding:7px 9px!important;}
+ #pbbPage .pbb-actionbar #pbbSearchCount{max-width:54px!important;white-space:normal!important;text-align:center!important;font-size:11px!important;line-height:1.05!important;}
+}
+@media(max-width:380px){
+ #pbbPage .pbb-actionbar{gap:4px!important;}
+ #pbbPage .pbb-actionbar .pbb-searchbar{grid-template-columns:minmax(0,1fr) 46px!important;gap:3px!important;}
+ #pbbPage .pbb-actionbar #pbbSearchCount{max-width:46px!important;font-size:10px!important;}
+}
