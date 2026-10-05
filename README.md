@@ -1,3 +1,12 @@
+PALM v1.21.36 RC — Akta Search & Google Drive Open Icon Fix
+
+Perubahan v1.21.36:
+- Memperbaiki lebar field pencarian pada Detail Akta Sewa agar tidak memenuhi seluruh baris pada desktop dan status hasil tetap rapi di sisi kanan.
+- Pada layar sempit/iPhone, pencarian kembali memakai lebar penuh secara compact.
+- Tombol Buka File pada baris Google Drive Pembacaan AI sekarang memakai logo Google Drive resmi/standar PALM, bukan tanda centang atau ikon open generik.
+- Tombol Optimizer tetap icon-only 40x40 dan tombol AI tetap bertuliskan “✨ Baca dari Google Drive”.
+- Seluruh perubahan v1.21.35 dan sebelumnya dipertahankan.
+
 PALM v1.21.35 RC — Akta Sewa AI / Dokumen Layout & Icon Standard
 
 Perubahan v1.21.35:
