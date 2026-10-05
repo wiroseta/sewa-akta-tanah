@@ -358,3 +358,10 @@ do $$ declare t text; pol record; begin
   execute format('create policy %I on public.%I for delete to authenticated using (user_id=public.app_access_owner() and public.app_is_admin())',t||'_workspace_delete',t);
  end loop;
 end $$;
+
+-- ============================================================
+-- v1.21.11 RC — Warning Email Settings + Delivery Log
+-- Current executable upgrade is kept in supabase_latest.sql.
+-- Adds app_user_access.warning_email_enabled/warning_email,
+-- app_warning_email_log, extended app_list_users(), and app_update_warning_email().
+-- ============================================================

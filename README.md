@@ -1,26 +1,20 @@
-PALM v1.21.10 RC — Dashboard Payment FIFO Reconciliation Fix
+PALM v1.21.11 RC — Per-User Warning Email Delivery
 
-Perbaikan pembacaan AI Sertifikat berdasarkan pengujian D4/D5: pisahkan Penunjuk/asal tanah dari peralihan hak, isi alamat dari lokasi fisik paling lengkap, notes kronologis terstruktur, dan pertahankan PERLU VERIFIKASI untuk konflik literal.
+Baseline: v1.21.10 RC Dashboard Payment FIFO Reconciliation Fix. All existing v1.21.10 behavior is retained.
 
-PALM v1.21.2 RC — Property Detail Fixed Search Action Bar
+## v1.21.11 changes
+- User Management now contains per-user `Terima peringatan email` ON/OFF and `Alamat email peringatan`.
+- Warning email is OFF by default; Administrator explicitly enables each recipient.
+- `supabase_latest.sql` is the only current DB upgrade SQL. It adds the user settings, delivery log, and RPC used by User Management.
+- New Edge Function: `supabase/functions/send-warning-emails`.
+- Server warning generation mirrors Dashboard warning windows and preserves v1.21.10 FIFO payment reconciliation.
+- Delivery log deduplicates each recipient + warning + warning stage.
+- Automatic sending does not depend on PALM/browser/iPhone/Mac being open.
 
-PALM v1.21.2 RC
+## Deployment required
+GitHub Pages: `app.js`, `index.html`, `style.css`, `README.md`.
+Supabase SQL Editor: run `supabase_latest.sql` once.
+Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, configure its required secrets, then schedule one POST per day.
 
-Major search update: Cari Seluruh Database & Riwayat now searches active Property/Sertifikat, PBB, Akta Sewa and stored historical versions. Scope filter replaces property-only filter. Explicit 40x40 X close control.
-
-
-## v1.21.10 RC
-- Memperbaiki Agenda & Peringatan Dashboard agar status keterlambatan pembayaran dihitung dari Riwayat Pembayaran Aktual yang direkonsiliasi FIFO terhadap Jadwal Pembayaran.
-- Termin yang sudah lunas tidak lagi tetap muncul sebagai “Belum dibayar” hanya karena tanggal jatuh temponya sudah lewat.
-- Rekonsiliasi Dashboard dibuat kompatibel dengan data lama: ledger pembayaran aktual direkonstruksi dari transaksi tersimpan lalu dialokasikan FIFO tanpa mengubah data Akta.
-- Jadwal Pembayaran, Riwayat Pembayaran Aktual, perhitungan PPh, dan tiga ikon header v1.21.9 tidak diubah.
-
-## v1.21.9 RC
-- HANYA tiga ikon navigasi utama header yang diubah ke desain Modern Filled yang disetujui: Properti/Lokasi, PBB, dan Akta Sewa.
-- Ikon PALM lainnya tidak diubah.
-- Seluruh fungsi dan fix v1.21.8 dipertahankan.
-
-## v1.21.8 RC
-- Catatan Sertifikat AI dinormalisasi deterministik menjadi PEMEGANG AWAL, ASAL / PENUNJUK, dan RIWAYAT PERALIHAN dengan bullet.
-- Modal Hubungkan PBB ke Properti diurutkan Nama Alias A→Z (case-insensitive), lalu NOP A→Z sebagai secondary sort. Status checked tidak memengaruhi urutan.
-- Seluruh fix v1.21.7 dan sebelumnya dipertahankan.
+## No redeploy required
+`config.js`, icons, manifest, service worker, local optimizer, and seed SQL are unchanged.
