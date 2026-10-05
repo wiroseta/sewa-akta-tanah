@@ -1,3 +1,12 @@
+PALM v1.21.41 RC — Master PBB & Akta Heading Visibility Fix
+
+Perubahan v1.21.41:
+- Memperbaiki dua masalah terakhir pada Master PBB dan Master Akta Sewa.
+- Actionbar/search ditempatkan sebelum judul Master, sama dengan tampilan Master Properti/Lokasi yang disetujui.
+- Judul Master PBB dan Master Akta Sewa sekarang berada di bawah toolbar sehingga tidak tertutup global header PALM.
+- Menghapus konflik visual akibat intro yang sebelumnya berada di area atas di balik sticky header.
+- Seluruh perubahan v1.21.40 dan sebelumnya dipertahankan.
+
 PALM v1.21.40 RC — Master PBB & Akta Sewa Heading/Layout Fix
 
 Perubahan v1.21.40:
