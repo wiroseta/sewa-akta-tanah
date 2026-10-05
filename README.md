@@ -1,3 +1,11 @@
+PALM v1.21.38 RC — Master PBB & Akta Sewa Title Placement Fix
+
+Perubahan v1.21.38:
+- Memperbaiki judul Master PBB dan Master Akta Sewa yang pada v1.21.37 tidak tampil/tertutup dengan benar.
+- Struktur DOM kedua halaman sekarang mengikuti Master Properti / Lokasi: intro/judul sebagai konten normal dan actionbar tetap sticky.
+- Menghapus kebutuhan padding buatan pada judul Akta Sewa.
+- Seluruh perubahan v1.21.37 dan sebelumnya dipertahankan.
+
 PALM v1.21.37 RC — Master PBB & Akta Sewa Titles
 
 Perubahan v1.21.37:
