@@ -2489,3 +2489,23 @@ textarea.palm-dynamic-text:focus{
  #pbbEditDlg .pbb-drive-compact input{grid-column:1/2!important}
  #pbbEditDlg .pbb-drive-compact #pbbDriveExtractBtn{grid-column:1/-1!important;width:100%!important}
 }
+
+
+/* v1.21.21 RC — PBB/SPPT controls locked to the approved visual references.
+   Optimizer = clamp icon; AI actions remain full blue text buttons. */
+#pbbEditDlg #pbbLocalPdfOptimizeBtn::before,
+#pbbEditDlg #pbbPdfOptimizeBtn::before{
+  content:"🗜️"!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  position:absolute!important;inset:0!important;width:40px!important;height:40px!important;
+  background:none!important;border:0!important;box-shadow:none!important;
+  font-size:23px!important;line-height:1!important;
+}
+#pbbEditDlg #pbbExtractBtn,#pbbEditDlg #pbbDriveExtractBtn{
+  background:#0b73d9!important;color:#fff!important;border-color:#0b73d9!important;
+  border-radius:12px!important;font-weight:700!important;font-size:0!important;
+  padding:0 16px!important;width:auto!important;
+}
+#pbbEditDlg #pbbExtractBtn>* ,#pbbEditDlg #pbbDriveExtractBtn>*{display:none!important}
+#pbbEditDlg #pbbExtractBtn::before{content:"✨ Baca File"!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important}
+#pbbEditDlg #pbbDriveExtractBtn::before{content:"✨ Baca dari Google Drive"!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important}

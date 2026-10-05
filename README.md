@@ -81,7 +81,7 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - PBB export dropdown now uses labeled actions: Print PBB Terbaru, Save as Excel, Save Excel to Google Drive.
 
 
-## v1.21.20 RC
+## v1.21.21 RC
 - Memperbaiki tombol pada Pembacaan AI SPPT/PBB yang masih salah pada v1.21.19.
 - Baris file lokal sekarang: file → Baca File → Optimizer icon-only 40×40.
 - Baris Google Drive sekarang: link → Buka Dokumen icon-only 40×40 → Optimizer icon-only 40×40 → Baca dari Google Drive.
@@ -94,3 +94,10 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Tombol action standar 40×40 CSS px.
 - Tombol hapus kartu Akta memakai simbol minus, konsisten dengan standar PALM.
 - Layout mobile dibuat ringkas agar action bar tidak memakan ruang layar berlebihan.
+
+
+## v1.21.21 RC — PBB Approved Button Visuals
+- PBB/SPPT Optimizer memakai ikon clamp 🗜️ sesuai referensi yang disetujui.
+- Baca File dikunci sebagai tombol biru bertuliskan “✨ Baca File”.
+- Baca dari Google Drive dikunci sebagai tombol biru bertuliskan “✨ Baca dari Google Drive”.
+- Fungsi tombol tidak diubah; perubahan hanya visual/kontrol PBB/SPPT.
