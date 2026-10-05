@@ -79,3 +79,11 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 
 ## v1.21.18 RC
 - PBB export dropdown now uses labeled actions: Print PBB Terbaru, Save as Excel, Save Excel to Google Drive.
+
+
+## v1.21.19 RC
+- Master Akta Sewa mengikuti layout Master Property / Master PBB.
+- Action bar tetap terlihat saat scroll: Kembali | Search | jumlah data | Tambah.
+- Tombol action standar 40×40 CSS px.
+- Tombol hapus kartu Akta memakai simbol minus, konsisten dengan standar PALM.
+- Layout mobile dibuat ringkas agar action bar tidak memakan ruang layar berlebihan.
