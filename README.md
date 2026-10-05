@@ -1,3 +1,12 @@
+PALM v1.21.42 RC — Master Heading Render Isolation Fix
+
+Perubahan v1.21.42:
+- Master PBB dan Master Akta Sewa memakai class judul khusus `master-page-title`, tidak lagi elemen h2 yang terkena tumpukan aturan CSS historis.
+- Kontrak layout final: actionbar sticky → judul master → keterangan → kartu data.
+- Menetapkan ulang visibility/position/transform judul dan intro secara eksplisit tanpa mengubah fungsi data.
+- Cache CSS/app dinaikkan ke v1.21.42.
+- Seluruh perubahan v1.21.41 dan sebelumnya dipertahankan.
+
 PALM v1.21.41 RC — Master PBB & Akta Heading Visibility Fix
 
 Perubahan v1.21.41:
