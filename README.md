@@ -1,6 +1,6 @@
-PALM v1.21.47 RC — Fixed Master PBB & Akta Sewa Action Bars
+PALM v1.21.48 RC — Fixed Master PBB & Akta Sewa Action Bars
 
-Perubahan v1.21.47:
+Perubahan v1.21.48:
 - Master Akta Sewa: tombol kembali, search, jumlah data, dan tombol + tetap terlihat di bawah Global Header saat halaman di-scroll.
 - Master PBB: tombol kembali, search, jumlah NOP, Export, dan tombol + tetap terlihat di bawah Global Header saat halaman di-scroll.
 - Desktop dan iPhone mengikuti pola Master Properti yang sudah disetujui.
@@ -306,3 +306,9 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Fix menu ••• List Sertifikat Tanah: bentuk mengikuti menu utility lain (ikon + teks).
 - Handler pembuka Master Sertifikat dibuat eksplisit dan defensif; dialog dibuka sebelum query data dan error query ditampilkan di dalam dialog.
 - Seluruh dedup guard v1.21.28 dipertahankan.
+
+
+## v1.21.48 RC
+- Export dipindahkan ke menu global “…” sebagai satu titik akses untuk halaman aktif.
+- Tombol Export terpisah di Master PBB dan Detail Akta Sewa tidak lagi ditampilkan.
+- Global Export menyediakan Print, Save as Excel, dan Excel Save to Google Drive; PBB dan Detail Akta memakai model export khusus yang sudah ada, halaman lain memakai representasi halaman aktif.

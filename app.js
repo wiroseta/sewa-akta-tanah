@@ -2718,3 +2718,31 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>installLandTitle
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true}); else install();
 })();
+
+// v1.21.48 RC — one global Export entry point for the active PALM page.
+(function(){
+  const byId=id=>document.getElementById(id);
+  function visible(el){if(!el||el.hidden)return false;const s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'}
+  function context(){
+    if(visible(byId('pbbPage')))return {kind:'pbb',title:'Master PBB',root:byId('pbbPage')};
+    if(visible(byId('leasePage')))return {kind:'lease-list',title:'Master Akta Sewa',root:byId('leasePage')};
+    if(visible(byId('dlg')))return {kind:'lease-detail',title:'Detail Akta Sewa',root:byId('dlg')};
+    if(visible(byId('assetPage')))return {kind:'property-list',title:'Master Properti / Lokasi',root:byId('assetPage')};
+    if(visible(byId('assetDlg')))return {kind:'property-detail',title:'Detail Properti / Lokasi',root:byId('assetDlg')};
+    return {kind:'dashboard',title:'Dashboard',root:document.querySelector('#appShell main')||document.body};
+  }
+  function cleanText(root){
+    const clone=root.cloneNode(true);clone.querySelectorAll('button,script,style,input,select,textarea,[hidden],dialog').forEach(x=>x.remove());
+    return (clone.innerText||clone.textContent||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  }
+  function safeName(title){return String(title||'PALM').replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'')}
+  function genericWorkbook(c){if(!window.XLSX)throw new Error('Modul Excel belum termuat.');const rows=cleanText(c.root).map((v,i)=>({No:i+1,Data:v}));const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{Data:'Tidak ada data untuk diekspor'}]);ws['!cols']=[{wch:8},{wch:90}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data');return wb}
+  function workbook(c){if(c.kind==='pbb'&&typeof makePbbWorkbook==='function')return makePbbWorkbook();if(c.kind==='lease-detail'&&typeof makeLeaseWorkbook==='function')return makeLeaseWorkbook();return genericWorkbook(c)}
+  function filename(c){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${safeName(c.title)}_${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}.xlsx`}
+  function printGeneric(c){const lines=cleanText(c.root),w=window.open('','_blank');if(!w)throw new Error('Popup diblokir browser.');w.document.write(`<!doctype html><meta charset="utf-8"><title>${c.title}</title><style>body{font:12px Arial,sans-serif;margin:24px;color:#111}h1{font-size:20px;border-bottom:1px solid #bbb;padding-bottom:8px}.line{padding:4px 0;border-bottom:1px solid #eee}@media print{body{margin:12mm}}</style><h1>${c.title}</h1>${lines.map(x=>`<div class="line">${String(x).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}</div>`).join('')}`);w.document.close();setTimeout(()=>w.print(),200)}
+  function doPrint(){const c=context();if(c.kind==='pbb'&&typeof printAllPbb==='function')return printAllPbb();if(c.kind==='lease-detail'&&typeof window.printLeaseReport==='function')return window.printLeaseReport();return printGeneric(c)}
+  function doExcel(){const c=context();XLSX.writeFile(workbook(c),filename(c),{compression:true})}
+  async function doDrive(btn){const c=context();try{btn.disabled=true;btn.textContent='Menyiapkan Excel…';if(!googleDriveToken&&!restoreDriveToken()){let ok=await connectDriveFromButton(btn);if(!ok)throw new Error('Google Drive belum terhubung.')}requireDriveToken();const bytes=XLSX.write(workbook(c),{bookType:'xlsx',type:'array',compression:true}),name=filename(c),mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',meta={name,mimeType:mime},fd=new FormData();fd.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json; charset=UTF-8'}));fd.append('file',new Blob([bytes],{type:mime}),name);btn.textContent='Mengunggah…';const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink',{method:'POST',headers:{Authorization:`Bearer ${googleDriveToken}`},body:fd}),out=await r.json().catch(()=>({}));if(!r.ok)throw new Error(out?.error?.message||`Upload gagal (${r.status})`);alert('Excel berhasil disimpan ke Google Drive: '+(out.name||name))}catch(e){alert('Gagal menyimpan Excel ke Google Drive: '+e.message)}finally{btn.disabled=false;btn.innerHTML='<span class="lease-export-icon drive-mark">◆</span><span><b>Excel Save to Google Drive</b><small>Simpan Excel halaman aktif ke Google Drive.</small></span><span class="lease-export-arrow">›</span>'}}
+  function install(){const open=byId('globalExportBtn'),dlg=byId('globalExportDlg');if(!open||!dlg)return;open.onclick=()=>{const c=context();byId('globalExportContext').textContent='Halaman aktif: '+c.title;byId('utilityMenuPanel')?.setAttribute('hidden','');dlg.showModal()};byId('globalExportCloseBtn').onclick=()=>dlg.close();byId('globalExportPrintBtn').onclick=()=>{try{doPrint()}catch(e){alert('Gagal menyiapkan Print: '+e.message)}};byId('globalExportExcelBtn').onclick=()=>{try{doExcel()}catch(e){alert('Gagal membuat Excel: '+e.message)}};byId('globalExportDriveBtn').onclick=e=>doDrive(e.currentTarget)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();

@@ -2655,3 +2655,7 @@ nn/* v1.21.7 RC — global single-line field height normalization.
     padding:5px var(--app-content-gutter,12px)!important;
   }
 }
+
+/* v1.21.48 RC — global Export lives only in the … utility menu. */
+.palm-global-export-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+.global-export-dialog{max-width:680px;width:min(92vw,680px)}
