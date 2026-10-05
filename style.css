@@ -2332,7 +2332,7 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-actionbar .pbb-searchbar input{height:40px!important;min-height:40px!important;min-width:0!important;width:100%!important;padding:8px 12px!important;}
 #pbbPage .pbb-actionbar #pbbSearchCount{white-space:nowrap!important;}
 /* Master cards no longer expose a direct SPPT Drive/link control. Drive URL stays in PBB edit and is used by Read/Verify AI + Optimizer. */
-#pbbPage .pbb-card-actions .pbb-card-drive-read,#pbbPage .pbb-history-actions .pbb-drive-read{display:none!important;}
+#pbbPage .pbb-history-actions .pbb-drive-read{display:none!important;}
 @media(max-width:760px){
  #pbbPage .pbb-master-intro{padding:6px 0 8px!important;}
  #pbbPage .pbb-master-intro h2{font-size:21px!important;margin:5px 0!important;}
@@ -2369,3 +2369,26 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-export-menu button:hover{background:#f2f2f7!important}
 @media(max-width:760px){#pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;gap:5px!important;padding:5px 0!important}#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 50px!important;gap:4px!important}#pbbPage #pbbSearchCount{max-width:50px!important;white-space:normal!important;text-align:center!important;font-size:10px!important;line-height:1.05!important}#pbbPage .pbb-searchbar input{font-size:16px!important;padding:7px 9px!important}#pbbPage .pbb-export-menu{right:-45px!important;min-width:220px!important}}
 @media(max-width:390px){#pbbPage .pbb-actionbar{gap:3px!important}#pbbPage .pbb-searchbar{grid-template-columns:minmax(0,1fr) 43px!important;gap:2px!important}#pbbPage #pbbSearchCount{max-width:43px!important;font-size:9px!important}}
+
+/* v1.21.15 RC — restore direct Google Drive scan opener on Master PBB cards. */
+#pbbPage .pbb-card-actions{display:flex!important;gap:8px!important;align-items:center!important}
+#pbbPage .pbb-card-drive-open{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#fff!important;border:1px solid #c7c7cc!important}
+#pbbPage .pbb-card-drive-open .pbb-drive-logo{display:block!important;width:25px!important;height:23px!important}
+#pbbPage .pbb-card-drive-open:disabled{opacity:.35!important;cursor:not-allowed!important}
+/* v1.21.15 RC — Master PBB action bar is fixed under global header; avoids sticky being defeated by main overflow containment. */
+#pbbPage .pbb-actionbar{position:fixed!important;top:var(--global-nav-h,58px)!important;left:20px!important;right:20px!important;width:auto!important;z-index:980!important;padding:8px 0!important;margin:0!important}
+#pbbPage #pbbCards{padding-top:58px!important}
+@media(max-width:760px){#pbbPage .pbb-actionbar{top:var(--global-nav-h,48px)!important;left:10px!important;right:10px!important;padding:5px 0!important}#pbbPage #pbbCards{padding-top:50px!important}}
+
+#pbbPage .pbb-card-actions .pbb-edit-svg{display:block!important;width:22px!important;height:22px!important;fill:none!important;stroke:#fff!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+
+/* v1.21.15 RC hotfix — Master PBB canonical action icons: use DOM/SVG only, no legacy pseudo glyphs. */
+#pbbPage .pbb-actionbar #pbbBack::before,
+#pbbPage .pbb-actionbar #pbbBack::after,
+#pbbPage .pbb-actionbar #pbbExportBtn::before,
+#pbbPage .pbb-actionbar #pbbExportBtn::after,
+#pbbPage .pbb-actionbar #newPbbBtn::before,
+#pbbPage .pbb-actionbar #newPbbBtn::after{content:none!important;display:none!important;}
+#pbbPage .pbb-actionbar #pbbBack svg,
+#pbbPage .pbb-actionbar #pbbExportBtn svg{display:block!important;width:23px!important;height:23px!important;visibility:visible!important;opacity:1!important;}
+#pbbPage .pbb-actionbar #newPbbBtn>span{display:block!important;font-size:30px!important;font-weight:600!important;line-height:1!important;color:#fff!important;}

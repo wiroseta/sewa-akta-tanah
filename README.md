@@ -1,4 +1,4 @@
-PALM v1.21.14 RC — Warning FIFO Reconciliation Fix
+PALM v1.21.15 RC — Warning FIFO Reconciliation Fix
 
 ## v1.21.12 changes
 - Fix dashboard warning FIFO: pembayaran aktual tidak lagi hilang ketika ledger transaction menunjuk termin yang sudah lunas; sisa pembayaran tetap diteruskan ke termin berikutnya sesuai FIFO.
@@ -54,3 +54,14 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Action bar: Kembali ke Dashboard | Search | jumlah NOP | Tambah PBB.
 - Tombol/link Google Drive SPPT di kartu Master PBB dan riwayat dihapus. URL Drive tetap tersimpan dan tetap dipakai pada form PBB untuk Baca/Verifikasi AI dan Optimizer.
 - Print/Excel/Drive export dipertahankan sebagai tools sekunder yang ikut scroll.
+
+
+## v1.21.15 RC — Master PBB Drive Restore
+- Restore tombol Google Drive pada setiap kartu Master PBB untuk membuka hasil scan SPPT aktif secara langsung.
+- Tombol Drive terpisah dari Export; Export tetap untuk Print / Excel / Excel ke Google Drive.
+- Sticky action bar Master PBB tetap dipertahankan.
+
+### v1.21.15 RC hotfix — Master PBB action icons
+- Membersihkan CSS legacy `::before` pada tombol Kembali, Export, dan Tambah di Master PBB.
+- Kembali dan Export memakai SVG DOM; Tambah memakai glyph `+` DOM sehingga tidak menjadi kotak kosong.
+- Fungsi/navigasi tidak diubah; tombol Google Drive pada kartu PBB tetap dipertahankan.
