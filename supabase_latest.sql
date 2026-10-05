@@ -1,4 +1,4 @@
--- PALM v1.21.11 RC — Warning Email Settings + Delivery Log
+-- PALM v1.21.11 RC Corrected 2 — Warning Email Settings + Daily Digest
 -- Jalankan sekali di Supabase SQL Editor sebelum mengaktifkan email warning.
 
 alter table public.app_user_access
@@ -43,11 +43,13 @@ end$$;
 
 create or replace function public.app_update_warning_email(target_user_id uuid,target_enabled boolean,target_email text)
 returns void language plpgsql security definer set search_path=public as $$
+declare v_email text;
 begin
  if not public.app_is_admin() then raise exception 'Administrator only'; end if;
  if not exists(select 1 from public.app_user_access where user_id=target_user_id and data_owner_id=public.app_access_owner()) then raise exception 'User bukan anggota workspace ini'; end if;
- if coalesce(target_enabled,false) and (target_email is null or btrim(target_email)='' or target_email !~* '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$') then raise exception 'Alamat email tidak valid'; end if;
- update public.app_user_access set warning_email_enabled=coalesce(target_enabled,false),warning_email=nullif(lower(btrim(target_email)),''),updated_at=now() where user_id=target_user_id;
+ v_email := nullif(lower(btrim(target_email)), '');
+ if coalesce(target_enabled,false) and (v_email is null or position('@' in v_email) <= 1 or position('.' in split_part(v_email,'@',2)) <= 1) then raise exception 'Alamat email tidak valid'; end if;
+ update public.app_user_access set warning_email_enabled=coalesce(target_enabled,false),warning_email=v_email,updated_at=now() where user_id=target_user_id;
 end$$;
 revoke all on function public.app_update_warning_email(uuid,boolean,text) from public;
 grant execute on function public.app_update_warning_email(uuid,boolean,text) to authenticated;

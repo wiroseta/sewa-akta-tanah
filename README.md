@@ -1,3 +1,18 @@
+PALM v1.21.12 RC — Warning FIFO Reconciliation Fix
+
+## v1.21.12 changes
+- Fix dashboard warning FIFO: pembayaran aktual tidak lagi hilang ketika ledger transaction menunjuk termin yang sudah lunas; sisa pembayaran tetap diteruskan ke termin berikutnya sesuai FIFO.
+- Dashboard "Pembayaran terlambat" dan Agenda memakai rekonsiliasi yang sama.
+- Toleransi pembulatan <= Rp1 dianggap nol agar selisih receh seperti Rp0,45 tidak menjadi sisa/lebih bayar.
+- Edge Function `send-warning-emails` memakai perbaikan FIFO dan toleransi yang sama agar email warning konsisten dengan Dashboard.
+- Tidak ada perubahan database/schema. Cron/Resend yang sudah terpasang tetap digunakan.
+
+## Deployment
+GitHub Pages: deploy `app.js`, `index.html`, dan `README.md`.
+Supabase Edge Function: redeploy hanya `supabase/functions/send-warning-emails/index.ts`.
+Supabase SQL Editor: tidak perlu dijalankan.
+Cron: tidak perlu dibuat ulang atau diubah.
+
 PALM v1.21.11 RC — Per-User Warning Email Delivery
 
 Baseline: v1.21.10 RC Dashboard Payment FIFO Reconciliation Fix. All existing v1.21.10 behavior is retained.
@@ -24,3 +39,11 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - User Management warning-email settings are responsive and no longer overflow horizontally.
 - One `Simpan Perubahan` button saves warning-email settings for all users.
 - `supabase_latest.sql` drops the legacy `app_list_users()` before recreating its expanded return signature.
+
+
+## v1.21.11 RC Corrected 2 — Daily Warning Digest
+- Email warning digabung menjadi maksimal satu email ringkasan per penerima per proses harian.
+- Warning dikelompokkan: TERLAMBAT, HARI INI, H-1 s.d. H-3, H-4 s.d. H-7, H-8 s.d. H-14, H-15 s.d. H-30, dan PERINGATAN AWAL.
+- Warning overdue memakai stage tetap `overdue`, sehingga tidak terkirim ulang setiap hari hanya karena jumlah hari keterlambatan berubah.
+- Dedup tetap per recipient + warning_key + warning_stage.
+- `supabase_latest.sql` memakai validasi email yang sudah dikoreksi dan aman untuk upgrade dari versi lama.
