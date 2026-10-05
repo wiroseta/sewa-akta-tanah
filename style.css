@@ -2653,3 +2653,13 @@ textarea.palm-dynamic-text:focus{
 #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;padding:10px 2px 12px!important;margin:0!important;}
 #pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{display:block!important;visibility:visible!important;font-size:28px!important;line-height:1.15!important;margin:8px 0 8px!important;color:#1d1d1f!important;}
 @media(max-width:760px){#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;}#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 9px!important;}#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}}
+
+
+/* v1.21.40 RC — PBB/Akta master headings use the same DOM order as Master Properti.
+   Intro comes before the sticky actionbar. Also neutralize obsolete fixed/center transforms. */
+#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;margin:0!important;padding:10px 2px 10px!important;}
+#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{display:block!important;visibility:visible!important;opacity:1!important;font-size:28px!important;line-height:1.15!important;margin:8px 0 8px!important;color:#1d1d1f!important;}
+#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{position:sticky!important;top:var(--global-nav-h,64px)!important;left:auto!important;right:auto!important;width:100%!important;max-width:none!important;transform:none!important;box-sizing:border-box!important;margin:0 0 8px!important;}
+#pbbPage .pbb-actionbar .pbb-searchbar{width:100%!important;max-width:none!important;}
+#pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
+@media(max-width:760px){#pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}#pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}#pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,48px)!important;width:100%!important;transform:none!important;}}

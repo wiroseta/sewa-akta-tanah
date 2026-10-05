@@ -1,3 +1,13 @@
+PALM v1.21.40 RC — Master PBB & Akta Sewa Heading/Layout Fix
+
+Perubahan v1.21.40:
+- Memperbaiki dua masalah terakhir pada Master PBB dan Master Akta Sewa.
+- Struktur DOM kini sama dengan Master Properti/Lokasi: intro judul/keterangan ditempatkan sebelum actionbar sticky.
+- Master PBB dan Master Akta Sewa dipaksa tampil sebagai heading normal, bukan tertutup toolbar.
+- Menghapus efek transform/centering lama pada actionbar PBB yang menyebabkan search/toolbar bergeser atau terpotong.
+- Toolbar tetap sticky dan tetap responsif di iPhone.
+- Seluruh perubahan v1.21.39 dan sebelumnya dipertahankan selain patch layout yang menyebabkan masalah.
+
 PALM v1.21.39 RC — Master PBB & Akta Sewa Heading Definitive Fix
 
 Perubahan v1.21.39:
