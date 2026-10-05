@@ -120,9 +120,16 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - `✨ Baca File` dan `✨ Baca dari Google Drive` sekarang dikecualikan dari legacy icon enhancer dan dikunci sebagai text action canonical PALM.
 
 
-## v1.21.27 RC
+## v1.21.28 RC
 - Master PBB: tombol utama Export dikembalikan ke icon-only Share/Export 40×40 CSS px.
 - Menu Export diberi label final: Print, Save as Excel, Excel Save to Google Drive.
 - Perubahan v1.21.25 untuk tombol Google Drive bukti bayar tetap dipertahankan.
 
-- v1.21.27 RC: Root fix menu Export Master PBB. Item menu dipaksa tetap readable text: Print, Save as Excel, Excel Save to Google Drive; legacy icon-only classes dibersihkan saat menu dibuka.
+- v1.21.28 RC: Root fix menu Export Master PBB. Item menu dipaksa tetap readable text: Print, Save as Excel, Excel Save to Google Drive; legacy icon-only classes dibersihkan saat menu dibuka.
+
+
+## v1.21.28 RC — Master Sertifikat & AI Duplicate Guard
+- Mencegah AI/Save Property membuat record Sertifikat baru bila Jenis Hak + Nomor Sertifikat yang dinormalisasi sudah ada tepat satu kali; PALM memakai kembali ID master yang ada.
+- Bila Master sudah memiliki lebih dari satu duplikat untuk key yang sama, Save dihentikan dengan pesan agar data dibersihkan terlebih dahulu.
+- Menu ••• mendapat `List Sertifikat Tanah` untuk melihat master, mencari, melihat jumlah keterkaitan, dan menghapus record salah/duplikat.
+- Penghapusan meminta konfirmasi dan menampilkan keterkaitan Property/PBB/Akta Sewa yang akan dilepas.
