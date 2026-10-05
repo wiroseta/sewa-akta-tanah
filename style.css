@@ -2611,10 +2611,13 @@ nn/* v1.21.7 RC — global single-line field height normalization.
 #driveOpenCompactBtn .palm-drive-logo{display:block!important;width:25px!important;height:23px!important}
 @media(max-width:760px){#form>.lease-local-search{grid-template-columns:minmax(0,1fr)!important;row-gap:4px!important}#form>.lease-local-search>#leaseLocalSearch{max-width:none!important}#form>.lease-local-search>#leaseLocalSearchCount{grid-column:1!important;white-space:normal!important}}
 
-/* v1.21.45 RC — canonical master-list layout for PBB and Akta Sewa.
-   Mirrors the proven Master Properti structure: intro -> sticky actionbar -> cards. */
+/* v1.21.47 RC — canonical fixed Master action bars for PBB and Akta Sewa.
+   Same behavior as Master Properti: Global Header stays fixed; the compact action bar
+   is pinned immediately below it; title/help/cards remain in the scrollable page content. */
 #pbbPage.pbb-master-page,#leasePage.lease-master-page{
-  max-width:1180px!important;margin:0 auto!important;padding:var(--global-nav-h,58px) 20px 60px!important;
+  max-width:1180px!important;
+  margin:0 auto!important;
+  padding:calc(var(--global-nav-h,64px) + 64px) 20px 60px!important;
 }
 #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{
   position:relative!important;display:block!important;visibility:visible!important;opacity:1!important;
@@ -2628,16 +2631,27 @@ nn/* v1.21.7 RC — global single-line field height normalization.
   display:block!important;visibility:visible!important;opacity:1!important;position:static!important;margin:0!important;padding:0!important;
 }
 #pbbPage .pbb-actionbar,#leasePage .lease-actionbar{
-  position:sticky!important;top:var(--global-nav-h,64px)!important;z-index:980!important;
-  left:auto!important;right:auto!important;transform:none!important;width:100%!important;max-width:none!important;
-  margin:0 0 8px!important;padding:8px 0!important;background:rgba(245,245,247,.98)!important;
-  border-bottom:1px solid rgba(0,0,0,.08)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+  position:fixed!important;
+  top:var(--global-nav-h,64px)!important;
+  left:50%!important;right:auto!important;transform:translateX(-50%)!important;
+  z-index:990!important;box-sizing:border-box!important;
+  width:min(var(--app-content-max,1180px),100%)!important;max-width:var(--app-content-max,1180px)!important;
+  min-height:56px!important;margin:0!important;padding:8px var(--app-content-gutter,20px)!important;
+  background:rgba(245,245,247,.985)!important;border-bottom:1px solid rgba(0,0,0,.10)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.035)!important;
+  backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
 }
 #pbbPage #pbbCards,#leasePage #cards{padding-top:0!important;}
 @media(max-width:760px){
-  #pbbPage.pbb-master-page,#leasePage.lease-master-page{padding:var(--global-nav-h,48px) 10px 40px!important;}
+  #pbbPage.pbb-master-page,#leasePage.lease-master-page{
+    padding:calc(var(--global-nav-h,56px) + 50px) 10px 40px!important;
+  }
   #pbbPage .pbb-master-intro,#leasePage .lease-master-intro{padding:6px 0 8px!important;}
   #pbbPage .pbb-master-intro h2,#leasePage .lease-master-intro h2{font-size:21px!important;margin:5px 0!important;}
   #pbbPage .pbb-search-help,#leasePage .lease-master-intro p{font-size:13px!important;}
-  #pbbPage .pbb-actionbar,#leasePage .lease-actionbar{top:var(--global-nav-h,56px)!important;padding:5px 0!important;}
+  #pbbPage .pbb-actionbar,#leasePage .lease-actionbar{
+    top:var(--global-nav-h,56px)!important;
+    width:100%!important;max-width:100%!important;min-height:50px!important;
+    padding:5px var(--app-content-gutter,12px)!important;
+  }
 }

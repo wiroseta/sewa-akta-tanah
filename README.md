@@ -1,3 +1,13 @@
+PALM v1.21.47 RC — Fixed Master PBB & Akta Sewa Action Bars
+
+Perubahan v1.21.47:
+- Master Akta Sewa: tombol kembali, search, jumlah data, dan tombol + tetap terlihat di bawah Global Header saat halaman di-scroll.
+- Master PBB: tombol kembali, search, jumlah NOP, Export, dan tombol + tetap terlihat di bawah Global Header saat halaman di-scroll.
+- Desktop dan iPhone mengikuti pola Master Properti yang sudah disetujui.
+- Judul/keterangan dan kartu tetap menjadi konten scrollable; hanya action bar yang fixed.
+- Mengganti blok layout v1.21.45, bukan menambahkan patch layout paralel.
+- Seluruh fungsi/data v1.21.46 dipertahankan.
+
 PALM v1.21.46 RC — Master Fixed-Header Offset Root Fix
 
 Perubahan v1.21.46:
