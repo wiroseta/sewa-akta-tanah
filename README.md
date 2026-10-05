@@ -1,3 +1,21 @@
+PALM v1.21.31 RC — List Sertifikat Close & Search Fix
+
+Perubahan v1.21.31:
+- Memperbaiki tombol X pada window List Sertifikat Tanah agar selalu menutup dialog.
+- Memperbaiki search List Sertifikat Tanah agar tetap aktif.
+- Akar masalah: dialog List Sertifikat Tanah berada setelah pemuatan app.js, sehingga listener yang dipasang saat startup tidak menemukan elemen dialog.
+- Handler kritis X dan search sekarang dipasang langsung pada elemen dialog sehingga tidak tergantung urutan pemuatan DOM.
+- Seluruh perubahan v1.21.30 dan sebelumnya dipertahankan.
+
+PALM v1.21.30 RC — Master PBB Action Bar Alignment Fix
+
+Perubahan v1.21.30:
+- Toolbar Master PBB disejajarkan dengan batas kiri/kanan area kartu data.
+- Tombol Kembali, Export, dan Tambah dipusatkan vertikal pada baris toolbar.
+- Field pencarian desktop diperpendek agar tidak mendominasi lebar toolbar.
+- Layout mobile tetap compact dan responsive tanpa horizontal overflow.
+- Seluruh perbaikan v1.21.29 dan sebelumnya dipertahankan.
+
 PALM v1.21.16 RC — PBB Editor Final UI
 
 Perubahan v1.21.16:
