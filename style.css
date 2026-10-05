@@ -2429,3 +2429,8 @@ textarea.palm-dynamic-text:focus{
  #pbbEditDlg .pbb-drive-compact input{grid-column:1/2!important}
  #pbbEditDlg .pbb-drive-compact #pbbDriveExtractBtn{grid-column:1/-1!important;width:100%!important}
 }
+
+/* v1.21.18 — labeled PBB export dropdown */
+#pbbPage .pbb-export-menu{min-width:260px!important}
+#pbbPage .pbb-export-menu button{display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
+#pbbPage .pbb-export-item-icon{display:inline-flex!important;width:24px!important;min-width:24px!important;align-items:center!important;justify-content:center!important;font-size:18px!important;line-height:1!important}

@@ -75,3 +75,7 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Membersihkan CSS legacy `::before` pada tombol Kembali, Export, dan Tambah di Master PBB.
 - Kembali dan Export memakai SVG DOM; Tambah memakai glyph `+` DOM sehingga tidak menjadi kotak kosong.
 - Fungsi/navigasi tidak diubah; tombol Google Drive pada kartu PBB tetap dipertahankan.
+
+
+## v1.21.18 RC
+- PBB export dropdown now uses labeled actions: Print PBB Terbaru, Save as Excel, Save Excel to Google Drive.
