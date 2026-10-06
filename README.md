@@ -1,4 +1,4 @@
-# PALM v1.21.57 RC
+# PALM v1.21.58 RC
 
 User Management layout correction based on the approved mockup:
 - Wide desktop dialog close to full viewport width; compact table rows with all six columns visible, including Aksi.
@@ -365,3 +365,11 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - User Workspace: removed redundant `Terima peringatan email` text; the `Penerima warning email` column now shows only the checkbox.
 - Warning recipient checkbox is centered in its desktop column; mobile keeps natural left alignment.
 - No Supabase/SQL changes.
+
+
+## v1.21.58 RC
+- Cari Seluruh Database & Riwayat: tombol kanan atas dikunci sebagai ikon X/Tutup pada source dan saat dialog dibuka.
+- User Management: layout disatukan menjadi satu source-of-truth; tinggi dialog content-fit sampai batas viewport, lalu body scroll. Mobile memakai card user yang mudah dibaca tanpa horizontal overflow.
+- List Sertifikat Tanah: header, jumlah, X, keterangan, dan search tetap terlihat; hanya daftar sertifikat yang scroll. Keterangan disingkat menjadi “Master Sertifikat Tanah. PALM akan menampilkan keterkaitan sebelum menghapus.”
+- Backup & Restore: ikon dekoratif besar dihapus; layout dibuat compact. Backup mendukung perangkat dan folder Google Drive `PALM Backup` dengan file timestamp baru. Restore mendukung file lokal dan pemilihan backup dari folder Google Drive, memakai validasi dan konfirmasi yang sama.
+- Tidak ada perubahan Supabase SQL.
