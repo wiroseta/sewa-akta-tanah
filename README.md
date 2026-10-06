@@ -1,7 +1,14 @@
-# PALM v1.21.54 RC
+# PALM v1.21.55 RC
+
+User Management layout correction based on the approved mockup:
+- Wide desktop dialog close to full viewport width; compact table rows with all six columns visible, including Aksi.
+- Fixed header contains title, explanatory text, Administrator badge, icon-only Save, and Close. Only the body scrolls.
+- Existing non-owner users expose Edit plus Nonaktifkan/Aktifkan kembali controls; Workspace Owner remains protected.
+- Mobile switches to compact cards instead of forcing a wide table.
+- No new database migration in v1.21.55; keep the v1.21.53 User Management migration already installed.
 
 
-Migration correction v1.21.54:
+Migration correction v1.21.55:
 - Memperbaiki error PostgreSQL `42P13 cannot change return type of existing function` pada upgrade v1.21.52.
 - `app_get_my_access()` dan `app_list_users()` sekarang di-DROP lalu dibuat ulang karena RETURNS TABLE keduanya berubah.
 - EXECUTE grant untuk kedua RPC dipasang ulang setelah recreate.
@@ -342,7 +349,7 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - Tombol Export terpisah di Master PBB dan Detail Akta Sewa tidak lagi ditampilkan.
 - Global Export menyediakan Print, Save as Excel, dan Excel Save to Google Drive; PBB dan Detail Akta memakai model export khusus yang sudah ada, halaman lain memakai representasi halaman aktif.
 
-## v1.21.54 RC
+## v1.21.55 RC
 - User Management mengikuti layout compact yang disetujui: header fixed, Save icon-only di kiri X, workspace berbentuk tabel/card-row.
 - User non-owner memiliki tombol Edit dan Aktif/Nonaktif; role dan warning settings diedit secara eksplisit lalu disimpan dari header.
 - User nonaktif tetap terlihat; Workspace Owner tetap dilindungi.
