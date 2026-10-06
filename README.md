@@ -1,4 +1,4 @@
-# PALM v1.21.56 RC
+# PALM v1.21.57 RC
 
 User Management layout correction based on the approved mockup:
 - Wide desktop dialog close to full viewport width; compact table rows with all six columns visible, including Aksi.
@@ -358,3 +358,10 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 ## v1.21.56 RC
 - Koreksi alignment Tambah User: label Email, Password awal, dan Role memakai row label 16px + field 40px yang identik.
 - Tombol + disejajarkan tepat dengan ketiga field. User Workspace dan fungsi user tidak diubah.
+
+
+## v1.21.57 RC
+- User Management: label/header login identity changed from `Email` to `Username`.
+- User Workspace: removed redundant `Terima peringatan email` text; the `Penerima warning email` column now shows only the checkbox.
+- Warning recipient checkbox is centered in its desktop column; mobile keeps natural left alignment.
+- No Supabase/SQL changes.
