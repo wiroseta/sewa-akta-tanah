@@ -1,4 +1,14 @@
-# PALM v1.21.51 RC
+# PALM v1.21.53 RC
+
+
+Migration correction v1.21.53:
+- Memperbaiki error PostgreSQL `42P13 cannot change return type of existing function` pada upgrade v1.21.52.
+- `app_get_my_access()` dan `app_list_users()` sekarang di-DROP lalu dibuat ulang karena RETURNS TABLE keduanya berubah.
+- EXECUTE grant untuk kedua RPC dipasang ulang setelah recreate.
+- Migration dibungkus transaction dan aman dijalankan setelah percobaan v1.21.52 yang gagal; `is_active` tetap memakai `ADD COLUMN IF NOT EXISTS`.
+
+User Management compact + sticky header, Save moved beside Close, editable existing-user roles, and persistent Active/Inactive membership. Run `supabase_latest.sql` once before deploying this frontend.
+
 
 - Memperbaiki submenu Export global agar ketiga aksi selalu menampilkan ikon + teks: Print, Save as Excel, dan Excel Save to Google Drive.
 - Submenu dipulihkan dari satu fungsi canonical saat startup dan setiap kali Export dibuka, sehingga normalizer UI lama tidak dapat menghilangkan label.
