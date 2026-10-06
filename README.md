@@ -1,4 +1,4 @@
-# PALM v1.21.55 RC
+# PALM v1.21.56 RC
 
 User Management layout correction based on the approved mockup:
 - Wide desktop dialog close to full viewport width; compact table rows with all six columns visible, including Aksi.
@@ -353,3 +353,8 @@ Supabase Edge Functions: deploy `supabase/functions/send-warning-emails`, config
 - User Management mengikuti layout compact yang disetujui: header fixed, Save icon-only di kiri X, workspace berbentuk tabel/card-row.
 - User non-owner memiliki tombol Edit dan Aktif/Nonaktif; role dan warning settings diedit secara eksplisit lalu disimpan dari header.
 - User nonaktif tetap terlihat; Workspace Owner tetap dilindungi.
+
+
+## v1.21.56 RC
+- Koreksi alignment Tambah User: label Email, Password awal, dan Role memakai row label 16px + field 40px yang identik.
+- Tombol + disejajarkan tepat dengan ketiga field. User Workspace dan fungsi user tidak diubah.
